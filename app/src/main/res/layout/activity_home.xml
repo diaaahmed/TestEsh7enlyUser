@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.HomeActivity">
+
+        <fragment
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomLinear"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/my_nav"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/bottomLinear"
+            android:layout_alignParentTop="true"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav" />
+
+       <LinearLayout
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           android:layout_alignParentStart="true"
+           android:layout_alignParentEnd="true"
+           android:layout_alignParentBottom="true"
+           android:id="@+id/bottomLinear"
+           android:layout_width="match_parent"
+           android:layout_height="?actionBarSize">
+
+           <com.google.android.material.bottomnavigation.BottomNavigationView
+               android:id="@+id/bottom_nav"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               android:layout_alignParentStart="true"
+               android:layout_alignParentEnd="true"
+               android:layout_alignParentBottom="true"
+               android:layout_width="match_parent"
+               android:layout_height="?actionBarSize"
+               android:background="@drawable/gradiant_color"
+               app:itemIconTint="@drawable/item_selected"
+               app:itemTextColor="@drawable/item_selected"
+               app:menu="@menu/bottom_navigation_menu" />
+       </LinearLayout>
+
+    </RelativeLayout>
+</layout>

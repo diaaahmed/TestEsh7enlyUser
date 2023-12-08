@@ -1,0 +1,42 @@
+[versions]
+
+ktx = "1.9.0"
+appCompat = "1.6.1"
+material = "1.8.0"
+targetSdk = "33"
+minSdk = "25"
+junit = "4.13.2"
+junitandroidtest = "1.1.5"
+chucker = "3.5.2"
+retrofit = "2.9.0"
+glide = "4.14.2"
+espresso = "3.5.1"
+hiltcompiler = "2.46.1"
+hiltandroid = "2.46.1"
+roomruntime = "2.5.2"
+androidLib = "7.4.2"
+kotlinAndroid = "1.7.10"
+
+[libraries]
+
+ktx = {group = "androidx.core", name = "core-ktx", version.ref = "ktx"}
+appCompat = {group = "androidx.appcompat",name = "appcompat", version.ref = "appCompat"}
+material = {group = "com.google.android.material",name = "material", version.ref = "material"}
+junit = {group = "junit",name = "junit", version.ref = "junit"}
+chucker = {group = "com.github.chuckerteam.chucker",name = "library", version.ref = "chucker"}
+retrofit = {group = "com.squareup.retrofit2",name = "retrofit", version.ref = "retrofit"}
+convertergson = {group = "com.squareup.retrofit2",name = "converter-gson", version.ref = "retrofit"}
+glide = {group = "com.github.bumptech.glide",name = "glide", version.ref = "glide"}
+espresso = {group = "androidx.test.espresso",name = "espresso-core", version.ref = "espresso"}
+junitandroidtest = {group = "androidx.test.ext",name = "junit", version.ref = "junitandroidtest"}
+hiltcompiler = {group = "com.google.dagger",name = "hilt-compiler", version.ref = "hiltcompiler"}
+hiltandroid = {group = "com.google.dagger",name = "hilt-android", version.ref = "hiltandroid"}
+roomruntime = {group = "androidx.room",name = "room-runtime", version.ref = "roomruntime"}
+roomcomplier = {group = "androidx.room",name = "room-compiler", version.ref = "roomruntime"}
+roomktx = {group = "androidx.room",name = "room-ktx", version.ref = "roomruntime"}
+roomrxjava = {group = "androidx.room",name = "room-rxjava3", version.ref = "roomruntime"}
+
+[plugins]
+androidlib = {id = "com.android.library",version.ref = "androidLib"}
+kotlinAndroid = {id = "org.jetbrains.kotlin.android",version.ref = "kotlinAndroid"}
+

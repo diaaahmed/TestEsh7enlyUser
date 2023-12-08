@@ -1,0 +1,115 @@
+package com.esh7enly.esh7enlyuser.activity
+
+import android.app.ProgressDialog
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+
+import androidx.activity.viewModels
+import androidx.core.widget.NestedScrollView
+import com.esh7enly.data.sharedhelper.SharedHelper
+
+import com.esh7enly.domain.entity.TransactionEntity
+import com.esh7enly.esh7enlyuser.R
+import com.esh7enly.esh7enlyuser.adapter.NewTransactionAdapter
+import com.esh7enly.esh7enlyuser.click.TransactionClick
+import com.esh7enly.esh7enlyuser.databinding.ActivityTransactionsBinding
+import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.NetworkResult
+import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
+import dagger.hilt.android.AndroidEntryPoint
+
+import javax.inject.Inject
+
+private const val TAG = "TransactionsActivity"
+
+@AndroidEntryPoint
+class TransactionsActivity : AppCompatActivity(), TransactionClick
+{
+    private val ui by lazy{ ActivityTransactionsBinding.inflate(layoutInflater) }
+
+    var sharedHelper: SharedHelper? = null
+        @Inject set
+
+    private var page = 1
+
+    private val pDialog by lazy{
+        ProgressDialog(this,R.style.MyAlertDialogStyle)
+    }
+
+    private val newTransactionAdapter by lazy{
+        NewTransactionAdapter(this)
+    }
+
+    private val transactionsViewModel: TransactionsViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        setContentView(ui.root)
+
+        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
+        pDialog.setCancelable(false)
+
+        initRecyclerView()
+
+        ui.transactionsToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+
+        getTransactions()
+    }
+
+    private fun getTransactions()
+    {
+        transactionsViewModel.getTransactions(sharedHelper?.getUserToken().toString(),page)
+
+        transactionsViewModel.responseTransactions.observe(this)
+        {
+                response->
+            when(response)
+            {
+                is NetworkResult.Success -> {
+                    response.data?.data?.data?.let { newTransactionAdapter.setTransactionEntity(it) }
+                    // it?.data?.let { it1 -> newTransactionAdapter.setTransactionEntity(it1) }
+                    // transactionAdapter.submitList(it?.data)
+                    ui.transactionsRv.adapter = newTransactionAdapter
+                    pDialog.cancel()
+                }
+
+                is NetworkResult.Loading -> {
+                    pDialog.show()
+                }
+                is NetworkResult.Error -> {
+                    pDialog.cancel()
+                    Log.d(TAG, "diaa getTransactions: ${response.message}")
+                }
+            }
+        }
+    }
+
+    private fun initRecyclerView() {
+        ui.transactionsRv.setHasFixedSize(true)
+
+        ui.nestedScrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener
+        { v, _, scrollY, _, _ ->
+            if(scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight)
+            {
+                page++
+                transactionsViewModel.getTransactions(sharedHelper?.getUserToken().toString(),page)
+            }
+        })
+    }
+
+
+
+    override fun click(transactionEntity: TransactionEntity) {
+        val transactionDetails = Intent(this,TransactionDetails::class.java)
+        transactionDetails.putExtra(Constants.TRASACTION_ID,transactionEntity.id.toString())
+        transactionDetails.putExtra(Constants.SERVICE_TYPE,transactionEntity.type)
+        Log.d(TAG, "diaa transaction type: ${transactionEntity.type}")
+        startActivity(transactionDetails)
+    }
+
+}

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Esh7enly user</string>
+    <string name="default_name">اشحنلى</string>
+
+    <string name="jan">يناير</string>
+    <string name="feb">فبراير</string>
+    <string name="mar">مارس</string>
+    <string name="abr">ابريل</string>
+    <string name="may">مايو</string>
+    <string name="jun">يونية</string>
+    <string name="july">يوليو</string>
+    <string name="aug">اغسطس</string>
+    <string name="sep">سبتمبر</string>
+    <string name="oct">اكتوبر</string>
+    <string name="nov">نوفمبر</string>
+    <string name="dec">ديسمبر</string>
+
+    <string name="add">أضف الخدمة</string>
+    <string name="no_add">إلغاء </string>
+
+    <string name="add_to_reminder">هل تريد اضافة الخدمة لتذكيرك في وقتها؟</string>
+    <string name="alert">تنبيه؟</string>
+
+    <string name="balance_added">تم اضافة الرصيد لحسابك</string>
+
+    <string name="visa">تم الدفع بواسطة الفيزا</string>
+    <string name="cash">تم الدفع بواسطة فودافون كاش</string>
+
+    <string name="welcome_back">مرحبًا بعودتك</string>
+
+    <string name="login_btn">تسجيل الدخول</string>
+    <string name="esh7enly_solgan">ادفع وإشحن بكل سهولة مع تطبيق اشحنلى</string>
+    <string name="fastest">الأسرع..الأسهل..الآمن</string>
+    <string name="welcome">أهلًا</string>
+    <string name="search">بحث....</string>
+    <string name="password_not_match_confirm_password">الرقم السرى والتأكيد لا يتطابقان</string>
+    <string name="create_new_account">إنشاء حساب جديد</string>
+    <string name="skip_to_login">تخطى لتسجيل الدخول</string>
+    <string name="register_charge">مع إشحنلى \n سجـل واشحـن \n فى ثـانية</string>
+
+
+    <string name="enter_phone_number">أدخل رقم هاتفك</string>
+
+    <string name="enter_password">أدخل رقمك السرى</string>
+    <string name="remember_me">تذكرنى</string>
+    <string name="accept_privacy">أوافق على الشروط وسياسة الإستخدام</string>
+
+    <string name="contact_us">اتصل بنا</string>
+    <string name="terms">سياسة الاستخدام</string>
+
+    <string name="refund">سياسة الإرجاع</string>
+
+    <string name="required_amount">أدخل المبلغ المطلوب</string>
+
+    <string name="forget_password">نسيت الباسورد؟</string>
+    <string name="no_account">ليس لديك حساب؟ سجل الأن</string>
+    <string name="register">تسجيل حساب جديد</string>
+    <string name="slogan">الأسهل والأسرع</string>
+    <string name="add_balance">أضف رصيد</string>
+    <string name="confirm_password">تأكيد الرقم السرى</string>
+    <string name="insert_card_please">من فضلك اضغط استعلام ثم ضع الكارت</string>
+    <string name="payment_details">تفاصيل الدفع</string>
+    <string name="balance_available"> جنية متاح</string>
+
+    <string name="email">البريد الإلكترونى</string>
+    <string name="bank_card">كارت بنكى</string>
+    <string name="digital_wallet">المحافظ</string>
+    <string name="support">الدعم والتواصل</string>
+    <string name="call_us">تواصل معنا</string>
+    <string name="chatting">تواصل على واتساب</string>
+    <string name="send_email">أرسل إيميل</string>
+    <string name="enter_message">اكتب رسالتك</string>
+    <string name="send_message">أرسل الرسالة</string>
+    <string name="results">النتائج</string>
+    <string name="next">التالى</string>
+    <string name="update_data">تحديث البيانات</string>
+    <string name="enter_new_mobile">أدخل الرقم الجديد</string>
+    <string name="enter_new_name">أدخل الإسم الجديد</string>
+    <string name="enter_new_email">أدخل البريد الإلكترونى الجديد</string>
+    <string name="change_user_data">تحديث بيانات المستخدم</string>
+    <string name="password_instructions">الرقم السرى يجب أن يحتوى على حروف كبيرة وصغيرة وأرقام وروموز، ولا يقل عن 8!</string>
+
+    <string name="vodafone_cash">فودافون كاش</string>
+
+    <string name="deposit_id">معرف الإيداع: </string>
+    <string name="paytabs_title">ادفع الآن مع اشحنلى </string>
+    <string name="confirm">تأكيد</string>
+    <string name="error"> خطأ </string>
+    <string name="warning"> تحذير </string>
+    <string name="success">ناجح</string>
+    <string name="info"> INFO </string>
+    <string name="quantity">الكمية</string>
+    <string name="drawer_recharge">إعادة الشحن</string>
+    <string name="filter_amount"> المبلغ </string>
+    <string name="ADD">إضافة</string>
+    <string name="CANCEL"> إلغاء </string>
+    <string name="qr_code">رمز الاستجابة السريعة</string>
+    <string name="credit_cards">بطاقة ائتمان</string>
+    <string name="confirmation_title">تأكيد !</string>
+    <string name="dialog_amount">المبلغ : </string>
+    <string name="egp"> " ج.م "</string>
+    <string name="dialog_total_amount">المبلغ الإجمالي : </string>
+    <string name="app__ok"> موافق </string>
+    <string name="app__cancel"> إلغاء </string>
+    <string name="pay"> دفع </string>
+    <string name="inquiry"> إستعلام</string>
+    <string name="params_amount">القيمة</string>
+    <string name="required">مطلوب</string>
+    <string name="required_value_range">القيمة يجب ان تكون بين</string>
+    <string name="required_value_number">القيمة يجب ان تكون</string>
+    <string name="and">و</string>
+    <string name="number">رقم</string>
+    <string name="some_error"> حدث خطأ ما! </string>
+    <string name="inquiry_fees">الرسوم</string>
+    <string name="inquiry_click_to_edit_amount"> انقر لتحرير المبلغ </string>
+    <string name="inquiry_paid_amount"> المبلغ المدفوع </string>
+    <string name="inquiry_total_amount"> المبلغ الإجمالي </string>
+    <string name="inquiry_params">المدخلات</string>
+    <string name="inquiry_information">المعلومات</string>
+    <string name="inquiry_amount">المبلغ</string>
+    <string name="dialog_editable_amount_msg">يمكنك تغيير القيمة بين</string>
+    <string name="trans_details_transaction_number_title"> رقم العملية</string>
+    <string name="trans_details_balance_before_titlea">رصيدك قبل</string>
+    <string name="trans_details_balance_after_titlea">رصيدك بعد</string>
+    <string name="current_card">الكارت الحالي</string>
+    <string name="bulk_card">كروت الكمية</string>
+    <string name="cards">" كروت "</string>
+    <string name="chooseLanguage">اختر لغة التطبيق</string>
+
+
+    <string name="no_internet_error"> لا يوجد اتصال بالإنترنت. </string>
+    <string name="message__please_wait"> يرجى الانتظار … </string>
+
+    <string name="print_succes">ناجح</string>
+    <string name="print_failed">فاشل</string>
+    <string name="print_pending">قيد التنفيذ</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+
+
+    <string name="of">" من "</string>
+
+
+    <string name="trans_details_service_title">الخدمة</string>
+    <string name="trans_details_provider_title">مزود الخدمة</string>
+    <string name="trans_details_created_at_title">الوقت</string>
+    <string name="trans_details_message_error_title">الخطأ</string>
+    <string name="trans_details_pin_title">رقم الكارت</string>
+    <string name="trans_details_serial_title">الرقم المسلسل</string>
+    <string name="trans_details_client_number_title">رقم العميل</string>
+    <string name="trans_details_amount_title_new">القيمة</string>
+    <string name="trans_details_total_amount_title_new">القيمة الكلية </string>
+    <string name="trans_deails_print_button">طباعة</string>
+    <string name="trans_details_commission_title">العمولة</string>
+
+
+    <string name="profile_mobile"> الهاتف </string>
+    <string name="msg_confirm_pay">" هل أنت متأكد من دفع "</string>
+
+
+    <string name="your_name">رجاء كتابة الإسم الأول والأخير</string>
+    <string name="signUp">إنشاء حساب</string>
+
+    <string name="your_password">الباسورد الخاص بك</string>
+    <string name="have_account">لديك حساب، سجل الدخول</string>
+    <string name="error_message__blank_phone"> يرجى إدخال رقم الهاتف. </string>
+    <string name="error_message__blank_full_name"> يرجى إدخال الإسم. </string>
+    <string name="error_message__blank_password"> يرجى إدخال كلمة المرور. </string>
+    <string name="error_message__blank_phone_number">يرجى إدخال رقم هاتف صحيح.</string>
+    <string name="error_message__blank_otp">يرجى إدخال الرقم بشكل صحيح.</string>
+
+    <string name="phone_number_msg">سوف نرسل رمز تأكيدى لرقم الهاتف الخاص بك للتأكيد</string>
+
+    <string name="send_otp">أرسل الرمز</string>
+    <string name="verification_code">رمز التأكيد</string>
+    <string name="otp_ed">*</string>
+    <string name="otp_msg">أدخل الرمز الذى تم إرساله إلى رقم هاتفك</string>
+    <string name="verify_otp">تأكيـد الرمز</string>
+
+    <string name="home">الصفحة الرئيسية</string>
+    <string name="balance">الرصيد</string>
+    <string name="profile">الملف الشخصى</string>
+    <string name="balance_value">0.00 ج.م</string>
+    <string name="transactions">العمليات</string>
+    <string name="trans_id_title">"رقم العملية : "</string>
+    <string name="change_language">تغيير اللغة</string>
+    <string name="language">اللغة</string>
+    <string name="share">شارك واربح</string>
+    <string name="enter_old_password">أدخل الرقم السرى الحالى</string>
+    <string name="enter_new_password">أدخل الرقم السرى الجديد</string>
+    <string name="confirm_new_password">تأكيد الرقم السرى الجديد</string>
+
+    <string name="type_old_password">أدخل الرقم السرى الحالى</string>
+    <string name="type_new_password">أدخل الرقم السرى الجديد</string>
+    <string name="type_confirm_new_password">قم بكتابة الرقم السرى الجديد مرة أخرى</string>
+
+    <string name="change_password">تغيير الرقم السرى</string>
+
+    <string name="need_permission">نحتاج الإذن لحفظ الملف</string>
+
+    <string name="logout">تسجيل خروج</string>
+    <string name="presents">الهدايا</string>
+    <string name="replace_points">استبدل النقاط</string>
+
+    <string name="user_points">لديك</string>
+    <string name="points">نقطة</string>
+    <string name="email_not_valid">الإيميل غير صحيح</string>
+    <string name="my_bills">فواتيرى</string>
+
+
+    <string name="account_setting">إعدادات الحساب</string>
+
+    <string name="service_value">تكلفة الخدمة:</string>
+    <string name="service_fees">رسوم الخدمة:</string>
+
+    <string name="total_amount">المبلغ الكلى:</string>
+
+</resources>

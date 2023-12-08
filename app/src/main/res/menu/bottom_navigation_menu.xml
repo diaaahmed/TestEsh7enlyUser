@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/presentsFragment"
+        android:icon="@drawable/gift_"
+        android:title="@string/presents" />
+
+    <item android:id="@+id/supportFragment"
+        android:icon="@drawable/call_centre_icon"
+        android:title="@string/support" />
+
+    <item android:id="@+id/homeFragment"
+        android:icon="@drawable/icon_newhome"
+        android:title="@string/home" />
+
+    <item android:id="@+id/balanceFragment"
+        android:icon="@drawable/deposits_icon"
+        android:title="@string/balance" />
+
+    <item android:id="@+id/profileFragment"
+        android:icon="@drawable/account_icon"
+        android:title="@string/profile" />
+
+</menu>

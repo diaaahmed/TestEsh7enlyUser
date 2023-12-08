@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "676354810460",
+    "project_id": "esh7enly-user",
+    "storage_bucket": "esh7enly-user.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676354810460:android:e56ef3e84a1d6ad858bc99",
+        "android_client_info": {
+          "package_name": "com.esh7enly.esh7enlyuser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "676354810460-i9gi8dh7nuihc9dogo9b67kn27urh0o7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAriI6JOd5uzXOv9OoqYMNodXGFuKpRQdk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "676354810460-i9gi8dh7nuihc9dogo9b67kn27urh0o7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

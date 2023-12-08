@@ -1,0 +1,70 @@
+package com.esh7enly.esh7enlyuser.viewModel
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.esh7enly.domain.entity.TransactionApiResponse
+import com.esh7enly.domain.entity.TransactionDetailsEntity
+import com.esh7enly.domain.usecase.GetTransactionsUseCase
+import com.esh7enly.esh7enlyuser.util.NetworkResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class TransactionsViewModel @Inject constructor(
+    private val getTransactionsUseCase: GetTransactionsUseCase
+): ViewModel()
+{
+    private var _responseTransactions: MutableLiveData<NetworkResult<TransactionApiResponse>> = MutableLiveData()
+    var responseTransactions: LiveData<NetworkResult<TransactionApiResponse>> = _responseTransactions
+
+    private val _transactions: MutableStateFlow<TransactionApiResponse.TransactionDataEntity?> = MutableStateFlow(null)
+
+
+    fun getTransactions(token: String, page: Int) {
+        _responseTransactions.value = NetworkResult.Loading()
+
+        viewModelScope.launch{
+            try {
+                val response = getTransactionsUseCase.getTransactions(token, page)
+
+                if (!response.status)
+                {
+                    _responseTransactions.value = NetworkResult.Error(response.message)
+                    Log.d("TAG", "diaa getTransactions error: ${response.message}")
+                }
+                else {
+                    _responseTransactions.value = NetworkResult.Success(response)
+                    _transactions.value = response.data
+                }
+            } catch (e: Exception) {
+                _responseTransactions.value = NetworkResult.Error(e.message)
+            }
+        }
+    }
+
+
+    private val _transactionDetails: MutableStateFlow<TransactionDetailsEntity?> =
+        MutableStateFlow(null)
+    val transactionDetails: StateFlow<TransactionDetailsEntity?> = _transactionDetails
+
+    fun getTransactionDetails(token: String, transactionId: String) {
+        viewModelScope.launch {
+            try {
+                getTransactionsUseCase.getTransactionDetails(token, transactionId)
+                    .buffer()
+                    .collect {
+                        _transactionDetails.value = it
+                    }
+            } catch (e: java.lang.Exception) {
+                Log.d("TAG", "diaa getTransactionDetails exception: ${e.message}")
+            }
+        }
+    }
+}

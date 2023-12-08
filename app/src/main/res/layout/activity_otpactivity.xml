@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/material_card_layout"
+        android:id="@+id/includedLayout"
+     />
+
+
+    <TextView
+        android:layout_marginTop="@dimen/_60sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/_25ssp"
+        android:text="@string/verification_code"
+        app:layout_constraintTop_toBottomOf="@id/includedLayout"
+        android:id="@+id/verification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_marginStart="@dimen/_35sdp"
+        android:layout_marginEnd="@dimen/_35sdp"
+        android:fontFamily="@font/readexproextralight"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:gravity="center"
+        android:textSize="@dimen/_19ssp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/colorPrimary"
+        android:id="@+id/txt_otp_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/otp_msg"
+        app:layout_constraintTop_toBottomOf="@+id/verification"
+        />
+
+    <LinearLayout
+        android:layoutDirection="ltr"
+        android:layout_marginTop="@dimen/_20sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/lin1"
+        app:layout_constraintTop_toBottomOf="@id/txt_otp_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/otp1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:backgroundTint="@color/otp_color"
+            android:hint="@string/otp_ed"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textColor="@color/otp_color"
+            android:textColorHint="@color/otp_color"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/verification" />
+
+        <EditText
+            android:layout_marginTop="@dimen/_30sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:id="@+id/otp2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/otp_color"
+            android:hint="@string/otp_ed"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textColor="@color/otp_color"
+            android:textColorHint="@color/otp_color"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/otp1"
+            app:layout_constraintTop_toBottomOf="@id/verification" />
+
+        <EditText
+            android:layout_marginTop="@dimen/_30sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:id="@+id/otp3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/otp_color"
+            android:hint="@string/otp_ed"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textColor="@color/otp_color"
+            android:textColorHint="@color/otp_color"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/otp2"
+            app:layout_constraintTop_toBottomOf="@id/verification" />
+
+        <EditText
+            android:layout_marginTop="@dimen/_30sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:id="@+id/otp4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/otp_color"
+            android:hint="@string/otp_ed"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textColor="@color/otp_color"
+            android:textColorHint="@color/otp_color"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/otp3"
+            app:layout_constraintTop_toBottomOf="@id/verification" />
+
+        <EditText
+            android:layout_marginTop="@dimen/_30sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:id="@+id/otp5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/otp_color"
+            android:hint="@string/otp_ed"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textColor="@color/otp_color"
+            android:textColorHint="@color/otp_color"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/otp4"
+            app:layout_constraintTop_toBottomOf="@id/verification" />
+
+        <EditText
+            android:layout_marginTop="@dimen/_30sdp"
+            android:paddingStart="@dimen/_8sdp"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingEnd="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:id="@+id/otp6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/otp_color"
+            android:hint="@string/otp_ed"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textColor="@color/otp_color"
+            android:textColorHint="@color/otp_color"
+            android:textSize="@dimen/_22ssp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/otp5"
+            app:layout_constraintTop_toBottomOf="@id/verification" />
+
+    </LinearLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnVerifyOtp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_32sdp"
+        android:layout_marginTop="@dimen/_35sdp"
+        android:layout_marginEnd="@dimen/_32sdp"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:padding="@dimen/_10sdp"
+        android:text="@string/verify_otp"
+        app:cornerRadius="@dimen/_8sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lin1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

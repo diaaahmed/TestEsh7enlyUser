@@ -1,0 +1,1237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true"
+            android:scrollbars="none"
+            android:scrollingCache="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
+                android:id="@+id/test_realtive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_color"
+                >
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/MyCardViewService"
+                    android:id="@+id/material_card"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    android:layout_alignParentTop="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp">
+
+                    <LinearLayout
+
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/logodsa"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_back"/>
+
+                        <ImageView
+                            android:id="@+id/logo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/new_logo_trans" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </RelativeLayout>
+
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_below="@id/test_realtive"
+                android:id="@+id/nested_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none"
+                android:scrollingCache="true"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/_15sdp"
+                    android:paddingRight="@dimen/_15sdp">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_10sdp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-10dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            tools:text="dasdasd"
+                            android:id="@+id/tv_transaction_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                            android:textColor="@color/colorPrimary" />
+
+                        <TextView
+                            tools:text="dasdasd"
+                            android:id="@+id/tv_amount_head"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:gravity="center"
+                            android:letterSpacing="0.2"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="24sp" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:visibility="gone"
+                        android:id="@+id/card_bulk"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="2dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:background="@color/background_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_10sdp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_15sdp"
+                                android:layout_marginRight="@dimen/_15sdp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/bulk_card"
+                                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                    android:textColor="@color/colorPrimary" />
+
+                                <TextView
+                                    tools:text="dsfsdfs"
+                                    android:id="@+id/tv_bulk_num"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="end"
+                                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                    android:textColor="@color/colorPrimary" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_10sdp" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/grey_10" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/current_card"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/colorPrimary"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="dsadasd"
+                                        android:id="@+id/tv_curr_index"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/colorPrimary" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:visibility="gone"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="vertical"
+                                    >
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$230.04"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/grey_80"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+0.79%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/black" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        app:cardCornerRadius="2dp"
+                        app:cardElevation="2dp"
+                        app:cardUseCompatPadding="true">
+
+                        <LinearLayout
+                            android:background="@color/background_color"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/_15sdp"
+                                android:layout_marginRight="@dimen/_15sdp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/trans_details_service_title"
+                                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                    android:textColor="@color/colorPrimary" />
+
+                                <ImageView
+                                    android:id="@+id/img_service"
+                                    android:layout_width="@dimen/_15sdp"
+                                    android:layout_height="@dimen/_15sdp" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="@color/black" />
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_10sdp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_provider_name"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_provider_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="dasdasdas"
+                                        android:id="@+id/tv_service_name"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="vertical"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$230.04"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+0.79%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_transaction_number_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="sdasdasd"
+                                        android:id="@+id/tv_transaction_num"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$4 970.34"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginBottom="@dimen/_10sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="-2.48%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_created_at_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="dsadasdas"
+                                        android:id="@+id/tv_created_at"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$4 970.34"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="-2.48%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_marginBottom="@dimen/_10sdp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_amount_title_new"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        tools:text="dasdasdas"
+                                        android:id="@+id/tv_amount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="vertical"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$1.336"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="-0.94%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_total_amount_title_new"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:id="@+id/tv_total_amount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        tools:text="dasdasdas"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$0.82239"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+4.22%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lyt_balance_before"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_balance_before_titlea"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="dasdasdasdas"
+                                        android:id="@+id/tv_balance_before"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$0.82239"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+4.22%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lyt_balance_after"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_4sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_balance_after_titlea"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="asdasdas"
+                                        android:id="@+id/tv_balance_after"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$0.82239"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+4.22%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lyt_pin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp"
+                                android:visibility="gone">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:id="@+id/tv_pin_title"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_pin_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="dasdasdas"
+                                        android:id="@+id/tv_pin"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point"
+                                        android:textSize="18sp" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$0.18105"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="-0.53%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lyt_serial"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp"
+                                android:visibility="gone">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_serial_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="dasdasdasdas"
+                                        android:id="@+id/tv_serial"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point"
+                                        android:textSize="18sp" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$43.89"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+3.26%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lyt_client_number"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp"
+                                android:visibility="gone">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_client_number_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        tools:text="dasdasdas"
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:id="@+id/tv_client_number"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$1.336"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="-0.94%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/lyt_commision"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp"
+                                android:visibility="gone">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_commission_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        tools:text="dsadasdas"
+                                        android:id="@+id/tv_commision"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$0.82239"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="+4.22%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_10sdp" />
+
+                            <LinearLayout
+                                android:id="@+id/lyt_error_msg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:paddingLeft="@dimen/_15sdp"
+                                android:paddingRight="@dimen/_15sdp"
+                                android:visibility="gone">
+
+                                <View
+                                    android:layout_width="@dimen/_10sdp"
+                                    android:layout_height="0dp" />
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/trans_details_message_error_title"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:id="@+id/tv_error_message"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:padding="@dimen/_7sdp"
+                                    android:background="@drawable/edit_text_bg_stroke"
+                                    android:layout_marginBottom="@dimen/_8sdp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:orientation="horizontal"
+                                    android:visibility="gone">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="$4 970.34"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                                        android:textColor="@color/textview__star_point"
+                                        app:fontFamily="sans-serif-medium" />
+
+                                    <TextView
+                                        android:layout_marginStart="@dimen/_5sdp"
+                                        android:layout_marginEnd="@dimen/_5sdp"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="-2.48%"
+                                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2"
+                                        android:textColor="@color/textview__star_point" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/_10sdp" />
+
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="0dp"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="@dimen/_16sdp">
+
+                        <ImageView
+                            android:id="@+id/image_bill_test"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            app:cornerRadius="@dimen/_10sdp"
+                            android:padding="@dimen/_10sdp"
+                            android:id="@+id/btn_print"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_8sdp"
+                            android:layout_marginRight="@dimen/_8sdp"
+                            android:text="@string/trans_deails_print_button"
+                            android:textColor="@color/white"
+                            android:visibility="gone"
+                             />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </androidx.core.widget.NestedScrollView>
+
+        </RelativeLayout>
+
+<!--        <com.google.android.material.appbar.AppBarLayout-->
+<!--            android:id="@+id/app_bar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:theme="@style/AppTheme.AppBarOverlay"-->
+<!--            app:elevation="0dp">-->
+
+<!--            <androidx.appcompat.widget.Toolbar-->
+<!--                android:id="@+id/toolbar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="?attr/actionBarSize"-->
+<!--                app:contentInsetStartWithNavigation="0dp"-->
+<!--                app:layout_scrollFlags="scroll|enterAlways"-->
+<!--                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
+
+<!--        </com.google.android.material.appbar.AppBarLayout>-->
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

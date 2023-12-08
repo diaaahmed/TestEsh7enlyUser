@@ -1,0 +1,66 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            app:strokeColor="@color/colorPrimary"
+            app:strokeWidth="0.5dp"
+            android:id="@+id/cardCategory"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:clipToPadding="true"
+            app:cardElevation="@dimen/_4ssp"
+            app:cardCornerRadius="@dimen/_5ssp"
+            app:cardUseCompatPadding="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:padding="@dimen/_12sdp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_marginTop="@dimen/_7sdp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/logo"
+                    android:id="@+id/category_icon"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"/>
+
+                <TextView
+                    app:autoSizeStepGranularity="@dimen/_1ssp"
+                    app:autoSizeMinTextSize="@dimen/_11ssp"
+                    app:autoSizeMaxTextSize="@dimen/_15ssp"
+                    app:autoSizeTextType="uniform"
+                    android:layout_below="@id/category_icon"
+                    app:fontFamily="@font/readexproextralight"
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/_4sdp"
+                    tools:text="مركز المعلومات الرئيسي"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorPrimary"
+                     />
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

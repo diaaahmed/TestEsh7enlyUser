@@ -1,0 +1,66 @@
+package com.esh7enly.esh7enlyuser.viewModel
+
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.esh7enly.domain.entity.depositsresponse.DepositResponse
+import com.esh7enly.domain.usecase.UserDataUseCase
+import com.esh7enly.esh7enlyuser.util.NetworkResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class BalanceViewModel @Inject constructor(
+    private val userDataUseCase: UserDataUseCase,
+
+    ): ViewModel()
+{
+    private var _responseDeposits: MutableLiveData<NetworkResult<DepositResponse>> = MutableLiveData()
+
+    var responseDeposits: LiveData<NetworkResult<DepositResponse>> = _responseDeposits
+
+    fun getNewDeposits(token: String, page: Int) {
+        _responseDeposits.value = NetworkResult.Loading()
+
+        viewModelScope.launch {
+            val deposits = userDataUseCase.getDeposits(token,page)
+
+            if(deposits.isSuccessful)
+            {
+                if(!deposits.body()!!.status)
+                {
+                    _responseDeposits.value = NetworkResult.Error(deposits.body()!!.message)
+
+                }
+                else
+                {
+                    _responseDeposits.value = NetworkResult.Success(deposits.body()!!)
+                }
+            }
+            else
+            {
+                _responseDeposits.value = NetworkResult.Error(deposits.message())
+
+            }
+        }
+    }
+
+    private val _balance:MutableLiveData<String> = MutableLiveData("")
+    val balance:LiveData<String> = _balance
+
+    fun getWalletsUser(token:String) {
+        viewModelScope.launch {
+            val response = userDataUseCase.getUserWallet(token)
+
+            if(response.isSuccessful && response.body()?.status == true)
+            {
+                _balance.value = response.body()!!.data[0].balance
+
+                Log.d("TAG", "diaa validateTokenResponse balance is ${_balance.value}: ")
+            }
+        }
+    }
+}

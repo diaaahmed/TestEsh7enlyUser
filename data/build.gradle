@@ -1,0 +1,65 @@
+plugins {
+    alias libs.plugins.androidlib
+    alias libs.plugins.kotlinAndroid
+    id "dagger.hilt.android.plugin"
+
+}
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    namespace 'com.esh7enly.data'
+    compileSdk libs.versions.targetSdk.get().toInteger()
+
+    defaultConfig {
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    testImplementation libs.junit
+    androidTestImplementation libs.junitandroidtest
+    androidTestImplementation libs.espresso
+    implementation project(path: ':domain')
+
+    // Hilt
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    implementation "androidx.activity:activity-ktx:1.7.2"
+
+    implementation libs.hiltandroid
+    kapt libs.hiltcompiler
+
+    // Retrofit
+    implementation libs.retrofit
+    implementation libs.convertergson
+
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0'
+
+    // Room database
+    // Room components
+    implementation libs.roomruntime
+    kapt libs.roomcomplier
+    implementation libs.roomktx
+    implementation libs.roomrxjava
+}

@@ -1,0 +1,347 @@
+<resources>
+    <string name="app_name">Esh7enly user</string>
+    <string name="default_name">Esh7enly</string>
+
+    <string-array name="data">
+        <item>العربية</item>
+        <item>English</item>
+    </string-array>
+
+    <string name="jan">JAN</string>
+    <string name="feb">FEB</string>
+    <string name="mar">MAR</string>
+    <string name="abr">APR</string>
+    <string name="may">MAY</string>
+    <string name="jun">JUN</string>
+    <string name="july">JULY</string>
+    <string name="aug">AUG</string>
+    <string name="sep">SEP</string>
+    <string name="oct">OCT</string>
+    <string name="nov">NOV</string>
+    <string name="dec">DEC</string>
+
+    <string name="balance_added">The balance has been added to your account</string>
+    <string name="visa">Paid by visa</string>
+    <string name="cash">Paid by vodafone cash</string>
+
+    <string name="chooseLanguage">Choose app language</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="no_internet_error">No internet connection.</string>
+
+    <string name="trans_id_title">"Transaction ID : "</string>
+
+    <string name="message__please_wait">Please wait…</string>
+    <string name="esh7enly_solgan">Pay and recharge easily and fast</string>
+    <string name="fastest">Fastest..Easiest..</string>
+    <string name="welcome">Welcome</string>
+    <!--    <string name="create_new_account">Create new account</string>-->
+    <!--    <string name="skip_to_login">Skip to login</string>-->
+
+    <string name="create_new_account">إنشاء حساب جديد</string>
+    <string name="skip_to_login">تخطى لتسجيل الدخول</string>
+
+    <string name="register_charge">مع إشحنلى \n سجـل واشحـن \n فى ثـانية</string>
+
+    <string name="search">Search....</string>
+
+
+    <string name="cards">\" Cards\"</string>
+
+    <string name="print_succes">Successful</string>
+    <string name="print_failed">Failed</string>
+    <string name="print_pending">Pending</string>
+    <string name="of">\" Of \"</string>
+
+
+    <string name="params_amount">Amount</string>
+    <string name="required">Required</string>
+    <string name="add_to_reminder">Are you want add this service to reminder?</string>
+
+    <string name="alert">Alert؟</string>
+    <string name="add">Add Service </string>
+    <string name="no_add">Cancel</string>
+
+    <string name="required_value_range">Value Must be between</string>
+    <string name="required_value_number">Value Must be</string>
+    <string name="and">and</string>
+    <string name="number">Number</string>
+    <string name="some_error">Some Error Occurred!</string>
+    <string name="inquiry_fees">Fees</string>
+    <string name="inquiry_params">Params</string>
+    <string name="inquiry_information">Information</string>
+    <string name="inquiry_amount">Amount</string>
+    <string name="inquiry_click_to_edit_amount">Click to edit amount</string>
+    <string name="inquiry_paid_amount">Paid Amount</string>
+    <string name="inquiry_total_amount">Total Amount</string>
+    <string name="login_btn">Login</string>
+    <string name="profile_mobile">Mobile</string>
+    <string name="msg_confirm_pay">\" Are you sure to pay \"</string>
+
+
+    <string name="enter_phone_number">Enter your phone number</string>
+    <string name="bank_card">Bank Card</string>
+    <string name="digital_wallet">Wallets</string>
+    <string name="support">Support</string>
+    <string name="enter_old_password">Enter old password</string>
+    <string name="enter_new_mobile">Enter new mobile</string>
+    <string name="enter_new_name">Enter new name</string>
+    <string name="enter_new_email">Enter new email</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="type_old_password">Please type old password</string>
+    <string name="type_new_password">Please type new password</string>
+    <string name="type_confirm_new_password">Please confirm new password</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forget_password">Forget password?</string>
+    <string name="no_account">Don`t have an account? signup</string>
+    <string name="register">Register</string>
+    <string name="slogan">Easiest and Fastest</string>
+    <string name="confirm_password">Confirm your password</string>
+    <string name="password_instructions">!password must contain letters and numbers and be 8-16 characters</string>
+    <string name="deposit_id">Deposit id: </string>
+    <string name="paytabs_title">Pay now with esh7enly</string>
+    <string name="email">Email</string>
+    <string name="your_password">Your password</string>
+    <string name="your_name">Write first and last name</string>
+    <string name="signUp">Sign up</string>
+    <string name="have_account">Have an account, Sign in</string>
+    <string name="error_message__blank_phone">Please input Phone number.</string>
+    <string name="error_message__blank_full_name">Please input Full Name.</string>
+    <string name="error_message__blank_password">Please enter the password.</string>
+    <string name="error_message__blank_phone_number">Please enter valid phone number.</string>
+    <string name="error_message__blank_otp">Please enter valid OTP.</string>
+
+    <string name="password_not_match_confirm_password">Password in not match with confirmation password</string>
+
+    <string name="accept_privacy">Accept terms and privacy policy</string>
+
+
+    <string name="phone_number_msg">We will send OTP Code to the phone number for verification</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="otp_ed">*</string>
+    <string name="otp_msg">Please enter the 6 digit OTP sent to entered mobile number.</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="home">Home</string>
+    <string name="balance">Balance</string>
+    <string name="profile">Profile</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="balance_value">0.00 EGP</string>
+    <string name="logout">Logout</string>
+    <string name="change_password">Change Password</string>
+    <string name="update_data">Update Data</string>
+    <string name="call_us">Call Us</string>
+    <string name="chatting">Chatting on whatsapp</string>
+    <string name="send_email">Send email</string>
+    <string name="change_user_data">Change User Data</string>
+    <string name="change_language">Change language</string>
+    <string name="account_setting">Account setting</string>
+    <string name="results">Results</string>
+
+    <string name="add_balance">Add Balance</string>
+    <string name="transactions">Transactions</string>
+    <string name="share">Share and earn money</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="error">ERROR</string>
+    <string name="warning">WARNING</string>
+    <string name="success">SUCCESS</string>
+    <string name="info"> INFO </string>
+    <string name="quantity">Quantity</string>
+    <string name="drawer_recharge">Recharge</string>
+    <string name="filter_amount">Amount</string>
+    <string name="ADD">add</string>
+    <string name="CANCEL">CANCEL</string>
+    <string name="qr_code">Qr-Code</string>
+    <string name="credit_cards">Credit Cards</string>
+    <string name="confirmation_title">CONFIRMATION !</string>
+    <string name="dialog_amount">Amount : </string>
+    <string name="egp">" EGP"</string>
+    <string name="dialog_total_amount">Total Amount : </string>
+    <string name="app__ok">OK</string>
+    <string name="app__cancel">Cancel</string>
+    <string name="insert_card_please">Please click Inquire then put the cart</string>
+    <string name="inquiry">Inquiry</string>
+    <string name="payment_details">Payment Details</string>
+    <string name="balance_available"> EGP Available</string>
+    <string name="pay">Pay</string>
+    <string name="dialog_editable_amount_msg">You Can Edit Amount With in</string>
+    <string name="trans_details_transaction_number_title">Transaction Number</string>
+    <string name="trans_details_balance_before_titlea">Balance Before</string>
+    <string name="trans_details_balance_after_titlea">Balance After</string>
+    <string name="current_card">Current Card</string>
+    <string name="bulk_card">Bulk card</string>
+    <string name="trans_details_service_title">SERVICE</string>
+    <string name="trans_details_provider_title">Provider</string>
+    <string name="trans_details_created_at_title">Created at</string>
+    <string name="trans_details_message_error_title">Message Error</string>
+    <string name="trans_details_pin_title">Pin</string>
+    <string name="trans_details_serial_title">Serial</string>
+    <string name="trans_details_client_number_title">Client Number</string>
+    <string name="trans_details_amount_title_new">Amount</string>
+    <string name="trans_details_total_amount_title_new">Total Amount</string>
+    <string name="trans_deails_print_button">Print</string>
+    <string name="trans_details_commission_title">Commission</string>
+    <string name="need_permission">Need permission to save file</string>
+    <string name="language">Language</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="contact_us">Contact us</string>
+    <string name="terms">Terms and Conditions</string>
+    <string name="refund">Return and Refund Policy</string>
+
+
+    <string name="general_policy">
+        This Privacy Policy sets out the policy of Esh7enly with respect to the way we obtain, use, and disclose information about you through website
+
+We understand and appreciate that you are concerned about privacy, particularly in relation to the use and disclosure of personal information. We are committed to providing a high level of privacy in relation to all personal information that is collected by us. The purpose of this Privacy Policy is to tell you what kind of information we may gather about you when you visit our site, how we may use that information, whether we disclose it to anyone, and the choices you have regarding how we will use your personal information, and your ability to correct this information. Our website allows you to choose what kind and how much information you provide to us and to control how we use whatever information you give us. Our goal is to provide you with a satisfying experience while allowing you to control your privacy and to give you the means to voice any questions or concerns you may have.
+
+YOUR CONSENT
+You consent to your personal information being used in accordance with the privacy policy by visiting our website, by entering a competition on our website, by purchasing our products on the website and/or by providing us with your personal information on the website.
+
+COLLECTION OF INFORMATION
+Information is collected from you primarily to make it easier and more rewarding for you to use our website and services. Depending on the service you are accessing, you could be asked to provide information such as your name, email address or information about what you like and do not like. It is entirely your choice whether to respond to these questions or not.
+
+
+USE OF PERSONAL INFORMATION
+Esh7enly will use the personal information you have chosen to provide us for the purpose for which you provided it. Esh7enly will not use it for any other purpose without your consent. We might on occasions, use this information to notify you of any important changes to our site or any special promotions that may be of interest to you. On each email or communication that we send you, we will include simple instructions on how you can immediately unsubscribe from our mailing list. You can opt out from receiving such material at any time by emailing our privacy manager and asking to be removed from the mailing list. Any information we may collect from you will be treated with strict confidentiality.
+DISCLOSURE
+There will be occasions where it will be necessary for Esh7enly to disclose your personal information to third parties. Esh7enly may be required to disclose your personal information to third parties to provide the products or services you have requested, for example, if you purchase products online, Esh7enly will need to disclose your personal information to third parties to bill and deliver your products. However, the disclosure will only be made where it is necessary to fulfill the purpose for which you disclosed your personal information. Otherwise, then stated above, we do not disclose personal information that you may give us, such as your name, address, email address or telephone number, to any organization or person outside BOUNCE, unless you have authorized us to do so, or unless we are requested to do so by a law enforcement agency in relation to a suspected breach of any law.
+
+NO SALE OF PERSONAL INFORMATION
+Under no circumstances will Esh7enly sell or receive payment for licensing or disclosing your personal information.
+
+PASSWORDS
+Ultimately, you are solely responsible for maintaining the secrecy of your passwords and/or any personal information. Be responsible whenever you are online.
+
+Credit Cards We do not collect or store credit card information on our database or server. This information is managed through a secure credit card payment facility, all information sent to the processing bank is managed with the latest security software, systems, and processes (SSL).
+
+SECURITY
+Esh7enly operates secure data networks that are designed to protect your privacy and security. Esh7enly has a Security Policy that explains how we protect your privacy and personal information.
+
+Please note that our website does not provide systems for secure transmission of personal information across the internet, except where otherwise specifically stated. You should be aware that there are inherent risks in transmitting personal information via the internet and that we accept no responsibility for personal information provided via unsecured websites.
+
+We will not be held liable for loss or damage arising from unauthorized access to your personal information or a breach of this policy whether such access or breach was caused by our negligent or willful act or omission or that of our employees or agents.
+
+ACCESS AND CORRECTION
+The security of your information is important to us. The information we have collected about you cannot be seen or modified by anyone else. We make all reasonable efforts to ensure that information is stored securely both in electronic and physical form.
+
+You may access your information at any time. If you would like to know what information we hold about you, please contact us. If you discover that there is an error or information is missing, please notify us and we will try to correct or update the information as soon as possible.
+
+We will try to ensure that all information we collect, use, or disclose about you is accurate, complete and up to date.
+
+    </string>
+
+    <string name="refund_policy">Enjoy shopping with the following return policy features:
+
+- You have 14 days to return the products sold after receipt Shipping cost will be added through the returns in your customer account or by calling customer service number (Company Number) or via email Company email.
+- If the item have a defective, does not work properly, does not match the description of the site, is fake, or was received damaged as a result of transportation and shipment, you have the right to return it within 30 days from the date of receipt for free, and the value of the item will be refunded to you within a maximum period of 14 working days.
+- When returning the product, make sure that all the accessories and labels for the order are in their proper condition and that the product is in its original package in the correct condition in which it was received and that the package is closed by the factory sealed (in the case of replacement within 14 days) as well as the inclusions in the offers such as included gifts with the products or Exceptional accessories. If you create a password for the device that you want to retrieve, please make sure to remove it, otherwise the request will not be completed correctly for products that show manufacturing defects within 30 days of purchase and applies if they are returned and received with all the inclusions, as well as the inclusions in the offers such as included gifts with the products or Exceptional accessories labels and packaging of the device in its receiving conditions.
+
+Some products cannot be returned, and they are:
+
+• Damaged Products (excluding transportation damage)
+• Products that are not in their original packaging
+• Products that do not include all accessories
+• Unsealed products from the following product groups
+</string>
+
+    <string name="terms_policy">
+        كجزء من سياسة الاستخدام المقبول اشحنلى، فإنك توافق على عدم استخدام المعلومات أو الخدمات أو أي جزء آخر من منصة اشحنلى لاتخاذ أي إجراء أو إجراءات من شأنها:
+
+١. تتعارض مع صورة اشحنلى العامة أو النية الحسنة أو السمعة.
+
+٢. الترويج لأي نشاط أو محتوى غير قانوني، بما في ذلك على سبيل المثال لا الحصر إساءة معاملة الأطفال أو الحيوانات والعنف والاستخدام غير المشروع للمخدرات والشرب دون السن القانونية.
+
+٣. تنتهك حقوق الطبع والنشر أو براءات الاختراع أو العلامات التجارية أو الأسرار التجارية أو غيرها من حقوق الملكية أو حقوق الدعاية أو الخصوصية الخاصة بنا أو بشركات أخري.
+
+٤. عدم مشاركة صريحة أو ضمنية أيًا من بياناتك أو أنشطتك أو أسبابك قد أقرناها، دون موافقتنا الخطية المسبقة في كل حالة.
+
+٥. انتهاك أي قانون أو قانون أو مرسوم أو لائحة معمول بها في البلاد، أو تشجيع أي سلوك يمكن أن يشكل جريمة جنائية أو ينشأ عنه مسؤولية مدنية.
+
+٦. التشهير أو تشهيرية أو تهديدية أو مضايقة أو اقتحام للخصوصية أو مسيئة أو مؤذية أو كراهية أو تمييزية أو إباحية أو فاحشة.
+
+٧. إرسال أي سر تجاري أو معلومات أخرى أو معلومات غير عامة عن أي شخص أو شركة أو كيان دون الحصول على إذن بذلك.
+
+٨. تقييد أو منع أي زائر آخر من استخدام منصة اسم الشركة، بما في ذلك، على سبيل المثال لا الحصر، عن طريق "اختراق" أو تشويه أي جزء من منصة اشحنلى أو تعديل، تتغيير، ترخيص فرعي، ترجمة، بيع، هندسة عكسية، إلغاء ترجمة، أو فك أي جزء من منصة اشحنلى.
+
+٩. إزالة أي حقوق نشر أو علامة تجارية أو غيرها من إشعارات حقوق الملكية الواردة في منصة اشحنلى.
+
+١٠. الباطن أو البيع أو الإيجار أو التأجير أو النقل أو التنازل عن أو نقل أي حقوق بموجب الشروط إلى أي طرف ثالث، أو الاستغلال التجاري أو الربح بطريقة أخرى من المعلومات أو محتوى منصة اشحنلى، أو أي جزء منها، بأي شكل من الأشكال، باستثناء ما هو مسموح به صراحة هنا.
+
+١١. "طباعه" أو "نسخ" أي جزء من منصة اشحنلى دون إذن خطي مسبق منا.
+
+١٢. توزيع أي فيروس أو فيروس متنقل أو أي ملفات أو نصوص برمجية أو برامج مشابهة أو ضارة.
+
+١٣. التدخل مع أو تعطل أي خدمات أو معدات بقصد التسبب في حمل زائد أو غير متناسب على البنية التحتية لشركة اشحنلى أو الجهات المرخصة لها أو مورديها.
+
+١٤. تنطوي على إعداد أو توزيع البريد غير المرغوب فيه أو الرسائل غير المرغوب فيها أو سلسلة الرسائل أو المخططات الهرمية أو غيرها من رسائل البريد الإلكتروني التجارية الضخمة أو غير المرغوب فيها أو تنتهك بأي شكل من الأشكال قانون مكافحة الاعتداء على المواد الإباحية والتسويق غير المسموح بها (كان سبام أكت ٢٠٠٣) أو ما يعادلها، المعمول بها، القانون الأجنبي.
+
+١٥. استخدام أي روبوت، أو شبكة، أو تطبيق للبحث / استرجاع الموقع، أو أي جهاز أو عملية أخرى يدوية أو أوتوماتيكية لاسترداد أو فهرسة "مخزن البيانات" في منصة اشحنلى أو إعادة إنتاج أو التحايل على أي شكل من الأشكال الهيكل الملاحي أو العرض التقديمي لمنصة اشحنلى أو المحتويات والمصادقة والتدابير الأمنية.
+
+١٦. تزوير العناوين أو الهويات أو التلاعب بمعرفات الهوية من أجل إخفاء أصل أي إرسال.
+
+١٧. تنفيذ أي شكل من أشكال مراقبة الشبكة أو تشغيل محلل شبكة أو حزمة بحث أو تقنية أخرى لاعتراض أو فك شفرة أو استخراج أو عرض أي حزم تستخدم للاتصال بين خوادم اشحنلى للنظام الأساسي أو أي بيانات غير مخصصة لك ، الصورة. حصاد أو جمع معلومات حول أي زائر أو أعضاء من منصة اشحنلى دون موافقتهم الصريحة؛ و / أو
+
+١٨. يحتوي على أي إشارة إلى أو تشبه أي أطراف ثالثة محددة، ما لم يتم الحصول على موافقة من جميع هؤلاء الأفراد وأولياء أمورهم / الوصي القانوني إذا كانوا تحت سن الرشد حسب قانون الدولة..
+
+    </string>
+
+
+    <string name="phone_number_call">201022997768</string>
+    <string name="enter_message">Type your message</string>
+    <string name="send_message">Send message</string>
+    <string name="required_amount">Enter the required amount</string>
+    <string name="ads_slider">Ads Slider</string>
+    <string name="title_activity_payment_details">PaymentDetailsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
+        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
+        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
+        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
+        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
+        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
+        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
+        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
+        bibendum, vel congue leo egestas.\n\n
+        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
+        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
+        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
+        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
+        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
+        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
+        est.\n\n
+        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
+        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
+        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
+        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
+        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
+        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
+        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
+        convallis.\n\n
+        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
+        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
+        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
+        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
+        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
+        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+    </string>
+    <string name="vodafone_cash">Vodafone Cash</string>
+    <string name="service_value">Service Value:</string>
+    <string name="service_fees">Service Fees:</string>
+    <string name="total_amount">Total Amount:</string>
+    <string name="presents">Gift</string>
+    <string name="replace_points">Replace points</string>
+    <string name="user_points">You have</string>
+    <string name="points">Point</string>
+    <string name="email_not_valid">Email is not valid</string>
+    <string name="my_bills">My Bills</string>
+
+</resources>
