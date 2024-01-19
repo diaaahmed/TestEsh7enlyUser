@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 
 import androidx.annotation.RequiresApi
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.util.*

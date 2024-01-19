@@ -86,15 +86,13 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
         }
     }
 
-    fun deleteFawryOperations(id:Int)
-    {
+    fun deleteFawryOperations(id:Int) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepo.deleteFawryOperation(id)
         }
     }
 
-    fun scheduleInquire(token:String,serviceId: String,invoice_number:String,listner: OnResponseListener)
-    {
+    fun scheduleInquire(token:String,serviceId: String,invoice_number:String,listner: OnResponseListener) {
         viewModelScope.launch {
             val scheduleInquireResponse = scheduleUseCase.scheduleInquire(token, serviceId, invoice_number)
 
@@ -116,8 +114,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
         }
     }
 
-    fun getFawryOperations():LiveData<List<FawryEntity>>
-    {
+    fun getFawryOperations():LiveData<List<FawryEntity>> {
         return databaseRepo.getFawryOperations()
     }
 
@@ -453,7 +450,8 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
     private val _points :MutableLiveData<String> = MutableLiveData("0")
     val points :LiveData<String> = _points
 
-    fun getUserPoints(token: String) {
+    fun getUserPoints(token: String)
+    {
         viewModelScope.launch {
             val pointsResponse = userDataUseCase.getUserPoints(token)
 

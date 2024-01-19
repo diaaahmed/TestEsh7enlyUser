@@ -36,8 +36,7 @@ import com.fawry.nfc.NFC.interfaces.NFCReadCallbackResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.ByteArrayInputStream
-import java.io.IOException
+
 import java.util.*
 import javax.inject.Inject
 
@@ -1232,22 +1231,6 @@ open class ParametersActivity : BaseActivity()
 //        )
     }
 
-    @Throws(IOException::class)
-    private fun chunkData(original: String): List<String>? {
-        val bis = ByteArrayInputStream(original.toByteArray())
-        var n = 0
-        val buffer = ByteArray(1024)
-        val result: MutableList<String> = ArrayList()
-        while (bis.read(buffer).also { n = it } > 0) {
-            val arr = StringBuilder()
-            for (b in buffer) {
-                arr.append(Char(b.toUShort()))
-            }
-            Arrays.fill(buffer, 0.toByte())
-            result.add(arr.toString())
-        }
-        return result
-    }
 
     private fun getParamsData(): Boolean {
         for (i in this.parametersList.indices) {

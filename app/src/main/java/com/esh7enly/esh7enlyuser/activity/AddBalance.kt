@@ -1,9 +1,6 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -13,7 +10,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.PaymentPojoModel
@@ -204,7 +200,7 @@ class AddBalance : BaseActivity(),IToolbarTitle
     }
 
 
-    fun paytabsClick(amount:String, drawable: Drawable?)
+    private fun paytabsClick(amount:String, drawable: Drawable?)
     {
         val number = Random(900000000000000000).nextInt()
 
@@ -212,13 +208,14 @@ class AddBalance : BaseActivity(),IToolbarTitle
             generatePaytabsConfigurationDetails(number.toString(),
             amount,drawable)
 
-        PaymentSdkActivity.startCardPayment(this,configData, object :
+        PaymentSdkActivity.startAlternativePaymentMethods(this,configData, object :
             CallbackPaymentInterface
         {
             override fun onError(error: PaymentSdkError)
             {
                 Log.d("TAG", "diaa onError: ${error.msg}")
-                Toast.makeText(this@AddBalance, "Error occure", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AddBalance, "Error occure ${error.msg}"
+                    , Toast.LENGTH_SHORT).show()
             }
 
             override fun onPaymentCancel()
@@ -233,6 +230,7 @@ class AddBalance : BaseActivity(),IToolbarTitle
                 Toast.makeText(this@AddBalance,
                     "Paymeny done ${paymentSdkTransactionDetails.cartAmount}",
                     Toast.LENGTH_SHORT).show()
+
                 Log.d("TAG", "diaa token ${paymentSdkTransactionDetails.token}")
                 Log.d("TAG", "diaa paymentResult ${paymentSdkTransactionDetails.paymentResult}")
                 Log.d("TAG", "diaa cartCurrency ${paymentSdkTransactionDetails.cartCurrency}")
@@ -254,13 +252,14 @@ class AddBalance : BaseActivity(),IToolbarTitle
         })
     }
 
-    fun generatePaytabsConfigurationDetails(
+    private fun generatePaytabsConfigurationDetails(
         orderNum: String,
         value: String,
         drawable: Drawable?
     ): PaymentSdkConfigurationDetails {
         // Here you can enter your profile id from payabs account
-        val profileId = "122125"
+       // val profileId = "122125"
+        val profileId = "135102"
         // Here you can enter server key from payabs account
         val serverKey = BuildConfig.SERVER_KEY
         // Here you can enter your client key from payabs account

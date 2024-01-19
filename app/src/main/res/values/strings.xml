@@ -286,8 +286,7 @@ Some products cannot be returned, and they are:
 
     </string>
 
-
-    <string name="phone_number_call">201022997768</string>
+    <string name="phone_number_call">19276</string>
     <string name="enter_message">Type your message</string>
     <string name="send_message">Send message</string>
     <string name="required_amount">Enter the required amount</string>

@@ -30,7 +30,6 @@ class OTPActivity : AppCompatActivity()
     }
 
     private val userViewModel: UserViewModel by viewModels()
-
     var connectivity: Connectivity? = null
         @Inject set
 

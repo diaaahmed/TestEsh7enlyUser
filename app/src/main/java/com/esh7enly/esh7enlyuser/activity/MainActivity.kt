@@ -3,7 +3,6 @@ package com.esh7enly.esh7enlyuser.activity
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings

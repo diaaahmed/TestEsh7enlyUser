@@ -1,12 +1,8 @@
 package com.esh7enly.esh7enlyuser.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.bumptech.glide.Glide
-import com.esh7enly.domain.entity.ImageAdsModel
 import com.esh7enly.domain.entity.imageadsresponse.DataX
 
 import com.esh7enly.esh7enlyuser.databinding.AdsSliderImageBinding
@@ -14,7 +10,7 @@ import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.Utils
 
 
-class ImageAdsAdapter(val viewPager2: ViewPager2, private val images:List<DataX>):
+class ImageAdsAdapter(private val images:List<DataX>):
     RecyclerView.Adapter<ImageAdsAdapter.ImageAdsViewHolder>()
 {
 
@@ -24,18 +20,9 @@ class ImageAdsAdapter(val viewPager2: ViewPager2, private val images:List<DataX>
             fun bind(images: List<DataX>, position: Int) = with(binding)
             {
 
-//                imageViewAdsSlider.setOnClickListener {
-//                    Log.d("TAG", "diaa adsView click: ${images[position].adsLink}")
-//                }
-
                 Utils.displayImageOriginalFromCache(binding.root.context,imageViewAdsSlider,images[position].banner
                     ,
                     NetworkUtils.isConnectedWifi(binding.root.context))
-
-//                Glide.with(binding.root.context)
-//                    .load(images[position].banner)
-//                    .into(imageViewAdsSlider)
-
             }
     }
 

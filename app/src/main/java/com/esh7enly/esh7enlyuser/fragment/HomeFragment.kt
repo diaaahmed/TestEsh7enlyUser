@@ -269,7 +269,7 @@ class HomeFragment : BaseFragment(), CategoryClick {
                 {
                     val data = obj as Data
 
-                    imageAdsAdapter = ImageAdsAdapter(ui.adsViewPager, data.data)
+                    imageAdsAdapter = ImageAdsAdapter(data.data)
 
                     Handler().postDelayed({
                         ui.adsViewPager.setCurrentItem(2, true)

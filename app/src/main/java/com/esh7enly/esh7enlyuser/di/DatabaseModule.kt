@@ -17,7 +17,8 @@ object DatabaseModule
 {
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): DatabaseRoom {
+    fun provideDatabase(@ApplicationContext context: Context): DatabaseRoom
+    {
         return Room.databaseBuilder(context,DatabaseRoom::class.java,"category_database")
             .fallbackToDestructiveMigration()
             .build()
