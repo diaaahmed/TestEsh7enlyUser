@@ -44,13 +44,14 @@ class SplachActivity : BaseActivity() {
         }
     }
 
-    private fun validateToken() {
+    private fun validateToken()
+    {
         userViewModel.token = sharedHelper?.getUserToken().toString()
 
-        serviceViewModel.validateTokenResponseUser(userViewModel.token)
+        userViewModel.validateTokenResponseUser(userViewModel.token)
 
         lifecycleScope.launch {
-            serviceViewModel.login.observe(this@SplachActivity)
+            userViewModel.login.observe(this@SplachActivity)
             {
                 if (it == true) {
                     NavigateToActivity.navigateToHomeActivity(this@SplachActivity)

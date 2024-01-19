@@ -3,12 +3,9 @@ package com.esh7enly.esh7enlyuser.viewModel
 import android.util.Log
 import androidx.lifecycle.*
 import com.esh7enly.data.local.DatabaseRepo
+import com.esh7enly.data.repo.ServicesRepoImpl
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.userservices.*
-import com.esh7enly.domain.usecase.MainUseCase
-import com.esh7enly.domain.usecase.GetServicesUseCase
-import com.esh7enly.domain.usecase.ScheduleUseCase
-import com.esh7enly.domain.usecase.UserDataUseCase
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.NetworkResult
@@ -22,11 +19,8 @@ import javax.inject.Inject
 private const val TAG = "ServiceViewModel"
 
 @HiltViewModel
-class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
-                                           private val databaseRepo: DatabaseRepo,
-                                           private val getServicesUseCase: GetServicesUseCase,
-                                           private val userDataUseCase: UserDataUseCase,
-                                           private val scheduleUseCase: ScheduleUseCase) :
+class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
+                                           private val databaseRepo: DatabaseRepo) :
     ViewModel() {
 
     var buttonClicked:MutableLiveData<String> = MutableLiveData("")
@@ -53,10 +47,6 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
 
     private val _services: MutableStateFlow<UserServicesResponse?> = MutableStateFlow(null)
     val services: StateFlow<UserServicesResponse?> = _services
-
-    private val _login: MutableLiveData<Boolean?> = MutableLiveData()
-    val login: MutableLiveData<Boolean?> = _login
-
 
     val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
@@ -94,7 +84,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
 
     fun scheduleInquire(token:String,serviceId: String,invoice_number:String,listner: OnResponseListener) {
         viewModelScope.launch {
-            val scheduleInquireResponse = scheduleUseCase.scheduleInquire(token, serviceId, invoice_number)
+            val scheduleInquireResponse = repo.scheduleInquire(token, serviceId, invoice_number)
 
             if(scheduleInquireResponse.isSuccessful)
             {
@@ -125,7 +115,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
 
     var _dataStatus:LiveData<ServiceStatus> = dataStatus
 
-    suspend fun getFilteredList() = getServicesUseCase.getFilteredCategories()
+    suspend fun getFilteredList() = repo.getFilteredCategories()
 
     fun getAllCategories() = databaseRepo.getCategories()
 
@@ -133,7 +123,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
         viewModelScope.launch(Dispatchers.IO) {
 
             try {
-                getServicesUseCase.getServicesFromRemoteUser(token)
+                repo.getServicesFromRemoteUser(token)
                     .catch { Log.d(TAG, "diaa getService catch: ${it.message}") }
                     .buffer()
                     .collect {
@@ -189,7 +179,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
 
     fun getImageAds(token: String, listner: OnResponseListener) {
         viewModelScope.launch {
-            val imageAdResponse = getServices.getImageAdResponse(token)
+            val imageAdResponse = repo.getImageAdResponse(token)
 
             if(imageAdResponse.isSuccessful)
             {
@@ -239,7 +229,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
     ) {
         viewModelScope.launch {
             try {
-                getServices.getTotalAmount(token, totalAmountPojoModel)
+                repo.getTotalAmount(token, totalAmountPojoModel)
                     .catch { Log.d(TAG, "diaa getTotalAmount: catch ${it.message}") }
                     .buffer()
                     .collect { response ->
@@ -262,7 +252,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
        viewModelScope.launch {
 
             try{
-                val response = getServices.pay(token, paymentPojoModel)
+                val response = repo.pay(token, paymentPojoModel)
 
                 if (response.isSuccessful) {
                     if (response.body()?.status == false) {
@@ -290,7 +280,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
     fun cancelTransaction(token: String,transactionId: String,imei: String, listner:OnResponseListener) {
         viewModelScope.launch(Dispatchers.IO) {
 
-            val response = getServices.cancelTransaction(token,transactionId,imei)
+            val response = repo.cancelTransaction(token,transactionId,imei)
 
             if(response.isSuccessful)
             {
@@ -334,7 +324,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
         viewModelScope.launch {
 
          //   try{
-                val inquireResponse = getServices.inquire(token, paymentPojoModel)
+                val inquireResponse = repo.inquire(token, paymentPojoModel)
 
                 if (inquireResponse.isSuccessful)
                 {
@@ -368,7 +358,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
     ) {
         viewModelScope.launch {
 
-            val response = getServices.checkIntegration(token, transaction_id, imei)
+            val response = repo.checkIntegration(token, transaction_id, imei)
 
             if (response.isSuccessful) {
 
@@ -398,34 +388,9 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
         }
     }
 
-
-    fun validateTokenResponseUser(token: String) {
-        viewModelScope.launch {
-
-            try{
-                val response = userDataUseCase.getUserWallet(token)
-
-                if (response.isSuccessful)
-                {
-                    _login.value = response.body()!!.status
-                    Constants.SERVICE_UPDATE_NUMBER = response.body()!!.service_update_num
-
-                } else {
-                    _login.value = false
-                }
-            }
-            catch (e: Exception)
-            {
-                _login.value = false
-
-            }
-
-        }
-    }
-
     fun getScheduleList(token: String,listner: OnResponseListener) {
         viewModelScope.launch {
-            val scheduleListResponse = scheduleUseCase.getScheduleList(token)
+            val scheduleListResponse = repo.getScheduleList(token)
 
             if(scheduleListResponse.isSuccessful)
             {
@@ -453,7 +418,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
     fun getUserPoints(token: String)
     {
         viewModelScope.launch {
-            val pointsResponse = userDataUseCase.getUserPoints(token)
+            val pointsResponse = repo.getUserPoints(token)
 
             if(pointsResponse.isSuccessful)
             {
@@ -476,7 +441,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
 
     fun scheduleInvoice(token: String,serviceId:String,scheduleDay:String,invoice_number:String,listner: OnResponseListener) {
         viewModelScope.launch {
-            val scheduleResponse = scheduleUseCase.scheduleInvoice(token, serviceId, scheduleDay,invoice_number)
+            val scheduleResponse = repo.scheduleInvoice(token, serviceId, scheduleDay,invoice_number)
 
             if(scheduleResponse.isSuccessful)
             {
@@ -499,7 +464,7 @@ class ServiceViewModel @Inject constructor(private val getServices: MainUseCase,
 
     fun replaceUserPoints(token: String, listner: OnResponseListener) {
         viewModelScope.launch {
-            val replaceResponse = userDataUseCase.replaceUserPoints(token)
+            val replaceResponse = repo.replaceUserPoints(token)
             if(replaceResponse.isSuccessful)
             {
                 if(replaceResponse.body()!!.status == true)

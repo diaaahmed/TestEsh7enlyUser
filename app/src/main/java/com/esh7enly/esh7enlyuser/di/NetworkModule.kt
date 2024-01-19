@@ -49,11 +49,7 @@ object NetworkModule
             .collector(chuckerCollector)
             // The max body content length in bytes, after this responses will be truncated.
             .maxContentLength(250_000L)
-            // List of headers to replace with ** in the Chucker UI
             .redactHeaders("Authorization", "Bearer")
-            // Read the whole response body even when the client does not consume the response completely.
-            // This is useful in case of parsing errors or when the response body
-            // is closed before being read like in Retrofit with Void and Unit types.
             .alwaysReadResponseBody(true)
             .build()
 

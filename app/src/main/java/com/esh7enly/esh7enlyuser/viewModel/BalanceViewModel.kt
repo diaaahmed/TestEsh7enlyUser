@@ -1,12 +1,11 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
-import com.esh7enly.domain.usecase.UserDataUseCase
 import com.esh7enly.esh7enlyuser.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BalanceViewModel @Inject constructor(
-    private val userDataUseCase: UserDataUseCase,
+    private val userRepo: UserRepo,
 
     ): ViewModel()
 {
@@ -26,7 +25,7 @@ class BalanceViewModel @Inject constructor(
         _responseDeposits.value = NetworkResult.Loading()
 
         viewModelScope.launch {
-            val deposits = userDataUseCase.getDeposits(token,page)
+            val deposits = userRepo.getDeposits(token,page)
 
             if(deposits.isSuccessful)
             {
@@ -53,13 +52,11 @@ class BalanceViewModel @Inject constructor(
 
     fun getWalletsUser(token:String) {
         viewModelScope.launch {
-            val response = userDataUseCase.getUserWallet(token)
+            val response = userRepo.getUserWallet(token)
 
             if(response.isSuccessful && response.body()?.status == true)
             {
                 _balance.value = response.body()!!.data[0].balance
-
-                Log.d("TAG", "diaa validateTokenResponse balance is ${_balance.value}: ")
             }
         }
     }

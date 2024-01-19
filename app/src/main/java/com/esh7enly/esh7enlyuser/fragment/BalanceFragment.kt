@@ -76,11 +76,9 @@ class BalanceFragment : BaseFragment()
             when(response)
             {
                 is NetworkResult.Success -> {
-                    response.data?.data?.data?.let { depositAdapter.setTransactionEntity(it) }
-                    // it?.data?.let { it1 -> newTransactionAdapter.setTransactionEntity(it1) }
-                    // transactionAdapter.submitList(it?.data)
-                    ui.depositsRv.adapter = depositAdapter
                     pDialog.cancel()
+                    response.data?.data?.data?.let { depositAdapter.setTransactionEntity(it) }
+                    ui.depositsRv.adapter = depositAdapter
                 }
 
                 is NetworkResult.Loading -> {
@@ -93,34 +91,6 @@ class BalanceFragment : BaseFragment()
             }
         }
 
-//        lifecycleScope.launch {
-//            serviceViewModel.getDeposits(sharedHelper?.getUserToken().toString(),page,
-//                object : OnResponseListener {
-//                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-//                    {
-//                        val depositResponseData = obj as List<DataX>
-//
-//                        depositAdapter.setTransactionEntity(depositResponseData)
-//                        ui.depositsRv.setHasFixedSize(true)
-//                        ui.depositsRv.adapter = depositAdapter
-//
-//                    }
-//
-//                    override fun onFailed(code: Int, msg: String?)
-//                    {
-//                        dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok)
-//                        ) {
-//                            dialog.cancel()
-//
-//                            if (code.toString() == Constants.CODE_UNAUTH ||
-//                                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED)
-//                            {
-//                                NavigateToActivity.navigateToMainActivity(requireActivity())
-//                            }
-//                        }.show()
-//                    }
-//                })
-//        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

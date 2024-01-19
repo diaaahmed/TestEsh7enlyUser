@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esh7enly.data.repo.XPayRepo
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequest
-import com.esh7enly.domain.usecase.XPayUseCase
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.PayWays
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class XPayViewModel @Inject constructor(private val xPayUseCase: XPayUseCase) : ViewModel()
+class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewModel()
 {
 
     var buttonClicked: MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
@@ -37,7 +37,7 @@ class XPayViewModel @Inject constructor(private val xPayUseCase: XPayUseCase) : 
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
-            val startSessionResponse = xPayUseCase.startSessionForPay(token, amount, ip)
+            val startSessionResponse = xPayRepo.startSessionForPay(token, amount, ip)
 
             if (startSessionResponse.isSuccessful)
             {
@@ -79,17 +79,11 @@ class XPayViewModel @Inject constructor(private val xPayUseCase: XPayUseCase) : 
 
     }
 
-    private var totalXPay: MutableLiveData<String> = MutableLiveData("")
-    var _totalXpay = totalXPay
-
-    private var fees: MutableLiveData<String> = MutableLiveData("")
-    var _fees = fees
-
     var amountNumber = MutableStateFlow("")
 
     suspend fun getTotalXPayFlow(token: String, amount: String,listner: OnResponseListener) {
         viewModelScope.launch {
-            val xPayTotal = xPayUseCase.getTotalXPay(token, amount)
+            val xPayTotal = xPayRepo.getTotalXPay(token, amount)
 
             if(xPayTotal.isSuccessful)
             {
@@ -112,7 +106,7 @@ class XPayViewModel @Inject constructor(private val xPayUseCase: XPayUseCase) : 
 
     suspend fun chargeBalance(token:String,chargeBalanceRequest: ChargeBalanceRequest,listner: OnResponseListener) {
        viewModelScope.launch {
-           val charge = xPayUseCase.chargeBalance(token,chargeBalanceRequest)
+           val charge = xPayRepo.chargeBalance(token,chargeBalanceRequest)
 
            if(charge.isSuccessful)
            {

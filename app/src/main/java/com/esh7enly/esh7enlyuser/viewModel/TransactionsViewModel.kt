@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esh7enly.data.repo.TransactionsRepo
 import com.esh7enly.domain.entity.TransactionApiResponse
 import com.esh7enly.domain.entity.TransactionDetailsEntity
-import com.esh7enly.domain.usecase.GetTransactionsUseCase
 import com.esh7enly.esh7enlyuser.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
-    private val getTransactionsUseCase: GetTransactionsUseCase
+    private val transactionsRepo: TransactionsRepo
 ): ViewModel()
 {
     private var _responseTransactions: MutableLiveData<NetworkResult<TransactionApiResponse>> = MutableLiveData()
@@ -27,17 +27,17 @@ class TransactionsViewModel @Inject constructor(
     private val _transactions: MutableStateFlow<TransactionApiResponse.TransactionDataEntity?> = MutableStateFlow(null)
 
 
-    fun getTransactions(token: String, page: Int) {
+    fun getTransactions(token: String, page: Int)
+    {
         _responseTransactions.value = NetworkResult.Loading()
 
         viewModelScope.launch{
             try {
-                val response = getTransactionsUseCase.getTransactions(token, page)
+                val response = transactionsRepo.getTransactions(token, page)
 
                 if (!response.status)
                 {
                     _responseTransactions.value = NetworkResult.Error(response.message)
-                    Log.d("TAG", "diaa getTransactions error: ${response.message}")
                 }
                 else {
                     _responseTransactions.value = NetworkResult.Success(response)
@@ -49,7 +49,6 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
-
     private val _transactionDetails: MutableStateFlow<TransactionDetailsEntity?> =
         MutableStateFlow(null)
     val transactionDetails: StateFlow<TransactionDetailsEntity?> = _transactionDetails
@@ -57,12 +56,12 @@ class TransactionsViewModel @Inject constructor(
     fun getTransactionDetails(token: String, transactionId: String) {
         viewModelScope.launch {
             try {
-                getTransactionsUseCase.getTransactionDetails(token, transactionId)
+                transactionsRepo.getTransactionDetails(token, transactionId)
                     .buffer()
                     .collect {
                         _transactionDetails.value = it
                     }
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 Log.d("TAG", "diaa getTransactionDetails exception: ${e.message}")
             }
         }

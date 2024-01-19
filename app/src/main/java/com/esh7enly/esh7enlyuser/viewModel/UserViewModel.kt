@@ -1,13 +1,13 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
-import com.esh7enly.domain.usecase.AccountCreationUpdateUseCase
-import com.esh7enly.domain.usecase.LoginUseCase
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +16,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
-                                        private val accountCreationUpdateUseCase: AccountCreationUpdateUseCase):
+class UserViewModel @Inject constructor(private val userRepo: UserRepo):
     ViewModel()
 {
     var phoneNumber:String?= null
@@ -28,13 +27,13 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
 
 
     fun login(mobile:String,password:String,device_token:String): LiveData<ApiResponse<LoginResponse>> {
-        return loginUseCase(mobile,password,device_token)
+        return userRepo.login(mobile,password,device_token)
     }
 
     fun sendOtp(mobile:String,listener: OnResponseListener) {
         viewModelScope.launch {
 
-            val otpResponse = accountCreationUpdateUseCase.sendOtp(mobile)
+            val otpResponse = userRepo.sendOtp(mobile)
 
             if(otpResponse.isSuccessful)
             {
@@ -57,7 +56,7 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
 
     fun forgetPasswordSendOTP(mobile:String,listener: OnResponseListener) {
         viewModelScope.launch {
-            val otpResponse = accountCreationUpdateUseCase.forgetPasswordSendOtp(mobile)
+            val otpResponse = userRepo.forgetPasswordSendOTP(mobile)
 
             if(otpResponse.isSuccessful)
             {
@@ -80,7 +79,7 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
 
     fun verifyAccount(mobile:String,otpCode:String,key:String,listener: OnResponseListener) {
         viewModelScope.launch {
-            val response = accountCreationUpdateUseCase.verifyAccount(mobile,otpCode,key)
+            val response = userRepo.verifyAccount(mobile,otpCode,key)
 
             if(!response.status)
             {
@@ -95,7 +94,7 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
 
     fun registerNewAccount(registerModel: RegisterModel,listener: OnResponseListener) {
         viewModelScope.launch {
-            val registerResponse = accountCreationUpdateUseCase.registerNewAccount(registerModel)
+            val registerResponse = userRepo.registerNewAccount(registerModel)
 
             if(!registerResponse.status!!)
             {
@@ -111,7 +110,7 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
 
     fun createNewPassword(mobile: String,password: String,confirmationPassword:String,otpCode: String,listener: OnResponseListener) {
         viewModelScope.launch {
-            val forgetPasswordResponse = accountCreationUpdateUseCase.createNewPassword(mobile,password,confirmationPassword,otpCode)
+            val forgetPasswordResponse = userRepo.createNewPassword(mobile,password,confirmationPassword,otpCode)
             if(forgetPasswordResponse.isSuccessful)
             {
                 if(!forgetPasswordResponse.body()!!.status)
@@ -134,7 +133,7 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
 
     fun updatePassword(token: String, currentPassword:String,newPassword:String, listener: OnResponseListener) {
         viewModelScope.launch {
-            val updateResponse = accountCreationUpdateUseCase.updatePassword(token, currentPassword, newPassword)
+            val updateResponse = userRepo.updatePassword(token, currentPassword, newPassword)
 
             if(updateResponse.isSuccessful)
             {
@@ -156,7 +155,7 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
 
     fun updateProfile(token: String, mobile:String,name:String,email:String, listener: OnResponseListener) {
         viewModelScope.launch {
-            val updateResponse = accountCreationUpdateUseCase.updateProfile(token, mobile, name, email)
+            val updateResponse = userRepo.updateProfile(token, mobile, name, email)
 
             if(updateResponse.isSuccessful)
             {
@@ -173,6 +172,34 @@ class UserViewModel @Inject constructor(private val loginUseCase: LoginUseCase,
             {
                 listener.onFailed(updateResponse.code(),updateResponse.message())
             }
+        }
+    }
+
+    private val _login: MutableLiveData<Boolean?> = MutableLiveData()
+    val login: MutableLiveData<Boolean?> = _login
+
+    fun validateTokenResponseUser(token: String)
+    {
+        viewModelScope.launch {
+
+            try{
+                val response = userRepo.getUserWallet(token)
+
+                if (response.isSuccessful)
+                {
+                    _login.value = response.body()!!.status
+                    Constants.SERVICE_UPDATE_NUMBER = response.body()!!.service_update_num
+
+                } else {
+                    _login.value = false
+                }
+            }
+            catch (e: Exception)
+            {
+                _login.value = false
+
+            }
+
         }
     }
 }

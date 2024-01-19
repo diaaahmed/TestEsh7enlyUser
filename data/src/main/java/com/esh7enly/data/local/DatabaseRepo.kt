@@ -30,14 +30,9 @@ class DatabaseRepo @Inject constructor(private val database: DatabaseRoom)
 
     suspend fun insertCategories(categories: List<Category>) = database.categoryDao().insert(categories)
 
-    fun getCategoryCount() = database.categoryDao().getCategoriesCount()
-
     fun getImagesCount() = database.imageDao().getImagesCount()
 
-    fun getImages() = database.imageDao().getImages()
-
     fun deleteImage() = database.imageDao().deleteImages()
-
 
     fun deleteServices() = database.serviceDao().deleteServices()
 

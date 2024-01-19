@@ -15,6 +15,7 @@ import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.adapter.NewTransactionAdapter
 import com.esh7enly.esh7enlyuser.click.TransactionClick
 import com.esh7enly.esh7enlyuser.databinding.ActivityTransactionsBinding
+import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.NetworkResult
 import com.esh7enly.esh7enlyuser.util.Utils
@@ -70,11 +71,9 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
             when(response)
             {
                 is NetworkResult.Success -> {
-                    response.data?.data?.data?.let { newTransactionAdapter.setTransactionEntity(it) }
-                    // it?.data?.let { it1 -> newTransactionAdapter.setTransactionEntity(it1) }
-                    // transactionAdapter.submitList(it?.data)
-                    ui.transactionsRv.adapter = newTransactionAdapter
                     pDialog.cancel()
+                    response.data?.data?.data?.let { newTransactionAdapter.setTransactionEntity(it) }
+                    ui.transactionsRv.adapter = newTransactionAdapter
                 }
 
                 is NetworkResult.Loading -> {
@@ -82,11 +81,23 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
                 }
                 is NetworkResult.Error -> {
                     pDialog.cancel()
-                    Log.d(TAG, "diaa getTransactions: ${response.message}")
+                    showDialogWithAction(response.message.toString())
                 }
             }
         }
     }
+    private val alertDialog by lazy {
+        AppDialogMsg(this, false)
+    }
+
+    private fun showDialogWithAction(message: String) {
+        alertDialog.showErrorDialogWithAction(
+            message, resources.getString(R.string.app__ok)
+        ) {
+            alertDialog.cancel()
+        }.show()
+    }
+
 
     private fun initRecyclerView() {
         ui.transactionsRv.setHasFixedSize(true)

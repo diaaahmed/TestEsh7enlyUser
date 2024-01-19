@@ -46,17 +46,15 @@ import com.xpay.kotlinutils.models.PaymentMethods
 import com.xpay.kotlinutils.models.ServerSetting
 import com.xpay.kotlinutils.models.api.pay.PayData
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 private const val TAG = "AddBalance"
 
 @AndroidEntryPoint
-class AddBalance : BaseActivity(),IToolbarTitle
-{
+class AddBalance : BaseActivity(), IToolbarTitle {
 
-    private val ui by lazy{
+    private val ui by lazy {
         ActivityAddBalanceBinding.inflate(layoutInflater)
     }
 
@@ -64,15 +62,14 @@ class AddBalance : BaseActivity(),IToolbarTitle
         AppDialogMsg(this, false)
     }
 
-    private var uuid:String?= null
-    private var isCardPayment:Boolean?= null
+    private var uuid: String? = null
+    private var isCardPayment: Boolean? = null
     private var finalPaymentWay = ""
     var totalAmountStartSession = 0.0
 
     private val xPayViewModel: XPayViewModel by viewModels()
     private val payTabsViewModel: PaytabsViewModel by viewModels()
 
-    @OptIn(FlowPreview::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
@@ -81,50 +78,28 @@ class AddBalance : BaseActivity(),IToolbarTitle
         ui.xPayViewModel = xPayViewModel
         ui.lifecycleOwner = this
 
-        xPayViewModel._buttonClicked.observe(this){ buttonClicked-> finalPaymentWay = buttonClicked }
+        xPayViewModel._buttonClicked.observe(this) { buttonClicked ->
+            finalPaymentWay = buttonClicked
+        }
 
-        ui.amountValue.addTextChangedListener { value->
+        ui.amountValue.addTextChangedListener { value ->
 
-            if(value.toString().isBlank())
-            {
+            if (value.toString().isBlank()) {
                 ui.serviceFee.text = ""
                 ui.totalAmount.text = ""
                 ui.serviceValue.text = ""
-            }
-            else
-            {
-                if(finalPaymentWay== PayWays.BANk.toString() || xPayViewModel.showPhoneNumber.value == false)
-                {
+            } else {
+                if (finalPaymentWay == PayWays.BANk.toString() || xPayViewModel.showPhoneNumber.value == false) {
                     lifecycleScope.launch { xPayViewModel.amountNumber.emit(value.toString()) }
                     //getTotalAmountForPay(value.toString())
                 }
             }
         }
 
-//        lifecycleScope.launch {
-//            xPayViewModel.amountNumber.debounce(1000).collect{
-//                getTotalAmountForPay(it)
-//            }
-//        }
-
-//        xPayViewModel._totalXpay.observe(this) { total ->
-//            ui.totalAmount.text = total
-//            if(total.isNotEmpty())
-//            {
-//                totalAmountStartSession = total.toDouble()
-//            }
-//
-//            xPayViewModel._fees.observe(this)
-//            {fees->
-//                ui.serviceFee.text = fees
-//                ui.serviceValue.text = ui.amountValue.text.toString()
-//            }
-//        }
-
         XpayUtils.serverSetting = ServerSetting.LIVE
         XpayUtils.apiKey = BuildConfig.XPAY_API_KEY_PRODUCTION
         XpayUtils.communityId = BuildConfig.XPAY_COMMUNITY_ID_PRODUCTION
-        XpayUtils.apiPaymentId= BuildConfig.XPAY_API_PAYMENT_ID_PRODUCTION.toInt()
+        XpayUtils.apiPaymentId = BuildConfig.XPAY_API_PAYMENT_ID_PRODUCTION.toInt()
 
         ui.bankWay.setOnClickListener {
             xPayViewModel.setShowNumber(false)
@@ -133,9 +108,7 @@ class AddBalance : BaseActivity(),IToolbarTitle
                 // getTotalAmountForPay(ui.amountValue.text.toString())
             }
             xPayViewModel.buttonClicked.value = PayWays.BANk.toString()
-//            ui.serviceFee.text = ""
-//            ui.totalAmount.text = ""
-//            ui.serviceValue.text = ""
+
             ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
 
         }
@@ -148,41 +121,18 @@ class AddBalance : BaseActivity(),IToolbarTitle
 
         ui.btnPay.setOnClickListener {
 
-            if(ui.amountValue.text.toString().isEmpty())
-            {
+            if (ui.amountValue.text.toString().isEmpty()) {
                 ui.amountValue.error = resources.getString(R.string.required)
-            }
-            else
-            {
-                when (finalPaymentWay)
-                {
+            } else {
+                when (finalPaymentWay) {
                     PayWays.BANk.toString() -> {
-//                        payTabsViewModel.userEmail.value = sharedHelper?.getUserEmail().toString()
-//                        payTabsViewModel.userPhone.value = sharedHelper?.getUserPhone().toString()
-//                        payTabsViewModel.userName.value = sharedHelper?.getStoreName().toString()
+                        val drawable =
+                            ContextCompat.getDrawable(this, R.drawable.new_logo_trans_small)
 
-
-                        val drawable = ContextCompat.getDrawable(this, R.drawable.new_logo_trans_small)
-
-                        paytabsClick(ui.amountValue.text.toString(),
-                            drawable)
-//                        payTabsViewModel.paytabsClick(this, ui.amountValue.text.toString(),
-//                            drawable)
-
-//                        Log.d(TAG, "diaa pay now: Bank")
-//
-//                        try {
-//                            lifecycleScope.launch { payWithXPay()
-//                            }
-//                        } catch (e: Exception) {
-//
-//                            dialog.showErrorDialogWithAction(e.message,
-//                                resources.getString(R.string.app__ok)
-//                            ) {
-//                                dialog.cancel()
-//
-//                            }.show()
-//                        }
+                        paytabsClick(
+                            ui.amountValue.text.toString(),
+                            drawable
+                        )
                     }
 
                     PayWays.CASH.toString() -> {
@@ -190,6 +140,7 @@ class AddBalance : BaseActivity(),IToolbarTitle
                         Log.d(TAG, "diaa pay now: Cash")
 
                     }
+
                     else -> {
                         Log.d(TAG, "diaa pay no way")
 
@@ -200,36 +151,36 @@ class AddBalance : BaseActivity(),IToolbarTitle
     }
 
 
-    private fun paytabsClick(amount:String, drawable: Drawable?)
-    {
+    private fun paytabsClick(amount: String, drawable: Drawable?) {
         val number = Random(900000000000000000).nextInt()
 
         val configData: PaymentSdkConfigurationDetails =
-            generatePaytabsConfigurationDetails(number.toString(),
-            amount,drawable)
+            generatePaytabsConfigurationDetails(
+                number.toString(),
+                amount, drawable
+            )
 
-        PaymentSdkActivity.startAlternativePaymentMethods(this,configData, object :
-            CallbackPaymentInterface
-        {
-            override fun onError(error: PaymentSdkError)
-            {
+        PaymentSdkActivity.startAlternativePaymentMethods(this, configData, object :
+            CallbackPaymentInterface {
+            override fun onError(error: PaymentSdkError) {
                 Log.d("TAG", "diaa onError: ${error.msg}")
-                Toast.makeText(this@AddBalance, "Error occure ${error.msg}"
-                    , Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this@AddBalance, "Error occure ${error.msg}", Toast.LENGTH_SHORT
+                ).show()
             }
 
-            override fun onPaymentCancel()
-            {
+            override fun onPaymentCancel() {
                 Log.d("TAG", "diaa cancelled")
                 Toast.makeText(this@AddBalance, "Payment canceled", Toast.LENGTH_SHORT).show()
 
             }
 
-            override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails)
-            {
-                Toast.makeText(this@AddBalance,
+            override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
+                Toast.makeText(
+                    this@AddBalance,
                     "Paymeny done ${paymentSdkTransactionDetails.cartAmount}",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
 
                 Log.d("TAG", "diaa token ${paymentSdkTransactionDetails.token}")
                 Log.d("TAG", "diaa paymentResult ${paymentSdkTransactionDetails.paymentResult}")
@@ -243,11 +194,20 @@ class AddBalance : BaseActivity(),IToolbarTitle
                 Log.d("TAG", "diaa isOnHold ${paymentSdkTransactionDetails.isOnHold}")
                 Log.d("TAG", "diaa isProcessed ${paymentSdkTransactionDetails.isProcessed}")
                 Log.d("TAG", "diaa cardType ${paymentSdkTransactionDetails.paymentInfo!!.cardType}")
-                Log.d("TAG", "diaa cardScheme ${paymentSdkTransactionDetails.paymentInfo!!.cardScheme}")
+                Log.d(
+                    "TAG",
+                    "diaa cardScheme ${paymentSdkTransactionDetails.paymentInfo!!.cardScheme}"
+                )
                 Log.d("TAG", "diaa transactionType ${paymentSdkTransactionDetails.transactionType}")
-                Log.d("TAG", "diaa transactionReference ${paymentSdkTransactionDetails.transactionReference}")
+                Log.d(
+                    "TAG",
+                    "diaa transactionReference ${paymentSdkTransactionDetails.transactionReference}"
+                )
                 Log.d("TAG", "diaa redirectUrl ${paymentSdkTransactionDetails.redirectUrl}")
-                Log.d("TAG", "diaa paymentDescription ${paymentSdkTransactionDetails.paymentInfo!!.paymentDescription}")
+                Log.d(
+                    "TAG",
+                    "diaa paymentDescription ${paymentSdkTransactionDetails.paymentInfo!!.paymentDescription}"
+                )
             }
         })
     }
@@ -258,7 +218,7 @@ class AddBalance : BaseActivity(),IToolbarTitle
         drawable: Drawable?
     ): PaymentSdkConfigurationDetails {
         // Here you can enter your profile id from payabs account
-       // val profileId = "122125"
+        // val profileId = "122125"
         val profileId = "135102"
         // Here you can enter server key from payabs account
         val serverKey = BuildConfig.SERVER_KEY
@@ -269,7 +229,8 @@ class AddBalance : BaseActivity(),IToolbarTitle
         val currency = "EGP"
         val merchantCountryCode = "EG"
         val amount: Double = value.toDouble()
-        val locale = if(Constants.LANG == "ar") PaymentSdkLanguageCode.AR else PaymentSdkLanguageCode.EN
+        val locale =
+            if (Constants.LANG == "ar") PaymentSdkLanguageCode.AR else PaymentSdkLanguageCode.EN
 
         val billingData = PaymentSdkBillingDetails(
             "City",
@@ -315,22 +276,25 @@ class AddBalance : BaseActivity(),IToolbarTitle
 
         lifecycleScope.launch {
 
-            val params = TotalAmountPojoModel.Params("billing_account",ui.phoneNumber.text.toString())
+            val params =
+                TotalAmountPojoModel.Params("billing_account", ui.phoneNumber.text.toString())
 
-            val totalAmountPojoModel = TotalAmountPojoModel(Constants.IMEI,
-                3968,ui.amountValue.text.toString(), mutableListOf(params))
+            val totalAmountPojoModel = TotalAmountPojoModel(
+                Constants.IMEI,
+                3968, ui.amountValue.text.toString(), mutableListOf(params)
+            )
 
-            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),totalAmountPojoModel,
+            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+                totalAmountPojoModel,
                 object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.dismiss()
 
                         val paymentPojoModel =
                             PaymentPojoModel(
                                 Constants.IMEI,
                                 "",
-                               3968,
+                                3968,
                                 ui.amountValue.text.toString(),
                                 mutableListOf(params)
                             )
@@ -339,9 +303,8 @@ class AddBalance : BaseActivity(),IToolbarTitle
 
                     }
 
-                    override fun onFailed(code: Int, msg: String?)
-                    {
-                        showFailedPay(msg,code)
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
                     }
                 })
         }
@@ -351,13 +314,15 @@ class AddBalance : BaseActivity(),IToolbarTitle
         pDialog.show()
 
         lifecycleScope.launch {
-            serviceViewModel.pay(sharedHelper?.getUserToken().toString(),paymentPojoModel,
+            serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
                 object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.dismiss()
 
-                        dialog.showSuccessDialog(resources.getString(R.string.balance_added),resources.getString(R.string.app__ok))
+                        dialog.showSuccessDialog(
+                            resources.getString(R.string.balance_added),
+                            resources.getString(R.string.app__ok)
+                        )
                         {
                             dialog.cancel()
                             finish()
@@ -366,9 +331,8 @@ class AddBalance : BaseActivity(),IToolbarTitle
                         dialog.show()
                     }
 
-                    override fun onFailed(code: Int, msg: String?)
-                    {
-                        showFailedPay(msg,code)
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
                         Log.d(TAG, "diaa payWithCash error: $msg")
                     }
                 })
@@ -382,14 +346,12 @@ class AddBalance : BaseActivity(),IToolbarTitle
         ui.addBalanceToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun getTotalAmount()
-    {
+    private fun getTotalAmount() {
         lifecycleScope.launch {
 
             xPayViewModel.getTotalXPayFlow(sharedHelper?.getUserToken().toString(),
-            ui.amountValue.text.toString(), object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
+                ui.amountValue.text.toString(), object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
 
                         val data = obj as Data
@@ -422,7 +384,9 @@ class AddBalance : BaseActivity(),IToolbarTitle
                                 amount,
                                 fees,
                                 total
-                            ),resources.getString(R.string.app__ok),resources.getString(R.string.app__cancel)
+                            ),
+                            resources.getString(R.string.app__ok),
+                            resources.getString(R.string.app__cancel)
                         ) {
                             dialog.cancel()
 
@@ -434,13 +398,14 @@ class AddBalance : BaseActivity(),IToolbarTitle
                                     data.amount.toString(),
                                     "69",
                                     object : OnResponseListener {
-                                        override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                                        {
+                                        override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                                             lifecycleScope.launch {
                                                 try {
 
                                                     // XpayUtils.prepareAmount(data.amount)
-                                                    XpayUtils.prepareAmount(ui.amountValue.text.toString().toDouble())
+                                                    XpayUtils.prepareAmount(
+                                                        ui.amountValue.text.toString().toDouble()
+                                                    )
                                                     XpayUtils.payUsing = PaymentMethods.CARD
 
                                                     // val totalAmount = PaymentMethods.CARD
@@ -478,15 +443,14 @@ class AddBalance : BaseActivity(),IToolbarTitle
 
                     }
 
-                    override fun onFailed(code: Int, msg: String?)
-                    {
+                    override fun onFailed(code: Int, msg: String?) {
                         pDialog.cancel()
-                        dialog.showErrorDialogWithAction(msg,
+                        dialog.showErrorDialogWithAction(
+                            msg,
                             resources.getString(R.string.app__ok)
                         ) {
                             dialog.cancel()
-                            if (code.toString() == Constants.CODE_UNAUTH || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED)
-                            {
+                            if (code.toString() == Constants.CODE_UNAUTH || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
                                 NavigateToActivity.navigateToMainActivity(this@AddBalance)
                             }
 
@@ -496,8 +460,7 @@ class AddBalance : BaseActivity(),IToolbarTitle
         }
     }
 
-    private fun payWithXPay()
-    {
+    private fun payWithXPay() {
         pDialog.show()
 
         getTotalAmount()
@@ -544,19 +507,18 @@ class AddBalance : BaseActivity(),IToolbarTitle
 //                })
     }
 
-    private fun checkPaymentType(paymentResponse: PayData?)
-    {
+    private fun checkPaymentType(paymentResponse: PayData?) {
         uuid = paymentResponse?.transaction_uuid
 
         // If paymentResponse.iframe_url is not null that means we use Card(Master - Visa)
         // So we go to the iframe
-        paymentResponse?.iframe_url.let { iframeUrl->
+        paymentResponse?.iframe_url.let { iframeUrl ->
             isCardPayment = true
             val builder = CustomTabsIntent.Builder()
 
-            builder.setToolbarColor(ContextCompat.getColor(this@AddBalance,R.color.colorPrimary))
-           // builder.setShowTitle(true)
-          //  builder.setUrlBarHidingEnabled(true)
+            builder.setToolbarColor(ContextCompat.getColor(this@AddBalance, R.color.colorPrimary))
+            // builder.setShowTitle(true)
+            //  builder.setUrlBarHidingEnabled(true)
             val customTabsIntent: CustomTabsIntent = builder.build()
             customTabsIntent.launchUrl(this@AddBalance, Uri.parse(iframeUrl))
         }
@@ -564,25 +526,26 @@ class AddBalance : BaseActivity(),IToolbarTitle
 
 
     @SuppressLint("SetTextI18n")
-    override fun onRestart()
-    {
+    override fun onRestart() {
         super.onRestart()
 
         // Receive transaction information
         lifecycleScope.launch {
             try {
-                uuid.let { uui->
-                   // dialog?.cancel()
+                uuid.let { uui ->
+                    // dialog?.cancel()
                     val res = XpayUtils.getTransaction(uui!!)
 
-                    val chargeBalanceRequest = ChargeBalanceRequest(id = Constants.START_SESSION_ID,
+                    val chargeBalanceRequest = ChargeBalanceRequest(
+                        id = Constants.START_SESSION_ID,
                         amount = ui.amountValue.text.toString(),
-                    total_amount = res?.total_amount.toString(), card_id = res?.id.toString(),
-                    total_amount_currency = res?.total_amount_currency.toString(),
+                        total_amount = res?.total_amount.toString(), card_id = res?.id.toString(),
+                        total_amount_currency = res?.total_amount_currency.toString(),
                         total_amount_piasters = res?.total_amount_piasters.toString(),
-                    status = res?.status.toString(), payment_for = res?.payment_for.toString(),
-                    uuid = res?.uuid.toString(), member_id = res?.member_id.toString(),
-                        quantity = res?.quantity.toString())
+                        status = res?.status.toString(), payment_for = res?.payment_for.toString(),
+                        uuid = res?.uuid.toString(), member_id = res?.member_id.toString(),
+                        quantity = res?.quantity.toString()
+                    )
 
 
                     Log.d(TAG, "diaa member_id: ${res?.member_id.toString()}")
@@ -591,13 +554,14 @@ class AddBalance : BaseActivity(),IToolbarTitle
 
                     xPayViewModel.chargeBalance(sharedHelper?.getUserToken().toString(),
                         chargeBalanceRequest,
-                        object : OnResponseListener
-                        {
-                            override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                            {
+                        object : OnResponseListener {
+                            override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                                 pDialog.cancel()
 
-                                dialog.showSuccessDialog(resources.getString(R.string.balance_added),resources.getString(R.string.app__ok))
+                                dialog.showSuccessDialog(
+                                    resources.getString(R.string.balance_added),
+                                    resources.getString(R.string.app__ok)
+                                )
                                 {
                                     dialog.cancel()
                                     finish()
@@ -608,9 +572,8 @@ class AddBalance : BaseActivity(),IToolbarTitle
                                 Log.d(TAG, "diaa on charge success: $msg")
                             }
 
-                            override fun onFailed(code: Int, msg: String?)
-                            {
-                                showFailedPay(msg,code)
+                            override fun onFailed(code: Int, msg: String?) {
+                                showFailedPay(msg, code)
 
                                 Log.d(TAG, "diaa on charge failed: $msg")
                             }
@@ -628,8 +591,7 @@ class AddBalance : BaseActivity(),IToolbarTitle
         }
     }
 
-    private fun showFailedPay(msg: String?, code: Int)
-    {
+    private fun showFailedPay(msg: String?, code: Int) {
         pDialog.cancel()
         dialog.showErrorDialogWithAction(
             msg, resources.getString(R.string.app__ok)

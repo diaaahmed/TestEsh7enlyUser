@@ -26,10 +26,4 @@ abstract class DatabaseRoom: androidx.room.RoomDatabase()
     abstract fun userDao(): UserDao
     abstract fun fawryDao(): FawryDao
 
-    val MIGRATION1_2 = object : Migration(1,2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("")
-        }
-
-    }
 }
