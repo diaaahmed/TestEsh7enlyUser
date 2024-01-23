@@ -23,6 +23,7 @@
     <string name="balance_added">The balance has been added to your account</string>
     <string name="visa">Paid by visa</string>
     <string name="cash">Paid by vodafone cash</string>
+    <string name="wallet">Paid by wallet</string>
 
     <string name="chooseLanguage">Choose app language</string>
     <string name="welcome_back">Welcome Back</string>
@@ -49,6 +50,7 @@
 
     <string name="print_succes">Successful</string>
     <string name="print_failed">Failed</string>
+    <string name="print_cancelled">Cancelled</string>
     <string name="print_pending">Pending</string>
     <string name="of">\" Of \"</string>
 

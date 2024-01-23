@@ -1,9 +1,6 @@
 package com.esh7enly.esh7enlyuser.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerCollector
-import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.chuckerteam.chucker.api.RetentionManager
 
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.data.remote.NotificationService
@@ -34,27 +31,27 @@ object NetworkModule
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
 
-        // Create the Collector
-        val chuckerCollector = ChuckerCollector(
-            context = context,
-            // Toggles visibility of the notification
-            showNotification = true,
-            // Allows to customize the retention period of collected data
-            retentionPeriod = RetentionManager.Period.ONE_HOUR
-        )
-
-       // Create the Interceptor
-        val chuckerInterceptor = ChuckerInterceptor.Builder(context)
-            // The previously created Collector
-            .collector(chuckerCollector)
-            // The max body content length in bytes, after this responses will be truncated.
-            .maxContentLength(250_000L)
-            .redactHeaders("Authorization", "Bearer")
-            .alwaysReadResponseBody(true)
-            .build()
+//        // Create the Collector
+//        val chuckerCollector = ChuckerCollector(
+//            context = context,
+//            // Toggles visibility of the notification
+//            showNotification = true,
+//            // Allows to customize the retention period of collected data
+//            retentionPeriod = RetentionManager.Period.ONE_HOUR
+//        )
+//
+//       // Create the Interceptor
+//        val chuckerInterceptor = ChuckerInterceptor.Builder(context)
+//            // The previously created Collector
+//            .collector(chuckerCollector)
+//            // The max body content length in bytes, after this responses will be truncated.
+//            .maxContentLength(250_000L)
+//            .redactHeaders("Authorization", "Bearer")
+//            .alwaysReadResponseBody(true)
+//            .build()
 
         return OkHttpClient.Builder()
-            .addInterceptor(chuckerInterceptor)
+          //  .addInterceptor(chuckerInterceptor)
             .addInterceptor(logging)
             .addNetworkInterceptor(RequestInterceptor())
             .connectTimeout(20,TimeUnit.MINUTES)

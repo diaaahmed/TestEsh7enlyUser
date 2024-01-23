@@ -14,7 +14,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ActivityModule
 {
-
     @Singleton
     @Provides
     fun provideDynamicLayout(@ApplicationContext context: Context): DynamicLayout = DynamicLayout(context)

@@ -5,6 +5,7 @@ import com.esh7enly.data.url.Urls
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequest
+import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
 import com.esh7enly.domain.entity.forgetpasswordotp.ForgetPasswordOTPResponse
@@ -133,6 +134,12 @@ interface ApiService
         @Body chargeBalanceRequest: ChargeBalanceRequest
     ):Response<ChargeBalanceResponse>
 
+    @POST(Urls.CHARGE_BALANCE)
+    suspend fun chargeBalanceWithPaytabs(
+        @Header("Authorization") token: String?,
+        @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+    ):Response<ChargeBalanceResponse>
+
     @FormUrlEncoded
     @POST(Urls.UPDATE_PASSWORD)
     suspend fun updatePassword(
@@ -174,6 +181,8 @@ interface ApiService
     @FormUrlEncoded
     @POST(Urls.START_SESSION)
     suspend fun startSessionForPay(
+        @Field("payment_method_type") payment_method_type:String,
+        @Field("transaction_type") transaction_type:String,
         @Header("Authorization") token: String?,
         @Field("amount") amount: String,
         @Field("ip") ip: String
@@ -184,6 +193,8 @@ interface ApiService
     suspend fun getTotalXpay(
         @Header("Authorization") token: String?,
         @Field("amount") amount: String,
+        @Field("payment_method_type") payment_method_type:String,
+        @Field("transaction_type") transaction_type :String,
     ):Response<GetTotalAmountXPayResponse>
 
     @POST(Urls.PAYMENT)

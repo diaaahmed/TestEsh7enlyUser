@@ -23,8 +23,6 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
                                            private val databaseRepo: DatabaseRepo) :
     ViewModel() {
 
-    var buttonClicked:MutableLiveData<String> = MutableLiveData("")
-    var _buttonClicked:LiveData<String> = buttonClicked
 
     var serviceType = 0
     var providerName: String? = null
@@ -44,13 +42,6 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
     private var _response: MutableLiveData<NetworkResult<TotalAmountEntity>> = MutableLiveData( )
 
     var response:LiveData<NetworkResult<TotalAmountEntity>> = _response
-
-    private val _services: MutableStateFlow<UserServicesResponse?> = MutableStateFlow(null)
-    val services: StateFlow<UserServicesResponse?> = _services
-
-    val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        throwable.printStackTrace()
-    }
 
     fun searchService(serviceName:String):LiveData<List<Service>> {
         return databaseRepo.searchService(serviceName)
@@ -115,7 +106,7 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
 
     var _dataStatus:LiveData<ServiceStatus> = dataStatus
 
-    suspend fun getFilteredList() = repo.getFilteredCategories()
+     fun getFilteredList() = repo.getFilteredCategories()
 
     fun getAllCategories() = databaseRepo.getCategories()
 
@@ -197,10 +188,6 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
                 listner.onFailed(imageAdResponse.code(),imageAdResponse.message())
             }
         }
-    }
-
-    fun getCategoriesFromDB(): List<Category> {
-        return databaseRepo.getCategories()
     }
 
 

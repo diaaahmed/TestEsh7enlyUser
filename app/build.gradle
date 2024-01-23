@@ -25,8 +25,12 @@ android {
         buildConfigField("String", "BASE_URL", BASE_URL)
         buildConfigField("String", "BASE_URL_NOTIFICATION", BASE_URL_NOTIFICATION)
         buildConfigField("String", "PRIVACY_POLICY", PRIVACY_POLICY)
-        buildConfigField("String", "SERVER_KEY", SERVER_KEY)
-        buildConfigField("String", "CLIENT_KEY", CLIENT_KEY)
+        buildConfigField("String", "SERVER_KEY_PRODUCTION", SERVER_KEY_PRODUCTION)
+        buildConfigField("String", "SERVER_KEY_TEST", SERVER_KEY_TEST)
+        buildConfigField("String", "CLIENT_KEY_PRODUCTION", CLIENT_KEY_PRODUCTION)
+        buildConfigField("String", "CLIENT_KEY_TEST", CLIENT_KEY_TEST)
+        buildConfigField("String", "PROFILE_ID_TEST", PROFILE_ID_TEST)
+        buildConfigField("String", "PROFILE_ID_PRODUCTION", PROFILE_ID_PRODUCTION)
         buildConfigField("String", "ESH7ENLY_EMAIL", ESH7ENLY_EMAIL)
         buildConfigField("String", "XPAY_API_KEY_PRODUCTION", XPAY_API_KEY_PRODUCTION)
         buildConfigField("String", "XPAY_COMMUNITY_ID_PRODUCTION", XPAY_COMMUNITY_ID_PRODUCTION)
@@ -104,9 +108,9 @@ dependencies {
     // Logging interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-   //    Chucker
-    debugImplementation libs.chucker
-    releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
+//   //    Chucker
+//    debugImplementation libs.chucker
+//    releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
     // ViewModel
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'

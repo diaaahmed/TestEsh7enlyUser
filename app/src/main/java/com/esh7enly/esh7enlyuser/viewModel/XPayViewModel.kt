@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.XPayRepo
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequest
+import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.PayWays
@@ -22,22 +23,35 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
     var buttonClicked: MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
     var _buttonClicked: LiveData<String> = buttonClicked
 
+    private var _showPhoneNumberNew:MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
+    var showPhoneNumberNew:LiveData<String>  = _showPhoneNumberNew
+
     private var _showPhoneNumber:MutableLiveData<Boolean> = MutableLiveData(false)
     var showPhoneNumber:LiveData<Boolean>  = _showPhoneNumber
 
-    fun setShowNumber(isShow:Boolean)
+
+    fun setShowNumberNew(type:String)
     {
-        _showPhoneNumber.postValue(isShow)
+        _showPhoneNumberNew.postValue(type)
     }
 
+    fun setShowNumber(status:Boolean)
+    {
+        _showPhoneNumber.postValue(status)
+    }
+
+
     suspend fun startSessionForPay(
+        payment_method_type:String,
+        transaction_type:String,
         token: String,
         amount: String,
         ip: String,
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
-            val startSessionResponse = xPayRepo.startSessionForPay(token, amount, ip)
+            val startSessionResponse = xPayRepo.startSessionForPay(
+                payment_method_type,transaction_type,token, amount, ip)
 
             if (startSessionResponse.isSuccessful)
             {
@@ -81,24 +95,33 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
 
     var amountNumber = MutableStateFlow("")
 
-    suspend fun getTotalXPayFlow(token: String, amount: String,listner: OnResponseListener) {
+    suspend fun getTotalXPayFlow(
+        token: String, payment_method_type: String,
+        transaction_type:String,amount: String,listner: OnResponseListener) {
         viewModelScope.launch {
-            val xPayTotal = xPayRepo.getTotalXPay(token, amount)
+            try{
+                val xPayTotal = xPayRepo.getTotalXPay(token, amount,payment_method_type, transaction_type)
 
-            if(xPayTotal.isSuccessful)
-            {
-                if(xPayTotal.body()!!.status)
+                if(xPayTotal.isSuccessful)
                 {
-                    listner.onSuccess(xPayTotal.body()!!.code,xPayTotal.body()!!.message,xPayTotal.body()!!.data)
+                    if(xPayTotal.body()!!.status)
+                    {
+                        listner.onSuccess(xPayTotal.body()!!.code,xPayTotal.body()!!.message,xPayTotal.body()!!.data)
+                    }
+                    else
+                    {
+                        listner.onFailed(xPayTotal.body()!!.code,xPayTotal.body()!!.message)
+                    }
                 }
                 else
                 {
-                    listner.onFailed(xPayTotal.body()!!.code,xPayTotal.body()!!.message)
+                    listner.onFailed(xPayTotal.code(),xPayTotal.message())
                 }
             }
-            else
+            catch (e:Exception)
             {
-                listner.onFailed(xPayTotal.code(),xPayTotal.message())
+                listner.onFailed(5000,e.message)
+
             }
         }
     }
@@ -125,4 +148,30 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
            }
        }
     }
+
+
+    suspend fun chargeBalanceWithPaytabs(token:String,
+                                         chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+                                         listner: OnResponseListener) {
+        viewModelScope.launch {
+            val charge = xPayRepo.chargeBalanceWithPaytabs(token,chargeBalanceRequest)
+
+            if(charge.isSuccessful)
+            {
+                if(!charge.body()!!.status)
+                {
+                    listner.onFailed(charge.body()!!.code,charge.body()?.message)
+                }
+                else
+                {
+                    listner.onSuccess(charge.body()!!.code,charge.body()?.message,charge.body()!!.data)
+                }
+            }
+            else
+            {
+                listner.onFailed(charge.code(),charge.message())
+            }
+        }
+    }
+
 }

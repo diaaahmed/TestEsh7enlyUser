@@ -35,6 +35,7 @@ fun showFees(view:View,isShow:Boolean) {
 
 @BindingAdapter(value = ["bankWayColor"])
 fun bankWayColor(textView: TextView,isShow:Boolean) {
+
     if(!isShow)
     {
         textView.setBackgroundColor(
@@ -57,6 +58,87 @@ fun bankWayColor(textView: TextView,isShow:Boolean) {
 
     }
 }
+
+@BindingAdapter(value = ["digitalWalletColor"])
+fun digitalWalletColor(textView: TextView,type:String) {
+
+    if(type != PayWays.WALLET.toString())
+    {
+        textView.setTextColor(ContextCompat.getColor(textView.context,R.color.grey_100_))
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.white
+            )
+        )
+    }
+    else
+    {
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.colorPrimary
+            )
+        )
+        textView.setTextColor(ContextCompat.getColor(textView.context, R.color.white))
+
+    }
+}
+
+@BindingAdapter(value = ["visaColorNew"])
+fun visaColorNew(textView: TextView,type:String)
+{
+
+    if(type != PayWays.BANk.toString())
+    {
+        textView.setTextColor(ContextCompat.getColor(textView.context,R.color.grey_100_))
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.white
+            )
+        )
+    }
+    else
+    {
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.colorPrimary
+            )
+        )
+        textView.setTextColor(ContextCompat.getColor(textView.context, R.color.white))
+
+    }
+}
+
+@BindingAdapter(value = ["cashColorNew"])
+fun cashColorNew(textView: TextView,type:String)
+{
+
+    if(type != PayWays.CASH.toString())
+    {
+        textView.setTextColor(ContextCompat.getColor(textView.context,R.color.grey_100_))
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.white
+            )
+        )
+    }
+    else
+    {
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.colorPrimary
+            )
+        )
+        textView.setTextColor(ContextCompat.getColor(textView.context, R.color.white))
+
+    }
+}
+
 
 @BindingAdapter(value = ["cashWayColor"])
 fun cashWayColor(textView: TextView,isShow:Boolean) {

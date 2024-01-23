@@ -24,11 +24,6 @@ object RepoModule
     }
 
     @Provides
-    fun provideXPayRepo(apiService: ApiService):XPayRepo{
-        return XPayRepo(apiService)
-    }
-
-    @Provides
     fun provideTransactionsRepo(apiService: ApiService):TransactionsRepo{
         return TransactionsRepo(apiService)
     }

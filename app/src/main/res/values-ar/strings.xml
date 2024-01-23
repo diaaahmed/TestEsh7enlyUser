@@ -26,6 +26,7 @@
 
     <string name="visa">تم الدفع بواسطة الفيزا</string>
     <string name="cash">تم الدفع بواسطة فودافون كاش</string>
+    <string name="wallet">تم الدفع بواسطة المحفظة</string>
 
     <string name="welcome_back">مرحبًا بعودتك</string>
 
@@ -65,7 +66,7 @@
 
     <string name="email">البريد الإلكترونى</string>
     <string name="bank_card">كارت بنكى</string>
-    <string name="digital_wallet">المحافظ</string>
+    <string name="digital_wallet">محفظة</string>
     <string name="support">الدعم والتواصل</string>
     <string name="call_us">تواصل معنا</string>
     <string name="chatting">تواصل على واتساب</string>
@@ -134,6 +135,7 @@
 
     <string name="print_succes">ناجح</string>
     <string name="print_failed">فاشل</string>
+    <string name="print_cancelled">تم إلغائها</string>
     <string name="print_pending">قيد التنفيذ</string>
     <string name="privacy_policy">سياسة الخصوصية</string>
 

@@ -83,6 +83,22 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+
+                    <TextView
+                        android:gravity="center_horizontal"
+                        android:background="@drawable/payment_way_background"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        digitalWalletColor="@{xPayViewModel.showPhoneNumberNew.toString()}"
+                        android:textSize="@dimen/_13ssp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:padding="@dimen/_5sdp"
+                        android:id="@+id/digitalWalletWay"
+                        android:drawablePadding="@dimen/_6sdp"
+                        android:text="@string/digital_wallet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:drawableStartCompat="@drawable/wallet" />
+
                         <LinearLayout
                             android:padding="@dimen/_1sdp"
                             android:id="@+id/lineWays"
@@ -94,7 +110,7 @@
                             android:orientation="horizontal">
 
                                <TextView
-                                   bankWayColor="@{xPayViewModel.showPhoneNumber.booleanValue()}"
+                                   visaColorNew="@{xPayViewModel.showPhoneNumberNew.toString()}"
                                    android:layout_weight="1"
                                    android:textSize="@dimen/_13ssp"
                                    app:layout_constraintTop_toTopOf="parent"
@@ -108,7 +124,7 @@
 
 
                             <TextView
-                                cashWayColor="@{xPayViewModel.showPhoneNumber.booleanValue()}"
+                                cashColorNew="@{xPayViewModel.showPhoneNumberNew.toString()}"
                                 android:layout_weight="1"
                                 android:textSize="@dimen/_13ssp"
                                 app:layout_constraintTop_toTopOf="parent"

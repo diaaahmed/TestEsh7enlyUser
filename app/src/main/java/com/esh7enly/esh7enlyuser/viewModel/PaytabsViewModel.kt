@@ -73,9 +73,9 @@ class PaytabsViewModel @Inject constructor(): ViewModel()
         // Here you can enter your profile id from payabs account
         val profileId = "122125"
         // Here you can enter server key from payabs account
-        val serverKey = BuildConfig.SERVER_KEY
+        val serverKey = BuildConfig.SERVER_KEY_TEST
         // Here you can enter your client key from payabs account
-        val clientKey = BuildConfig.CLIENT_KEY
+        val clientKey = BuildConfig.CLIENT_KEY_TEST
         val transactionTitle = "Pay now with esh7enly"
         val cartDesc = "Test pay" // Description in paytab info
         val currency = "EGP"

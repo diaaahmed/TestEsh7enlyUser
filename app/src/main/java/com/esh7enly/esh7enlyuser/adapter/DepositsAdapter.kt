@@ -7,8 +7,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.esh7enly.domain.entity.depositsresponse.DataX
 import com.esh7enly.esh7enlyuser.R
-import com.esh7enly.esh7enlyuser.click.DepositClick
 import com.esh7enly.esh7enlyuser.databinding.DepositItemLayoutBinding
+import com.esh7enly.esh7enlyuser.util.PaymentStatus
 
 
 class DepositsAdapter  :
@@ -51,6 +51,10 @@ class DepositsAdapter  :
                     tvService.text = binding.root.resources.getString(R.string.visa)
 
                 }
+                else if(transactionEntity[position].type == "wallet")
+                {
+                    tvService.text = binding.root.resources.getString(R.string.wallet)
+                }
                 else
                 {
                     tvService.text = binding.root.resources.getString(R.string.cash)
@@ -61,14 +65,14 @@ class DepositsAdapter  :
                 tvDate.text = transactionEntity[position].amount + binding.root.resources.getString(R.string.egp)
                 when(transactionEntity[position].status)
                 {
-                    "SUCCESSFUL" -> {
+                    PaymentStatus.SUCCESSFUL.toString() -> {
                         tvStatus.text = binding.root.resources.getString(R.string.print_succes)
                         tvStatus.setTextColor(ContextCompat.getColor(root.context,R.color.green_new))
                         tvService.setTextColor(ContextCompat.getColor(root.context,R.color.green_new))
                         viewDepositStatus.setBackgroundColor(ContextCompat.getColor(root.context,R.color.green_new))
                     }
 
-                    "PENDING" -> {
+                    PaymentStatus.PENDING.toString() -> {
                         tvStatus.text = binding.root.resources.getString(R.string.print_pending)
                         tvStatus.setTextColor(ContextCompat.getColor(root.context,R.color.transactions_status))
                         tvService.setTextColor(ContextCompat.getColor(root.context,R.color.transactions_status))
@@ -76,8 +80,16 @@ class DepositsAdapter  :
 
                     }
 
-                    "FAILED" -> {
+                    PaymentStatus.FAILED.toString() -> {
                         tvStatus.text = binding.root.resources.getString(R.string.print_failed)
+                        tvStatus.setTextColor(ContextCompat.getColor(root.context,R.color.orange_900))
+                        tvService.setTextColor(ContextCompat.getColor(root.context,R.color.orange_900))
+                        viewDepositStatus.setBackgroundColor(ContextCompat.getColor(root.context,R.color.orange_900))
+
+                    }
+
+                    PaymentStatus.CANCELLED.toString() -> {
+                        tvStatus.text = binding.root.resources.getString(R.string.print_cancelled)
                         tvStatus.setTextColor(ContextCompat.getColor(root.context,R.color.orange_900))
                         tvService.setTextColor(ContextCompat.getColor(root.context,R.color.orange_900))
                         viewDepositStatus.setBackgroundColor(ContextCompat.getColor(root.context,R.color.orange_900))
