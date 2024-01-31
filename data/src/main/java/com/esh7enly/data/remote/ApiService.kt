@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.esh7enly.data.url.Urls
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.*
-import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequest
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
@@ -127,12 +126,6 @@ interface ApiService
         @Header("Authorization") token: String?,
         @Body totalAmountPojoModel: TotalAmountPojoModel
     ): TotalAmountEntity
-
-    @POST(Urls.CHARGE_BALANCE)
-    suspend fun chargeBalance(
-        @Header("Authorization") token: String?,
-        @Body chargeBalanceRequest: ChargeBalanceRequest
-    ):Response<ChargeBalanceResponse>
 
     @POST(Urls.CHARGE_BALANCE)
     suspend fun chargeBalanceWithPaytabs(

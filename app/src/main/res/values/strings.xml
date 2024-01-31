@@ -81,8 +81,8 @@
 
 
     <string name="enter_phone_number">Enter your phone number</string>
-    <string name="bank_card">Bank Card</string>
-    <string name="digital_wallet">Wallets</string>
+    <string name="bank_card">Bank card</string>
+    <string name="digital_wallet">Electronic wallets</string>
     <string name="support">Support</string>
     <string name="enter_old_password">Enter old password</string>
     <string name="enter_new_mobile">Enter new mobile</string>
@@ -106,10 +106,14 @@
     <string name="email">Email</string>
     <string name="your_password">Your password</string>
     <string name="your_name">Write first and last name</string>
+    <string name="first_name">Write first name</string>
+    <string name="last_name">Write last name</string>
     <string name="signUp">Sign up</string>
     <string name="have_account">Have an account, Sign in</string>
     <string name="error_message__blank_phone">Please input Phone number.</string>
     <string name="error_message__blank_full_name">Please input Full Name.</string>
+    <string name="error_message__blank_first_name">Please input First Name.</string>
+    <string name="error_message__blank_last_name">Please input Last Name.</string>
     <string name="error_message__blank_password">Please enter the password.</string>
     <string name="error_message__blank_phone_number">Please enter valid phone number.</string>
     <string name="error_message__blank_otp">Please enter valid OTP.</string>
@@ -288,7 +292,8 @@ Some products cannot be returned, and they are:
 
     </string>
 
-    <string name="phone_number_call">19276</string>
+    <string name="phone_number_call">201022997768</string>
+    <string name="hotline">19276</string>
     <string name="enter_message">Type your message</string>
     <string name="send_message">Send message</string>
     <string name="required_amount">Enter the required amount</string>

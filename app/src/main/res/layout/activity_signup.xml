@@ -19,8 +19,9 @@
                 layout="@layout/material_card_layout"
                 android:id="@+id/includedLayout"
                 />
+
             <TextView
-                android:fontFamily="@font/readexrromedium"
+                app:fontFamily="@font/readexrromedium"
                 android:layout_marginTop="@dimen/_20sdp"
                 app:layout_constraintTop_toBottomOf="@id/includedLayout"
                 android:textColor="@color/colorPrimary"
@@ -34,19 +35,18 @@
                 />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/NewEditText"
                 app:layout_constraintTop_toBottomOf="@id/txt_register"
+                style="@style/NewEditText"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/fill_name"
-                android:layout_width="match_parent"
+                android:id="@+id/fill_first_name"
+                android:layout_width="@dimen/_120sdp"
                 android:layout_height="wrap_content"
                 app:hintTextColor="@color/colorPrimary"
-                android:hint="@string/your_name">
+                android:hint="@string/first_name">
 
                 <!--this is the actual edit text which takes the input-->
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/user_name"
+                    android:id="@+id/user_first_name"
                     android:textColor="@color/colorPrimary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -54,8 +54,29 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txt_register"
+                android:id="@+id/fill_last_name"
                 style="@style/NewEditText"
-                app:layout_constraintTop_toBottomOf="@id/fill_name"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="wrap_content"
+                android:hint="@string/last_name"
+                app:hintTextColor="@color/colorPrimary"
+                app:layout_constraintStart_toEndOf="@+id/fill_first_name"
+                >
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/user_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/NewEditText"
+                app:layout_constraintTop_toBottomOf="@id/fill_first_name"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/fill_password"

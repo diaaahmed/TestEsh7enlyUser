@@ -1171,11 +1171,11 @@
                                     android:src="@drawable/whats_icon"
                                     android:layout_height="@dimen/_30sdp"/>
 
-                                <com.google.android.material.imageview.ShapeableImageView
-                                    android:id="@+id/generate_pdf"
-                                    android:layout_width="@dimen/_30sdp"
-                                    android:layout_height="@dimen/_30sdp"
-                                    android:src="@drawable/pdf_icon"/>
+<!--                                <com.google.android.material.imageview.ShapeableImageView-->
+<!--                                    android:id="@+id/generate_pdf"-->
+<!--                                    android:layout_width="@dimen/_30sdp"-->
+<!--                                    android:layout_height="@dimen/_30sdp"-->
+<!--                                    android:src="@drawable/pdf_icon"/>-->
 
                             </LinearLayout>
 

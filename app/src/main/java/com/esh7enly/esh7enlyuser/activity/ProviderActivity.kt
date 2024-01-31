@@ -2,6 +2,7 @@ package com.esh7enly.esh7enlyuser.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,6 +79,7 @@ class ProviderActivity : AppCompatActivity(),ProviderClick,IToolbarTitle
     {
         val serviceActivity = Intent(this@ProviderActivity,ServiceActivity::class.java)
         serviceActivity.putExtra(Constants.PROVIDER_ID,provider.id)
+
 
         if(Constants.LANG == Constants.AR)
         {

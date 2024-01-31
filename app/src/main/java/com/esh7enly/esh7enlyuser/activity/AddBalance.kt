@@ -1,18 +1,13 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
-import com.esh7enly.domain.entity.PaymentPojoModel
-import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.totalamountxpayresponse.Data
 import com.esh7enly.esh7enlyuser.BuildConfig
@@ -28,7 +23,6 @@ import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.PaymentStatus
 import com.esh7enly.esh7enlyuser.util.Utils
-import com.esh7enly.esh7enlyuser.viewModel.PaytabsViewModel
 import com.esh7enly.esh7enlyuser.viewModel.XPayViewModel
 import com.payment.paymentsdk.PaymentSdkActivity
 import com.payment.paymentsdk.PaymentSdkConfigBuilder
@@ -42,10 +36,6 @@ import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionClass
 import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionDetails
 import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionType
 import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
-import com.xpay.kotlinutils.XpayUtils
-import com.xpay.kotlinutils.models.PaymentMethods
-import com.xpay.kotlinutils.models.ServerSetting
-import com.xpay.kotlinutils.models.api.pay.PayData
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -53,23 +43,21 @@ import kotlin.random.Random
 private const val TAG = "AddBalance"
 
 @AndroidEntryPoint
-class AddBalance : BaseActivity(), IToolbarTitle {
+class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
 
     private val ui by lazy {
         ActivityAddBalanceBinding.inflate(layoutInflater)
     }
 
+    private var transactionTypeFinal = ""
+
     private val dialog by lazy {
         AppDialogMsg(this, false)
     }
 
-    private var uuid: String? = null
-    private var isCardPayment: Boolean? = null
     private var finalPaymentWay = ""
-    var totalAmountStartSession = 0.0
 
     private val xPayViewModel: XPayViewModel by viewModels()
-    private val payTabsViewModel: PaytabsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,20 +84,10 @@ class AddBalance : BaseActivity(), IToolbarTitle {
             }
         }
 
-        XpayUtils.serverSetting = ServerSetting.LIVE
-        XpayUtils.apiKey = BuildConfig.XPAY_API_KEY_PRODUCTION
-        XpayUtils.communityId = BuildConfig.XPAY_COMMUNITY_ID_PRODUCTION
-        XpayUtils.apiPaymentId = BuildConfig.XPAY_API_PAYMENT_ID_PRODUCTION.toInt()
-
         ui.bankWay.setOnClickListener {
+
             xPayViewModel.setShowNumberNew(PayWays.BANk.toString())
-            xPayViewModel.setShowNumber(false)
-
-            if (ui.amountValue.text.toString().isNotBlank()) {
-                // getTotalAmountForPay(ui.amountValue.text.toString())
-            }
             xPayViewModel.buttonClicked.value = PayWays.BANk.toString()
-
             ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
 
         }
@@ -117,17 +95,10 @@ class AddBalance : BaseActivity(), IToolbarTitle {
         ui.digitalWalletWay.setOnClickListener {
 
             xPayViewModel.setShowNumberNew(PayWays.WALLET.toString())
-            xPayViewModel.setShowNumber(false)
             xPayViewModel.buttonClicked.value = PayWays.WALLET.toString()
             ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
         }
 
-        ui.vodafoneCash.setOnClickListener {
-            xPayViewModel.setShowNumber(true)
-            xPayViewModel.setShowNumberNew(PayWays.CASH.toString())
-            xPayViewModel.buttonClicked.value = PayWays.CASH.toString()
-            ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
-        }
 
         ui.btnPay.setOnClickListener {
 
@@ -147,18 +118,6 @@ class AddBalance : BaseActivity(), IToolbarTitle {
                         getTotalAmount(GatewayTransactionType.wallet.toString())
                     }
 
-                    PayWays.CASH.toString() -> {
-                        if(ui.phoneNumber.text!!.isBlank())
-                        {
-                            ui.phoneNumber.error = getString(R.string.required)
-                        }
-                        else
-                        {
-                            getTotalWithCash()
-
-                        }
-                    }
-
                     else -> {
                         Log.d(TAG, "diaa pay no way")
 
@@ -170,8 +129,9 @@ class AddBalance : BaseActivity(), IToolbarTitle {
 
 
     private fun paytabsClick(
-        transactionType:String,amount:String,totalAmount: String, drawable: Drawable?) {
-        val number = Random(900000000000000000).nextInt()
+        transactionType:String, totalAmount: String, drawable: Drawable?)
+    {
+        val number = Random(9000000000000000000).nextInt()
 
         val configData: PaymentSdkConfigurationDetails =
             generatePaytabsConfigurationDetails(
@@ -182,502 +142,16 @@ class AddBalance : BaseActivity(), IToolbarTitle {
         when(transactionType)
         {
             GatewayTransactionType.visa.toString() ->{
-                PaymentSdkActivity.startCardPayment(this, configData, object :
-                    CallbackPaymentInterface {
-                    override fun onError(error: PaymentSdkError)
-                    {
-                        pDialog.cancel()
+                transactionTypeFinal = GatewayTransactionType.visa.toString()
 
-                        Log.d("TAG", "diaa onError: ${error.msg}")
-                        Toast.makeText(
-                            this@AddBalance, "Error occure ${error.msg}", Toast.LENGTH_SHORT
-                        ).show()
+                PaymentSdkActivity.startCardPayment(this,configData,this)
 
-                        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                            status = PaymentStatus.FAILED.toString(),
-                            // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                            id = Constants.START_SESSION_ID,
-                            amount = amount,
-                            errorCode = error.code.toString(),
-                            errorMsg = error.msg,
-                            payment_method_type = GatewayMethod.paytabs.toString(),
-                            transaction_type = transactionType
-                        )
-
-                        lifecycleScope.launch {
-                            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                                chargeBalanceRequest,
-                                object : OnResponseListener {
-                                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                                    {
-                                        showFailedPay(error.msg,code)
-
-                                    }
-
-                                    override fun onFailed(code: Int, msg: String?) {
-                                        showFailedPay(msg, code)
-
-                                        Log.d(TAG, "diaa on charge failed: $msg")
-                                    }
-
-                                })
-                        }
-                    }
-
-                    override fun onPaymentCancel()
-                    {
-                        pDialog.cancel()
-
-                        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                            status = PaymentStatus.CANCELLED.toString(),
-                            // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                            id = Constants.START_SESSION_ID,
-                            amount = amount,
-                            errorCode = "400",
-                            errorMsg = "Payment cancelled",
-                            payment_method_type = GatewayMethod.paytabs.toString(),
-                            transaction_type = transactionType
-                        )
-
-                        lifecycleScope.launch {
-                            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                                chargeBalanceRequest,
-                                object : OnResponseListener {
-                                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                                    {
-                                        showFailedPay("Payment cancelled",code)
-
-                                    }
-
-                                    override fun onFailed(code: Int, msg: String?) {
-                                        showFailedPay(msg, code)
-
-                                        Log.d(TAG, "diaa on charge failed: $msg")
-                                    }
-
-                                })
-                        }
-
-                        Toast.makeText(this@AddBalance, "Payment canceled", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
-
-                        var chargeBalanceRequest: ChargeBalanceRequestPaytabs
-
-                        if(paymentSdkTransactionDetails.isSuccess == true)
-                        {
-                            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                                status = PaymentStatus.SUCCESSFUL.toString(),
-                                // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                                id = Constants.START_SESSION_ID,
-                                amount = amount,
-                                card_id = paymentSdkTransactionDetails.cartID,
-                                total_amount = paymentSdkTransactionDetails.cartAmount,
-                                cartDescription = paymentSdkTransactionDetails.cartDescription,
-                                errorCode = paymentSdkTransactionDetails.errorCode,
-                                errorMsg = paymentSdkTransactionDetails.errorMsg,
-                                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-                                isOnHold = paymentSdkTransactionDetails.isOnHold,
-                                isPending = paymentSdkTransactionDetails.isPending,
-                                isProcessed = paymentSdkTransactionDetails.isProcessed,
-                                isSuccess = paymentSdkTransactionDetails.isSuccess,
-                                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-                                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-                                token = paymentSdkTransactionDetails.token,
-                                transactionReference = paymentSdkTransactionDetails.transactionReference,
-                                transactionType = paymentSdkTransactionDetails.transactionType,
-                                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-                                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-                                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-                                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-                                payment_method_type = GatewayMethod.paytabs.toString(),
-                                transaction_type = transactionType
-                            )
-                        }
-                        else
-                        {
-                            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                                status = PaymentStatus.FAILED.toString(),
-                                // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                                id = Constants.START_SESSION_ID,
-                                amount = amount,
-                                card_id = paymentSdkTransactionDetails.cartID,
-                                total_amount = paymentSdkTransactionDetails.cartAmount,
-                                cartDescription = paymentSdkTransactionDetails.cartDescription,
-                                errorCode = paymentSdkTransactionDetails.errorCode,
-                                errorMsg = paymentSdkTransactionDetails.errorMsg,
-                                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-                                isOnHold = paymentSdkTransactionDetails.isOnHold,
-                                isPending = paymentSdkTransactionDetails.isPending,
-                                isProcessed = paymentSdkTransactionDetails.isProcessed,
-                                isSuccess = paymentSdkTransactionDetails.isSuccess,
-                                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-                                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-                                token = paymentSdkTransactionDetails.token,
-                                transactionReference = paymentSdkTransactionDetails.transactionReference,
-                                transactionType = paymentSdkTransactionDetails.transactionType,
-                                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-                                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-                                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-                                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-                                payment_method_type = GatewayMethod.paytabs.toString(),
-                                transaction_type = transactionType
-                            )
-                        }
-
-                        lifecycleScope.launch {
-                            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                                chargeBalanceRequest,
-                                object : OnResponseListener {
-                                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                                        pDialog.cancel()
-
-                                        dialog.showSuccessDialog(
-                                            resources.getString(R.string.balance_added),
-                                            resources.getString(R.string.app__ok)
-                                        )
-                                        {
-                                            dialog.cancel()
-                                            finish()
-
-                                        }
-                                        dialog.show()
-
-                                        Log.d(TAG, "diaa on charge success: $msg")
-                                    }
-
-                                    override fun onFailed(code: Int, msg: String?) {
-                                        showFailedPay(msg, code)
-
-                                        Log.d(TAG, "diaa on charge failed: $msg")
-                                    }
-
-                                })
-                        }
-
-
-                        Toast.makeText(
-                            this@AddBalance,
-                            "Paymeny done ${paymentSdkTransactionDetails.cartAmount}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // pDialog.cancel()
-
-                        Log.d("TAG", "diaa token ${paymentSdkTransactionDetails.token}")
-                        Log.d("TAG", "diaa paymentResult ${paymentSdkTransactionDetails.paymentResult}")
-                        Log.d("TAG", "diaa cartCurrency ${paymentSdkTransactionDetails.cartCurrency}")
-                        Log.d("TAG", "diaa cartDescription ${paymentSdkTransactionDetails.cartDescription}")
-                        Log.d("TAG", "diaa cartAmount ${paymentSdkTransactionDetails.cartAmount}")
-                        Log.d("TAG", "diaa cartID ${paymentSdkTransactionDetails.cartID}")
-                        Log.d("TAG", "diaa errorCode ${paymentSdkTransactionDetails.errorCode}")
-                        Log.d("TAG", "diaa errorMsg ${paymentSdkTransactionDetails.errorMsg}")
-                        Log.d(
-                            "TAG",
-                            "diaa payResponseReturn ${paymentSdkTransactionDetails.payResponseReturn}"
-                        )
-
-                        Log.d("TAG", "diaa isSuccess ${paymentSdkTransactionDetails.isSuccess}")
-                        Log.d("TAG", "diaa isAuthorized ${paymentSdkTransactionDetails.isAuthorized}")
-                        Log.d("TAG", "diaa isPending ${paymentSdkTransactionDetails.isPending}")
-                        Log.d("TAG", "diaa isOnHold ${paymentSdkTransactionDetails.isOnHold}")
-                        Log.d("TAG", "diaa isProcessed ${paymentSdkTransactionDetails.isProcessed}")
-                        Log.d("TAG", "diaa cardType ${paymentSdkTransactionDetails.paymentInfo!!.cardType}")
-                        Log.d(
-                            "TAG",
-                            "diaa cardScheme ${paymentSdkTransactionDetails.paymentInfo!!.cardScheme}"
-                        )
-                        Log.d("TAG", "diaa transactionType ${paymentSdkTransactionDetails.transactionType}")
-                        Log.d(
-                            "TAG",
-                            "diaa transactionReference ${paymentSdkTransactionDetails.transactionReference}"
-                        )
-                        Log.d("TAG", "diaa redirectUrl ${paymentSdkTransactionDetails.redirectUrl}")
-
-                        Log.d(
-                            "TAG",
-                            "diaa paymentDescription ${paymentSdkTransactionDetails.paymentInfo!!.paymentDescription}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa cardScheme ${paymentSdkTransactionDetails.paymentInfo!!.cardScheme}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa transactionTime ${paymentSdkTransactionDetails.paymentResult!!.transactionTime}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa responseCode ${paymentSdkTransactionDetails.paymentResult!!.responseCode}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa responseMessage ${paymentSdkTransactionDetails.paymentResult!!.responseMessage}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa responseStatus ${paymentSdkTransactionDetails.paymentResult!!.responseStatus}"
-                        )
-
-
-                    }
-                })
             }
 
             GatewayTransactionType.wallet.toString() ->{
+                transactionTypeFinal = GatewayTransactionType.wallet.toString()
 
-                PaymentSdkActivity.startAlternativePaymentMethods(this, configData, object :
-                    CallbackPaymentInterface {
-                    override fun onError(error: PaymentSdkError)
-                    {
-                        pDialog.cancel()
-
-                        Log.d("TAG", "diaa onError: ${error.msg}")
-                        Toast.makeText(
-                            this@AddBalance, "Error occure ${error.msg}", Toast.LENGTH_SHORT
-                        ).show()
-
-                        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                            status = PaymentStatus.FAILED.toString(),
-                            // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                            id = Constants.START_SESSION_ID,
-                            amount = amount,
-                            errorCode = error.code.toString(),
-                            errorMsg = error.msg,
-                            payment_method_type = GatewayMethod.paytabs.toString(),
-                            transaction_type = transactionType
-                        )
-
-                        lifecycleScope.launch {
-                            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                                chargeBalanceRequest,
-                                object : OnResponseListener {
-                                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                                    {
-                                        showFailedPay(error.msg,code)
-
-                                    }
-
-                                    override fun onFailed(code: Int, msg: String?) {
-                                        showFailedPay(msg, code)
-
-                                        Log.d(TAG, "diaa on charge failed: $msg")
-                                    }
-
-                                })
-                        }
-                    }
-
-                    override fun onPaymentCancel()
-                    {
-                        pDialog.cancel()
-
-                        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                            status = PaymentStatus.CANCELLED.toString(),
-                            // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                            id = Constants.START_SESSION_ID,
-                            amount = amount,
-                            errorCode = "400",
-                            errorMsg = "Payment cancelled",
-                            payment_method_type = GatewayMethod.paytabs.toString(),
-                            transaction_type = transactionType
-                        )
-
-                        lifecycleScope.launch {
-                            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                                chargeBalanceRequest,
-                                object : OnResponseListener {
-                                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                                    {
-                                        showFailedPay("Payment cancelled",code)
-
-                                    }
-
-                                    override fun onFailed(code: Int, msg: String?) {
-                                        showFailedPay(msg, code)
-
-                                        Log.d(TAG, "diaa on charge failed: $msg")
-                                    }
-
-                                })
-                        }
-
-                        Toast.makeText(this@AddBalance, "Payment canceled", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
-
-                        var chargeBalanceRequest: ChargeBalanceRequestPaytabs
-
-                        if(paymentSdkTransactionDetails.isSuccess == true)
-                        {
-                            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                                status = PaymentStatus.SUCCESSFUL.toString(),
-                                // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                                id = Constants.START_SESSION_ID,
-                                amount = amount,
-                                card_id = paymentSdkTransactionDetails.cartID,
-                                total_amount = paymentSdkTransactionDetails.cartAmount,
-                                cartDescription = paymentSdkTransactionDetails.cartDescription,
-                                errorCode = paymentSdkTransactionDetails.errorCode,
-                                errorMsg = paymentSdkTransactionDetails.errorMsg,
-                                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-                                isOnHold = paymentSdkTransactionDetails.isOnHold,
-                                isPending = paymentSdkTransactionDetails.isPending,
-                                isProcessed = paymentSdkTransactionDetails.isProcessed,
-                                isSuccess = paymentSdkTransactionDetails.isSuccess,
-                                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-                                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-                                token = paymentSdkTransactionDetails.token,
-                                transactionReference = paymentSdkTransactionDetails.transactionReference,
-                                transactionType = paymentSdkTransactionDetails.transactionType,
-                                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-                                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-                                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-                                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-                                payment_method_type = GatewayMethod.paytabs.toString(),
-                                transaction_type = transactionType
-                            )
-                        }
-                        else
-                        {
-                            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                                status = PaymentStatus.FAILED.toString(),
-                                // total_amount_piasters = paymentSdkTransactionDetails.cartAmount,
-                                id = Constants.START_SESSION_ID,
-                                amount = amount,
-                                card_id = paymentSdkTransactionDetails.cartID,
-                                total_amount = paymentSdkTransactionDetails.cartAmount,
-                                cartDescription = paymentSdkTransactionDetails.cartDescription,
-                                errorCode = paymentSdkTransactionDetails.errorCode,
-                                errorMsg = paymentSdkTransactionDetails.errorMsg,
-                                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-                                isOnHold = paymentSdkTransactionDetails.isOnHold,
-                                isPending = paymentSdkTransactionDetails.isPending,
-                                isProcessed = paymentSdkTransactionDetails.isProcessed,
-                                isSuccess = paymentSdkTransactionDetails.isSuccess,
-                                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-                                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-                                token = paymentSdkTransactionDetails.token,
-                                transactionReference = paymentSdkTransactionDetails.transactionReference,
-                                transactionType = paymentSdkTransactionDetails.transactionType,
-                                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-                                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-                                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-                                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-                                payment_method_type = GatewayMethod.paytabs.toString(),
-                                transaction_type = transactionType
-                            )
-                        }
-
-                        lifecycleScope.launch {
-                            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                                chargeBalanceRequest,
-                                object : OnResponseListener {
-                                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                                        pDialog.cancel()
-
-                                        dialog.showSuccessDialog(
-                                            resources.getString(R.string.balance_added),
-                                            resources.getString(R.string.app__ok)
-                                        )
-                                        {
-                                            dialog.cancel()
-                                            finish()
-
-                                        }
-                                        dialog.show()
-
-                                        Log.d(TAG, "diaa on charge success: $msg")
-                                    }
-
-                                    override fun onFailed(code: Int, msg: String?) {
-                                        showFailedPay(msg, code)
-
-                                        Log.d(TAG, "diaa on charge failed: $msg")
-                                    }
-
-                                })
-                        }
-
-
-                        Toast.makeText(
-                            this@AddBalance,
-                            "Paymeny done ${paymentSdkTransactionDetails.cartAmount}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // pDialog.cancel()
-
-                        Log.d("TAG", "diaa token ${paymentSdkTransactionDetails.token}")
-                        Log.d("TAG", "diaa paymentResult ${paymentSdkTransactionDetails.paymentResult}")
-                        Log.d("TAG", "diaa cartCurrency ${paymentSdkTransactionDetails.cartCurrency}")
-                        Log.d("TAG", "diaa cartDescription ${paymentSdkTransactionDetails.cartDescription}")
-                        Log.d("TAG", "diaa cartAmount ${paymentSdkTransactionDetails.cartAmount}")
-                        Log.d("TAG", "diaa cartID ${paymentSdkTransactionDetails.cartID}")
-                        Log.d("TAG", "diaa errorCode ${paymentSdkTransactionDetails.errorCode}")
-                        Log.d("TAG", "diaa errorMsg ${paymentSdkTransactionDetails.errorMsg}")
-                        Log.d(
-                            "TAG",
-                            "diaa payResponseReturn ${paymentSdkTransactionDetails.payResponseReturn}"
-                        )
-
-                        Log.d("TAG", "diaa isSuccess ${paymentSdkTransactionDetails.isSuccess}")
-                        Log.d("TAG", "diaa isAuthorized ${paymentSdkTransactionDetails.isAuthorized}")
-                        Log.d("TAG", "diaa isPending ${paymentSdkTransactionDetails.isPending}")
-                        Log.d("TAG", "diaa isOnHold ${paymentSdkTransactionDetails.isOnHold}")
-                        Log.d("TAG", "diaa isProcessed ${paymentSdkTransactionDetails.isProcessed}")
-                        Log.d("TAG", "diaa cardType ${paymentSdkTransactionDetails.paymentInfo!!.cardType}")
-                        Log.d(
-                            "TAG",
-                            "diaa cardScheme ${paymentSdkTransactionDetails.paymentInfo!!.cardScheme}"
-                        )
-                        Log.d("TAG", "diaa transactionType ${paymentSdkTransactionDetails.transactionType}")
-                        Log.d(
-                            "TAG",
-                            "diaa transactionReference ${paymentSdkTransactionDetails.transactionReference}"
-                        )
-                        Log.d("TAG", "diaa redirectUrl ${paymentSdkTransactionDetails.redirectUrl}")
-
-                        Log.d(
-                            "TAG",
-                            "diaa paymentDescription ${paymentSdkTransactionDetails.paymentInfo!!.paymentDescription}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa cardScheme ${paymentSdkTransactionDetails.paymentInfo!!.cardScheme}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa transactionTime ${paymentSdkTransactionDetails.paymentResult!!.transactionTime}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa responseCode ${paymentSdkTransactionDetails.paymentResult!!.responseCode}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa responseMessage ${paymentSdkTransactionDetails.paymentResult!!.responseMessage}"
-                        )
-
-                        Log.d(
-                            "TAG",
-                            "diaa responseStatus ${paymentSdkTransactionDetails.paymentResult!!.responseStatus}"
-                        )
-
-
-                    }
-                })
+                PaymentSdkActivity.startAlternativePaymentMethods(this,configData,this)
             }
 
         }
@@ -688,12 +162,9 @@ class AddBalance : BaseActivity(), IToolbarTitle {
         value: String,
         drawable: Drawable?
     ): PaymentSdkConfigurationDetails {
-        // Here you can enter your profile id from payabs account
          val profileId = BuildConfig.PROFILE_ID_PRODUCTION
         //val profileId = "135102"
-        // Here you can enter server key from payabs account
         val serverKey = BuildConfig.SERVER_KEY_PRODUCTION
-        // Here you can enter your client key from payabs account
         val clientKey = BuildConfig.CLIENT_KEY_PRODUCTION
         val transactionTitle = resources.getString(R.string.paytabs_title)
         val cartDesc = "Add esh7enly balance" // Description in paytab info
@@ -740,76 +211,6 @@ class AddBalance : BaseActivity(), IToolbarTitle {
 
         return configData.build()
     }
-
-    private fun getTotalWithCash() {
-
-        pDialog.show()
-
-        lifecycleScope.launch {
-
-            val params =
-                TotalAmountPojoModel.Params("billing_account", ui.phoneNumber.text.toString())
-
-            val totalAmountPojoModel = TotalAmountPojoModel(
-                Constants.IMEI,
-                3968, ui.amountValue.text.toString(), mutableListOf(params)
-            )
-
-            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
-                totalAmountPojoModel,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        pDialog.dismiss()
-
-                        val paymentPojoModel =
-                            PaymentPojoModel(
-                                Constants.IMEI,
-                                "",
-                                3968,
-                                ui.amountValue.text.toString(),
-                                mutableListOf(params)
-                            )
-
-                        payWithCash(paymentPojoModel)
-
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        showFailedPay(msg, code)
-                    }
-                })
-        }
-    }
-
-    private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
-        pDialog.show()
-
-        lifecycleScope.launch {
-            serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        pDialog.dismiss()
-
-                        dialog.showSuccessDialog(
-                            resources.getString(R.string.balance_added),
-                            resources.getString(R.string.app__ok)
-                        )
-                        {
-                            dialog.cancel()
-                            finish()
-
-                        }
-                        dialog.show()
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        showFailedPay(msg, code)
-                        Log.d(TAG, "diaa payWithCash error: $msg")
-                    }
-                })
-        }
-    }
-
 
     override fun initToolBar() {
         ui.addBalanceToolbar.title = resources.getString(R.string.add_balance)
@@ -866,70 +267,7 @@ class AddBalance : BaseActivity(), IToolbarTitle {
 
                             pDialog.show()
 
-                            lifecycleScope.launch {
-                                xPayViewModel.startSessionForPay(
-                                    payment_method_type = GatewayMethod.paytabs.toString(),
-                                    transaction_type = transactionType,
-                                    sharedHelper?.getUserToken()
-                                    .toString(),
-                                    data.amount.toString(),
-                                    "69",
-                                    object : OnResponseListener {
-                                        override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                                        {
-                                            lifecycleScope.launch {
-                                                try {
-                                                    val drawable =
-                                                        ContextCompat.getDrawable(
-                                                            this@AddBalance,
-                                                            R.drawable.new_logo_trans_small
-                                                        )
-
-                                                    paytabsClick(
-                                                        transactionType,
-                                                        amount = ui.amountValue.text.toString(),
-                                                        totalAmount = data.amount.toString(),
-                                                        drawable
-                                                    )
-
-//                                                    paytabsClick(
-//                                                        ui.amountValue.text.toString(),
-//                                                        drawable
-//                                                    )
-
-                                                    // XpayUtils.prepareAmount(data.amount)
-//                                                    XpayUtils.prepareAmount(
-//                                                        ui.amountValue.text.toString().toDouble()
-//                                                    )
-//                                                    XpayUtils.payUsing = PaymentMethods.CARD
-//
-//                                                    // val totalAmount = PaymentMethods.CARD
-//
-//                                                    // set billing information
-//                                                    XpayUtils.billingInfo = BillingInfo(
-//                                                        sharedHelper?.getStoreName().toString(),
-//                                                        sharedHelper?.getUserEmail().toString(),
-//                                                        "+2" + sharedHelper?.getUserPhone()
-//                                                            .toString()
-//                                                    )
-//
-//                                                    // make payment
-//                                                    val paymentResponse = XpayUtils.pay()
-//                                                    checkPaymentType(paymentResponse)
-
-                                                } catch (e: Exception) {
-
-                                                    showFailedPay(e.message, code)
-                                                }
-                                            }
-                                        }
-
-                                        override fun onFailed(code: Int, msg: String?) {
-                                            Log.d(TAG, "diaa onFailed: $msg")
-                                            showFailedPay(msg, code)
-                                        }
-                                    })
-                            }
+                            startSessionForPay(data.amount.toString(),transactionType)
 
                         }.show()
 
@@ -952,95 +290,50 @@ class AddBalance : BaseActivity(), IToolbarTitle {
         }
     }
 
-//    private fun payWithXPay() {
-//        pDialog.show()
-//
-//        getTotalAmount()
-//    }
+    private fun startSessionForPay(totalAmount: String,transactionType:String) {
+        lifecycleScope.launch {
+            xPayViewModel.startSessionForPay(
+                payment_method_type = GatewayMethod.paytabs.toString(),
+                transaction_type = transactionType,
+                sharedHelper?.getUserToken()
+                    .toString(),
+                totalAmount,
+                "69",
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
+                    {
+                        lifecycleScope.launch {
+                            try {
+                                val drawable =
+                                    ContextCompat.getDrawable(
+                                        this@AddBalance,
+                                        R.drawable.new_logo_trans_small
+                                    )
 
-    private fun checkPaymentType(paymentResponse: PayData?) {
-        uuid = paymentResponse?.transaction_uuid
+                                paytabsClick(
+                                    transactionType,
+                                    totalAmount = totalAmount,
+                                    drawable
+                                )
 
-        // If paymentResponse.iframe_url is not null that means we use Card(Master - Visa)
-        // So we go to the iframe
-        paymentResponse?.iframe_url.let { iframeUrl ->
-            isCardPayment = true
-            val builder = CustomTabsIntent.Builder()
+                            } catch (e: Exception) {
 
-            builder.setToolbarColor(ContextCompat.getColor(this@AddBalance,
-                R.color.colorPrimary))
-            // builder.setShowTitle(true)
-            //  builder.setUrlBarHidingEnabled(true)
-            val customTabsIntent: CustomTabsIntent = builder.build()
-            customTabsIntent.launchUrl(this@AddBalance, Uri.parse(iframeUrl))
+                                showFailedPay(e.message, code)
+                            }
+                        }
+                    }
+
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
+                    }
+                })
         }
+
     }
 
-//    @SuppressLint("SetTextI18n")
-//    override fun onRestart()
-//    {
-//       // pDialog.cancel()
-//
-//        super.onRestart()
-//        // Receive transaction information
-//        lifecycleScope.launch {
-//            try {
-//                uuid.let { uui ->
-//                    // dialog?.cancel()
-//                    val res = XpayUtils.getTransaction(uui!!)
-//
-//                    val chargeBalanceRequest = ChargeBalanceRequest(
-//                        id = Constants.START_SESSION_ID,
-//                        amount = ui.amountValue.text.toString(),
-//                        total_amount = res?.total_amount.toString(),
-//                        card_id = res?.id.toString(),
-//                        total_amount_currency = res?.total_amount_currency.toString(),
-//                        total_amount_piasters = res?.total_amount_piasters.toString(),
-//                        status = res?.status.toString(),
-//                        payment_for = res?.payment_for.toString(),
-//                        uuid = res?.uuid.toString(),
-//                        member_id = res?.member_id.toString(),
-//                        quantity = res?.quantity.toString()
-//                    )
-//
-//                    xPayViewModel.chargeBalance(sharedHelper?.getUserToken().toString(),
-//                        chargeBalanceRequest,
-//                        object : OnResponseListener {
-//                            override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-//                                pDialog.cancel()
-//
-//                                dialog.showSuccessDialog(
-//                                    resources.getString(R.string.balance_added),
-//                                    resources.getString(R.string.app__ok)
-//                                )
-//                                {
-//                                    dialog.cancel()
-//                                    finish()
-//
-//                                }
-//                                dialog.show()
-//
-//                                Log.d(TAG, "diaa on charge success: $msg")
-//                            }
-//
-//                            override fun onFailed(code: Int, msg: String?) {
-//                                showFailedPay(msg, code)
-//
-//                                Log.d(TAG, "diaa on charge failed: $msg")
-//                            }
-//
-//                        })
-//
-//                }
-//            } catch (e: Exception) {
-//                Log.d(TAG, "diaa onRestart error: ${e.message}")
-//            }
-//        }
-//    }
-
-    private fun showFailedPay(msg: String?, code: Int)
-    {
+    private fun showFailedPay(msg: String?, code: Int) {
         pDialog.cancel()
+
         dialog.showErrorDialogWithAction(
             msg, resources.getString(R.string.app__ok)
         ) {
@@ -1053,5 +346,151 @@ class AddBalance : BaseActivity(), IToolbarTitle {
             }
         }.show()
     }
+    override fun onError(error: PaymentSdkError)
+    {
+        pDialog.cancel()
 
+        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+            status = PaymentStatus.FAILED.toString(),
+            id = Constants.START_SESSION_ID,
+            amount = ui.amountValue.text.toString(),
+            errorCode = error.code.toString(),
+            errorMsg = error.msg,
+            payment_method_type = GatewayMethod.paytabs.toString(),
+            transaction_type = transactionTypeFinal
+        )
+
+        requestChargeFailed(chargeBalanceRequest,error.msg.toString())
+    }
+
+    override fun onPaymentCancel()
+    {
+        pDialog.cancel()
+
+        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+            status = PaymentStatus.CANCELLED.toString(),
+            id = Constants.START_SESSION_ID,
+            amount = ui.amountValue.text.toString(),
+            errorCode = "400",
+            errorMsg = "Payment cancelled",
+            payment_method_type = GatewayMethod.paytabs.toString(),
+            transaction_type = transactionTypeFinal
+        )
+
+        requestChargeFailed(chargeBalanceRequest,"Payment cancelled")
+    }
+
+    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
+        val chargeBalanceRequest: ChargeBalanceRequestPaytabs
+
+        if(paymentSdkTransactionDetails.isSuccess == true)
+        {
+            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+                status = PaymentStatus.SUCCESSFUL.toString(),
+                id = Constants.START_SESSION_ID,
+                amount = ui.amountValue.text.toString(),
+                card_id = paymentSdkTransactionDetails.cartID,
+                total_amount = paymentSdkTransactionDetails.cartAmount,
+                cartDescription = paymentSdkTransactionDetails.cartDescription,
+                errorCode = paymentSdkTransactionDetails.errorCode,
+                errorMsg = paymentSdkTransactionDetails.errorMsg,
+                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
+                isOnHold = paymentSdkTransactionDetails.isOnHold,
+                isPending = paymentSdkTransactionDetails.isPending,
+                isProcessed = paymentSdkTransactionDetails.isProcessed,
+                isSuccess = paymentSdkTransactionDetails.isSuccess,
+                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
+                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
+                token = paymentSdkTransactionDetails.token,
+                transactionReference = paymentSdkTransactionDetails.transactionReference,
+                transactionType = paymentSdkTransactionDetails.transactionType,
+                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
+                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
+                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
+                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
+                payment_method_type = GatewayMethod.paytabs.toString(),
+                transaction_type = transactionTypeFinal
+            )
+        }
+        else
+        {
+            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+                status = PaymentStatus.FAILED.toString(),
+                id = Constants.START_SESSION_ID,
+                amount = ui.amountValue.text.toString(),
+                card_id = paymentSdkTransactionDetails.cartID,
+                total_amount = paymentSdkTransactionDetails.cartAmount,
+                cartDescription = paymentSdkTransactionDetails.cartDescription,
+                errorCode = paymentSdkTransactionDetails.errorCode,
+                errorMsg = paymentSdkTransactionDetails.errorMsg,
+                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
+                isOnHold = paymentSdkTransactionDetails.isOnHold,
+                isPending = paymentSdkTransactionDetails.isPending,
+                isProcessed = paymentSdkTransactionDetails.isProcessed,
+                isSuccess = paymentSdkTransactionDetails.isSuccess,
+                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
+                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
+                token = paymentSdkTransactionDetails.token,
+                transactionReference = paymentSdkTransactionDetails.transactionReference,
+                transactionType = paymentSdkTransactionDetails.transactionType,
+                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
+                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
+                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
+                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
+                payment_method_type = GatewayMethod.paytabs.toString(),
+                transaction_type = transactionTypeFinal
+            )
+        }
+
+        requestToChargeBalance(chargeBalanceRequest)
+
+    }
+
+    private fun requestToChargeBalance(chargeBalanceRequest:ChargeBalanceRequestPaytabs) {
+        lifecycleScope.launch {
+            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
+                chargeBalanceRequest,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        pDialog.cancel()
+
+                        dialog.showSuccessDialog(
+                            resources.getString(R.string.balance_added),
+                            resources.getString(R.string.app__ok)
+                        )
+                        {
+                            dialog.cancel()
+                            finish()
+
+                        }
+                        dialog.show()
+
+                    }
+
+                    override fun onFailed(code: Int, msg: String?)
+                    {
+                        showFailedPay(msg, code)
+                    }
+                })
+        }
+    }
+
+    private fun requestChargeFailed(chargeBalanceRequest:ChargeBalanceRequestPaytabs,
+    errorMsg:String)
+    {
+        lifecycleScope.launch {
+            xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
+                chargeBalanceRequest,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
+                    {
+                        showFailedPay(errorMsg,code)
+                    }
+
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
+                    }
+                })
+        }
+    }
 }

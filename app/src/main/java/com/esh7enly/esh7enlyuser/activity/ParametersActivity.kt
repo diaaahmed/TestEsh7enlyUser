@@ -611,18 +611,21 @@ open class ParametersActivity : BaseActivity()
                     clearParamsData()
 
                     // Open inquire activity
-                    InquireActivity.getIntent(paymentPojoModel.serviceId,
-                        serviceViewModel.serviceType,
-                        serviceViewModel.acceptCheckIntegrationProviderStatus,
-                        serviceViewModel.image.toString(),
-                        serviceViewModel.acceptAmountChange,
-                        serviceViewModel.serviceName.toString(),
-                        serviceViewModel.serviceName.toString(),
+                    InquireActivity.getIntent(
+                        serviceId = paymentPojoModel.serviceId,
+                        serviceType = serviceViewModel.serviceType,
+                        acceptCheckIntegrationProviderStatus = serviceViewModel.acceptCheckIntegrationProviderStatus,
+                        image = serviceViewModel.image.toString(),
+                        acceptAmountChange =  serviceViewModel.acceptAmountChange,
+                        nameAr = serviceViewModel.serviceName.toString(),
+                        nameEn = serviceViewModel.serviceName.toString(),
                         serviceViewModel.providerName.toString(),
-                        obj as DataEntity,
-                        paymentPojoModel,
-                        serviceViewModel.serviceTypeCode,
-                        this@ParametersActivity,serviceViewModel.acceptAmountChange)
+                        data = obj as DataEntity,
+                        paymentPojoModel = paymentPojoModel,
+                        serviceTypeCode = serviceViewModel.serviceTypeCode,
+                        activity =this@ParametersActivity,
+                        serviceAmountInput = serviceViewModel.acceptAmountChange
+                    )
                 }
 
                 override fun onFailed(code: Int, msg: String?)

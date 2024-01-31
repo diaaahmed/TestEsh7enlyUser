@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:fontFamily="@font/readexproextralight"
+                    app:fontFamily="@font/readexproextralight"
                     app:layout_constraintStart_toStartOf="parent"
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"

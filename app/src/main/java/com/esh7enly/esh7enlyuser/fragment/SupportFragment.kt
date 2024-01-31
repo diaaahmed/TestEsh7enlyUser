@@ -78,7 +78,7 @@ class SupportFragment : Fragment() {
     }
 
     private fun callSupport() {
-        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${resources.getString(R.string.phone_number_call)}"))
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${resources.getString(R.string.hotline)}"))
         startActivity(intent)
     }
 

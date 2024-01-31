@@ -65,8 +65,8 @@
     <string name="balance_available"> جنية متاح</string>
 
     <string name="email">البريد الإلكترونى</string>
-    <string name="bank_card">كارت بنكى</string>
-    <string name="digital_wallet">محفظة</string>
+    <string name="bank_card">الكارت البنكى</string>
+    <string name="digital_wallet">المحافظ الالكترونية</string>
     <string name="support">الدعم والتواصل</string>
     <string name="call_us">تواصل معنا</string>
     <string name="chatting">تواصل على واتساب</string>
@@ -161,7 +161,12 @@
 
 
     <string name="your_name">رجاء كتابة الإسم الأول والأخير</string>
+    <string name="first_name">الإسم الأول</string>
+    <string name="last_name">الإسم الأخير</string>
     <string name="signUp">إنشاء حساب</string>
+
+    <string name="error_message__blank_first_name">يرجى كتابة الإسم الأول</string>
+    <string name="error_message__blank_last_name">يرجى كتابة الإسم الأخير</string>
 
     <string name="your_password">الباسورد الخاص بك</string>
     <string name="have_account">لديك حساب، سجل الدخول</string>

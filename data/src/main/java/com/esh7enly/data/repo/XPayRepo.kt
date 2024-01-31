@@ -1,7 +1,6 @@
 package com.esh7enly.data.repo
 
 import com.esh7enly.data.remote.ApiService
-import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequest
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.startsessionresponse.StartSessionResponse
@@ -11,10 +10,6 @@ import javax.inject.Inject
 
 class XPayRepo @Inject constructor(private val apiService: ApiService)
 {
-    suspend fun chargeBalance(token: String, chargeBalanceRequest: ChargeBalanceRequest)
-            : Response<ChargeBalanceResponse> = apiService.chargeBalance(token, chargeBalanceRequest)
-
-
     suspend fun chargeBalanceWithPaytabs(token: String, chargeBalanceRequest: ChargeBalanceRequestPaytabs)
             : Response<ChargeBalanceResponse> = apiService.chargeBalanceWithPaytabs(token, chargeBalanceRequest)
 

@@ -89,57 +89,58 @@ class ReceiptActivity : AppCompatActivity()
         ui.chatWhats.setOnClickListener {
             shareImage() }
 
-        ui.generatePdf.setOnClickListener{
-            bmp = loadBitmap(view,view.width,view.height) as Bitmap
-            pdf()
-        }
+//        ui.generatePdf.setOnClickListener{
+//            bmp = loadBitmap(view,view.width,view.height) as Bitmap
+//            pdf()
+//        }
 
         initData()
 
     }
 
-    private fun loadBitmap(linear: View, width: Int, height: Int): Bitmap? {
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        linear.draw(canvas)
-        return bitmap
-    }
-
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    private fun pdf() {
-        val displayMetrics = DisplayMetrics()
-        this.windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val width = displayMetrics.widthPixels
-        val height = displayMetrics.heightPixels
-        val convertWidth = width
-        val convertHeight = height
-
-        val pdfDocument = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(
-            convertWidth,
-            convertHeight, 1
-        ).create()
-        val page = pdfDocument.startPage(pageInfo)
-        val canvas = page.canvas
-        val paint = Paint()
-        canvas.drawPaint(paint)
-        val bitmap = Bitmap.createScaledBitmap(bmp, convertWidth, convertHeight, true)
-        canvas.drawBitmap(bitmap, 0f, 0f, null)
-        pdfDocument.finishPage(page)
-
-        //val targetPdf = "sdcard/page.pdf"
-        val targetPdf = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val file = File(targetPdf, "page.pdf")
-        try{
-            pdfDocument.writeTo(FileOutputStream(file))
-            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
-        }
-        catch(e:Exception)
-        {
-            Toast.makeText(this, "Wrong ${e.message}", Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "diaa pdf error: ${e.message}")
-        }
-    }
+//    private fun loadBitmap(linear: View, width: Int, height: Int): Bitmap? {
+//        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+//        val canvas = Canvas(bitmap)
+//        linear.draw(canvas)
+//        return bitmap
+//    }
+//
+//    @RequiresApi(Build.VERSION_CODES.KITKAT)
+//    private fun pdf() {
+//        val displayMetrics = DisplayMetrics()
+//        this.windowManager.defaultDisplay.getMetrics(displayMetrics)
+//        val width = displayMetrics.widthPixels
+//        val height = displayMetrics.heightPixels
+//        val convertWidth = width
+//        val convertHeight = height
+//
+//        val pdfDocument = PdfDocument()
+//        val pageInfo = PdfDocument.PageInfo.Builder(
+//            convertWidth,
+//            convertHeight, 1
+//        ).create()
+//        val page = pdfDocument.startPage(pageInfo)
+//        val canvas = page.canvas
+//        val paint = Paint()
+//        canvas.drawPaint(paint)
+//        val bitmap = Bitmap.createScaledBitmap(bmp, convertWidth, convertHeight, true)
+//        canvas.drawBitmap(bitmap, 0f, 0f, null)
+//        pdfDocument.finishPage(page)
+//
+//
+//        //val targetPdf = "sdcard/page.pdf"
+//        val targetPdf = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+//        val file = File(targetPdf, "page.pdf")
+//        try{
+//            pdfDocument.writeTo(FileOutputStream(file))
+//            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
+//        }
+//        catch(e:Exception)
+//        {
+//            Toast.makeText(this, "Wrong ${e.message}", Toast.LENGTH_SHORT).show()
+//            Log.d(TAG, "diaa pdf error: ${e.message}")
+//        }
+//    }
 
     @SuppressLint("SetTextI18n")
     private fun initData() {

@@ -83,22 +83,6 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
-
-                    <TextView
-                        android:gravity="center_horizontal"
-                        android:background="@drawable/payment_way_background"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        digitalWalletColor="@{xPayViewModel.showPhoneNumberNew.toString()}"
-                        android:textSize="@dimen/_13ssp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:padding="@dimen/_5sdp"
-                        android:id="@+id/digitalWalletWay"
-                        android:drawablePadding="@dimen/_6sdp"
-                        android:text="@string/digital_wallet"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:drawableStartCompat="@drawable/wallet" />
-
                         <LinearLayout
                             android:padding="@dimen/_1sdp"
                             android:id="@+id/lineWays"
@@ -110,61 +94,36 @@
                             android:orientation="horizontal">
 
                                <TextView
+                                   android:gravity="center"
                                    visaColorNew="@{xPayViewModel.showPhoneNumberNew.toString()}"
                                    android:layout_weight="1"
-                                   android:textSize="@dimen/_13ssp"
+                                   android:textSize="@dimen/_11ssp"
                                    app:layout_constraintTop_toTopOf="parent"
                                    android:padding="@dimen/_5sdp"
                                    android:id="@+id/bankWay"
                                    android:drawablePadding="@dimen/_6sdp"
                                    android:text="@string/bank_card"
                                    android:layout_width="0dp"
+                                   android:layout_marginEnd="@dimen/_10sdp"
                                    android:layout_height="match_parent"
                                    app:drawableStartCompat="@drawable/bank" />
 
-
                             <TextView
-                                cashColorNew="@{xPayViewModel.showPhoneNumberNew.toString()}"
+                                android:gravity="center"
+                                digitalWalletColor="@{xPayViewModel.showPhoneNumberNew.toString()}"
                                 android:layout_weight="1"
-                                android:textSize="@dimen/_13ssp"
+                                android:textSize="@dimen/_11ssp"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 android:padding="@dimen/_5sdp"
-                                android:id="@+id/vodafoneCash"
+                                android:id="@+id/digitalWalletWay"
                                 android:drawablePadding="@dimen/_6sdp"
-                                android:text="@string/vodafone_cash"
+                                android:text="@string/digital_wallet"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                app:drawableStartCompat="@drawable/vodafone_cash" />
+                                app:drawableStartCompat="@drawable/wallet" />
 
                         </LinearLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        showFillPhoneNumber="@{xPayViewModel.showPhoneNumber.booleanValue()}"
-                        android:id="@+id/fillPhoneNumber"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_20sdp"
-                        android:layout_marginTop="@dimen/_20sdp"
-                        android:layout_marginEnd="@dimen/_20sdp"
-                        android:hint="@string/enter_phone_number"
-                        app:boxCornerRadiusBottomEnd="@dimen/_10sdp"
-                        app:boxCornerRadiusBottomStart="@dimen/_10sdp"
-                        app:boxCornerRadiusTopEnd="@dimen/_10sdp"
-                        app:boxCornerRadiusTopStart="@dimen/_10sdp"
-                        app:hintTextColor="@color/colorPrimary">
-
-                        <!--this is the actual edit text which takes the input-->
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/phoneNumber"
-                            android:inputType="number"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/colorPrimary" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:padding="@dimen/_10sdp"

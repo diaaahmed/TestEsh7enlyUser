@@ -107,7 +107,8 @@ class SignupActivity : AppCompatActivity()
 
     private fun createAccount()
     {
-        val fullName = ui.userName.text.toString().trim()
+        val firstName = ui.userFirstName.text.toString().trim()
+        val lastName = ui.userLastName.text.toString().trim()
         val password = ui.userPassword.text.toString().trim()
         val confirmPassword = ui.confirmPassword.text.toString().trim()
         val email = ui.userEmail.text.toString()
@@ -116,9 +117,15 @@ class SignupActivity : AppCompatActivity()
         {
             pDialog.cancel()
 
-            if(fullName.isEmpty())
+            if(firstName.isEmpty())
             {
-                alertDialog.showWarningDialog(resources.getString(R.string.error_message__blank_full_name),
+                alertDialog.showWarningDialog(resources.getString(R.string.error_message__blank_first_name),
+                    resources.getString(R.string.app__ok))
+                alertDialog.show()
+            }
+            else if(lastName.isEmpty())
+            {
+                alertDialog.showWarningDialog(resources.getString(R.string.error_message__blank_last_name),
                     resources.getString(R.string.app__ok))
                 alertDialog.show()
             }
@@ -151,6 +158,7 @@ class SignupActivity : AppCompatActivity()
             }
             else
             {
+                val fullName = "$firstName $lastName"
                 // create account with api
                 userViewModel.registerNewAccount(RegisterModel(fullName,userViewModel.phoneNumber!!,password,email),
                     object : OnResponseListener {

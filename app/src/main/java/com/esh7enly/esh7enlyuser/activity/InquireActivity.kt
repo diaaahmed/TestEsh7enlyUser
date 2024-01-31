@@ -643,7 +643,8 @@ class InquireActivity : AppCompatActivity() {
         }
     }
 
-    private fun submitBtn() {
+    private fun submitBtn()
+    {
         if (connectivity?.isConnected == true)
         {
             dialog.showSuccessDialogWithAction(
@@ -687,12 +688,12 @@ class InquireActivity : AppCompatActivity() {
             // Add to database for cancelling later if need
 
             serviceViewModel.insertToFawryDao(
-                FawryEntity(paymentPojoModel.paymentTransactionId.toInt(), paymentPojoModel.imei, Calendar.getInstance().timeInMillis))
+                FawryEntity(paymentPojoModel.paymentTransactionId.toInt(),
+                    paymentPojoModel.imei, Calendar.getInstance().timeInMillis))
 
             Log.d(TAG, "diaa transaction number to cancel ${paymentPojoModel.paymentTransactionId.toInt()}: ")
 
             serviceViewModel.pay(sharedHelper?.getUserToken().toString(),
-
                 paymentPojoModel, object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?)
                     {

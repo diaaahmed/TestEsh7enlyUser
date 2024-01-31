@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import com.esh7enly.esh7enlyuser.BuildConfig
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.activity.BaseFragment
-import com.esh7enly.esh7enlyuser.activity.MainActivity
 import com.esh7enly.esh7enlyuser.activity.PaytabsPolicy
 import com.esh7enly.esh7enlyuser.databinding.FragmentProfileBinding
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
@@ -32,7 +31,8 @@ class ProfileFragment : BaseFragment() {
         return ui.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
 
         ui.userName.text = sharedHelper?.getStoreName()
@@ -91,7 +91,7 @@ class ProfileFragment : BaseFragment() {
     }
 
     private fun makeCall() {
-        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${resources.getString(R.string.phone_number_call)}"))
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${resources.getString(R.string.hotline)}"))
         startActivity(intent)
     }
 

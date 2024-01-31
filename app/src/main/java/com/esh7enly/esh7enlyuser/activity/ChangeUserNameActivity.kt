@@ -19,9 +19,8 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChangeUserNameActivity : AppCompatActivity(),IToolbarTitle
-{
-    private val ui by lazy{
+class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle {
+    private val ui by lazy {
         ActivityChangeUserNameBinding.inflate(layoutInflater)
     }
 
@@ -34,8 +33,8 @@ class ChangeUserNameActivity : AppCompatActivity(),IToolbarTitle
 
     private val userViewModel: UserViewModel by viewModels()
 
-    private val pDialog by lazy{
-        ProgressDialog(this,R.style.MyAlertDialogStyle)
+    private val pDialog by lazy {
+        ProgressDialog(this, R.style.MyAlertDialogStyle)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +43,12 @@ class ChangeUserNameActivity : AppCompatActivity(),IToolbarTitle
 
         initToolBar()
 
-        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
+        pDialog.setMessage(
+            Utils.getSpannableString(
+                this,
+                resources.getString(R.string.message__please_wait)
+            )
+        )
         pDialog.setCancelable(false)
 
         ui.btnUpdateData.setOnClickListener { changeData() }
@@ -54,56 +58,54 @@ class ChangeUserNameActivity : AppCompatActivity(),IToolbarTitle
     private fun changeData()
     {
         val newMobile = ui.newMobile.text.toString()
-        val newName = ui.newName.text.toString()
+        val firstName = ui.userFirstName.text.toString()
+        val lastName = ui.userLastName.text.toString()
         val newEmail = ui.newEmail.text.toString()
 
+        val fullName = "$firstName $lastName"
 
-        if(newEmail.isNotEmpty())
+        if (newMobile.isBlank() && firstName.isBlank() && lastName.isBlank() &&newEmail.isBlank())
         {
-            if(!isValidEmailId(newEmail))
-            {
+           return
+
+        } else if (newEmail.isNotEmpty()) {
+            if (!isValidEmailId(newEmail)) {
                 showDialogInvalidEmail()
+            } else {
+                sendUpdateData(fullName, newMobile, newEmail)
             }
-            else
-            {
-                sendUpdateData(newName,newMobile,newEmail)
-            }
-        }
-        else
-        {
-            sendUpdateData(newName,newMobile,newEmail)
+        } else {
+            sendUpdateData(fullName, newMobile, newEmail)
         }
     }
 
-    private fun showDialogInvalidEmail()
-    {
-        dialog.showWarningDialog(resources.getString(R.string.email_not_valid),
-            resources.getString(R.string.app__ok))
+    private fun showDialogInvalidEmail() {
+        dialog.showWarningDialog(
+            resources.getString(R.string.email_not_valid),
+            resources.getString(R.string.app__ok)
+        )
         dialog.show()
     }
 
-    private fun sendUpdateData(newName:String,newMobile:String,newEmail:String)
-    {
+    private fun sendUpdateData(newName: String, newMobile: String, newEmail: String) {
         pDialog.show()
 
         userViewModel.updateProfile(sharedHelper?.getUserToken().toString(),
-            newName,newMobile,newEmail, object : OnResponseListener {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+            newName, newMobile, newEmail, object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     showSuccessDialog(msg)
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
 
-                    showErrorDialog(msg,code)
+                    showErrorDialog(msg, code)
                 }
             })
     }
 
-    private fun showSuccessDialog(msg:String?) {
+    private fun showSuccessDialog(msg: String?) {
         pDialog.cancel()
-        dialog.showSuccessDialog(msg,resources.getString(R.string.app__ok))
+        dialog.showSuccessDialog(msg, resources.getString(R.string.app__ok))
         {
             dialog.cancel()
             sharedHelper?.setUserToken("")
@@ -113,15 +115,15 @@ class ChangeUserNameActivity : AppCompatActivity(),IToolbarTitle
         dialog.show()
     }
 
-    private fun showErrorDialog(msg:String?,code:Int?) {
+    private fun showErrorDialog(msg: String?, code: Int?) {
         pDialog.cancel()
-        dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok))
+        dialog.showErrorDialogWithAction(msg, resources.getString(R.string.app__ok))
         {
             dialog.cancel()
 
             if (code.toString() == Constants.CODE_UNAUTH ||
-                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED)
-            {
+                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+            ) {
                 NavigateToActivity.navigateToMainActivity(this@ChangeUserNameActivity)
             }
 
@@ -139,8 +141,7 @@ class ChangeUserNameActivity : AppCompatActivity(),IToolbarTitle
         ).matcher(email).matches()
     }
 
-    override fun initToolBar()
-    {
+    override fun initToolBar() {
         ui.updateProfileToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 }

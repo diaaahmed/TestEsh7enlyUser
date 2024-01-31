@@ -3,10 +3,13 @@ package com.esh7enly.esh7enlyuser.util;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+
+import androidx.core.content.ContextCompat;
 
 import com.esh7enly.esh7enlyuser.R;
 
@@ -69,9 +72,10 @@ public class TimeDialogs {
                 editText.setText(date);
             }
         }, mYear, mMonth, mDay);
+        int positiveColor = ContextCompat.getColor(context, R.color.colorPrimary);
         datePickerDialog.show();
-
-
+        datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(positiveColor);
+        datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(positiveColor);
     }
 
     /**
