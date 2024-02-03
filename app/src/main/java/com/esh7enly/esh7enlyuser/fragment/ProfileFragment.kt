@@ -14,14 +14,12 @@ import com.esh7enly.esh7enlyuser.databinding.FragmentProfileBinding
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment() {
 
     private val ui by lazy{
         FragmentProfileBinding.inflate(layoutInflater)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

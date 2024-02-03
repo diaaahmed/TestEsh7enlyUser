@@ -56,7 +56,6 @@ open class ParametersActivity : BaseActivity()
 
     private var internalId: String? = null
 
-    private val RESULT_PICK_CONTACT = 1
     private val PICK_CONTACT_REQUESTCODE = 100
 
 
@@ -99,15 +98,14 @@ open class ParametersActivity : BaseActivity()
 
         serviceName = if(Constants.LANG == Constants.AR) Constants.SERVICE_NAME_AR else Constants.SERVICE_NAME_EN
 
-        Log.d(TAG, "diaa service received: english ${serviceViewModel.serviceNameEN} arabic ${serviceViewModel.serviceName}")
         initToolBar()
+
         showData()
 
     }
 
     private fun showData()
     {
-     //   ui.tvService.text = serviceViewModel.providerName+ "("+ serviceName +")"
         ui.tvService.text = serviceName
         ui.tvProvider.text = serviceViewModel.providerName
 
@@ -201,14 +199,12 @@ open class ParametersActivity : BaseActivity()
                 // Electricity card
                 initializeNFCCard(NFCConstants.CardType.ELECT)
                 Constants.nfcCard = NFCConstants.CardType.ELECT
-                Log.d(TAG, "diaa read Electricity: ")
             }
             else if(ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId))
             {
                 // Water card
                 initializeNFCCard(NFCConstants.CardType.WSC)
                 Constants.nfcCard = NFCConstants.CardType.WSC
-                Log.d(TAG, "diaa read Water: ")
 
             }
             else if(ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId))
@@ -216,7 +212,6 @@ open class ParametersActivity : BaseActivity()
                 // Gas card
                 initializeNFCCard(NFCConstants.CardType.GAS)
                 Constants.nfcCard = NFCConstants.CardType.GAS
-                Log.d(TAG, "diaa read Gas: ")
             }
             else
             {
@@ -279,46 +274,23 @@ open class ParametersActivity : BaseActivity()
         nfcCard.ReadNewNFCCard(this, cardType, object : NFCReadCallback {
             override fun onStartReadNFCCard() {
                 message("Start")
-                Log.d(TAG, "diaa onStartReadNFCCard: start ")
             }
             override fun onCardNotSupported() {
                 message("Not supported")
-                Log.d(TAG, "diaa onCardNotSupported: not supported ")
             }
             override fun onDeviceNotSupportedNFC() { message("Nfc not supported") }
 
             override fun onCardReadError(vararg exception: java.lang.Exception)
             {
                 message("Read error")
-                Log.d(TAG, "diaa onCardReadError: error ${exception[0]?.message}")
             }
             override fun onChargeExist()
             {
                 message("Charge exist")
-                Log.d(TAG, "diaa onChargeExist: exist ")
             }
             override fun onSuccessReadNFCCard(data: NFCReadCallbackResponse)
             {
                 message("Success read")
-                Log.d(TAG, "diaa onSuccessReadNFCCard: success ")
-
-                Log.d(TAG, "diaa onSuccessReadNFCCard: ${data.meterFeedbackHash}")
-                Log.d(TAG, "diaa data: $data")
-
-                Log.d(TAG, "diaa cardMetaData ${data.cardMetadata}: ")
-                Log.d(TAG, "diaa bilingAccount ${data.bilingAccount}: ")
-                Log.d(TAG, "diaa clientIdentifier ${data.clientIdentifier}: ")
-                Log.d(TAG, "diaa companyVendor ${data.companyVendor}: ")
-                Log.d(TAG, "diaa companyIdentifier ${data.companyIdentifier}: ")
-                Log.d(TAG, "diaa meterIdentifier ${data.meterIdentifier}: ")
-                Log.d(TAG, "diaa sectorIdentifier ${data.sectorIdentifier}: ")
-                Log.d(TAG, "diaa isRequireAuthentication ${data.isRequireAuthentication}: ")
-                Log.d(TAG, "diaa escfbT01 ${data.escfbT01}: ")
-                Log.d(TAG, "diaa escfbT02 ${data.escfbT02}: ")
-                Log.d(TAG, "diaa escfbT03 ${data.escfbT03}: ")
-                Log.d(TAG, "diaa key2 ${data.sectorIdentifier}: ")
-                Log.d(TAG, "diaa key1 ${data.companyVendor}: ")
-                Log.d(TAG, "diaa key3 ${data.meterIdentifier}: ")
 
                 paramsArrayListToSend.add(Params("ClientIdentifier", data.clientIdentifier))
                 // paramsArrayListToSend.add(Params("ClientIdentifier", client))
@@ -343,7 +315,6 @@ open class ParametersActivity : BaseActivity()
             }
             override fun onUnifiedCardDetection(b: Boolean) {
                 message("Detection")
-                Log.d(TAG, "diaa onUnifiedCardDetection: detection ")
             }
         })
     }
@@ -649,19 +620,6 @@ open class ParametersActivity : BaseActivity()
         }.show()
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if(resultCode == -1)
-//       {
-//           when(requestCode)
-//           {
-//               RESULT_PICK_CONTACT -> {
-//                   data?.let { contactPicked(it) }
-//                   return
-//               }
-//           }
-//       }
-//    }
 
     var someActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()

@@ -98,7 +98,7 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
             }
             catch (e:Exception)
             {
-                listner.onFailed(5000,e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE,e.message)
 
             }
         }

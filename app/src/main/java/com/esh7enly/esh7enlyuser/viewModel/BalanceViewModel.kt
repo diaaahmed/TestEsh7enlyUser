@@ -21,29 +21,38 @@ class BalanceViewModel @Inject constructor(
 
     var responseDeposits: LiveData<NetworkResult<DepositResponse>> = _responseDeposits
 
-    fun getNewDeposits(token: String, page: Int) {
+    fun getNewDeposits(token: String, page: Int)
+    {
         _responseDeposits.value = NetworkResult.Loading()
 
         viewModelScope.launch {
-            val deposits = userRepo.getDeposits(token,page)
+            try{
+                val deposits = userRepo.getDeposits(token,page)
 
-            if(deposits.isSuccessful)
-            {
-                if(!deposits.body()!!.status)
+                if(deposits.isSuccessful)
                 {
-                    _responseDeposits.value = NetworkResult.Error(deposits.body()!!.message)
+                    if(!deposits.body()!!.status)
+                    {
+                        _responseDeposits.value = NetworkResult.Error(deposits.body()!!.message)
 
+                    }
+                    else
+                    {
+                        _responseDeposits.value = NetworkResult.Success(deposits.body()!!)
+                    }
                 }
                 else
                 {
-                    _responseDeposits.value = NetworkResult.Success(deposits.body()!!)
+                    _responseDeposits.value = NetworkResult.Error(deposits.message())
+
                 }
             }
-            else
+            catch (e: Exception)
             {
-                _responseDeposits.value = NetworkResult.Error(deposits.message())
+                _responseDeposits.value = NetworkResult.Error(e.message)
 
             }
+
         }
     }
 
@@ -52,12 +61,23 @@ class BalanceViewModel @Inject constructor(
 
     fun getWalletsUser(token:String) {
         viewModelScope.launch {
-            val response = userRepo.getUserWallet(token)
+           try{
+               val response = userRepo.getUserWallet(token)
 
-            if(response.isSuccessful && response.body()?.status == true)
-            {
-                _balance.value = response.body()!!.data[0].balance
-            }
+               if(response.isSuccessful && response.body()?.status == true)
+               {
+                   _balance.value = response.body()!!.data[0].balance
+               }
+               else
+               {
+                   _balance.value = "0.0"
+
+               }
+           }
+           catch (e: Exception){
+               _balance.value = e.message
+
+           }
         }
     }
 }

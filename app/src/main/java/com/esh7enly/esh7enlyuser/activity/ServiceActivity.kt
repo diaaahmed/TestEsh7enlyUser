@@ -50,7 +50,8 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
         getServices()
     }
 
-    override fun initToolBar() {
+    override fun initToolBar()
+    {
         ui.serviceToolbar.title = intent.getStringExtra(Constants.PROVIDER_NAME) ?: ""
 
         ui.serviceToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }

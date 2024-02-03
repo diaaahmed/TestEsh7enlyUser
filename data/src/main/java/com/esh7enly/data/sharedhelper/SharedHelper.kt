@@ -35,7 +35,7 @@ class SharedHelper (var context:Context)
         sharedPref.getString(Constants.APP_LANGUAGE,"ar")
 
 
-    fun setUserEmail(email:String)
+    fun setUserEmail(email:String?)
     {
         sharedPref.edit().putString(Constants.USER_EMAIL,email).apply()
     }

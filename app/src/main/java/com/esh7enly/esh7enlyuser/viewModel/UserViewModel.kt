@@ -8,6 +8,7 @@ import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
+
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,14 +20,16 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(private val userRepo: UserRepo):
     ViewModel()
 {
+
     var phoneNumber:String?= null
     var password:String?= null
     var imei:String?= null
 
     var token = ""
 
+    fun userLogin(mobile:String, password:String, device_token:String):
+            LiveData<ApiResponse<LoginResponse>> {
 
-    fun login(mobile:String,password:String,device_token:String): LiveData<ApiResponse<LoginResponse>> {
         return userRepo.login(mobile,password,device_token)
     }
 
@@ -56,55 +59,76 @@ class UserViewModel @Inject constructor(private val userRepo: UserRepo):
 
     fun forgetPasswordSendOTP(mobile:String,listener: OnResponseListener) {
         viewModelScope.launch {
-            val otpResponse = userRepo.forgetPasswordSendOTP(mobile)
+           try{
+               val otpResponse = userRepo.forgetPasswordSendOTP(mobile)
 
-            if(otpResponse.isSuccessful)
-            {
-                if(!otpResponse.body()!!.status)
-                {
-                    listener.onFailed(otpResponse.body()!!.code,otpResponse.body()!!.message)
-                }
-                else
-                {
-                    listener.onSuccess(otpResponse.body()!!.code,otpResponse.body()!!.message,otpResponse.body()!!.data)
-                }
-            }
-            else{
-                listener.onFailed(otpResponse.code(),otpResponse.message())
+               if(otpResponse.isSuccessful)
+               {
+                   if(!otpResponse.body()!!.status)
+                   {
+                       listener.onFailed(otpResponse.body()!!.code,otpResponse.body()!!.message)
+                   }
+                   else
+                   {
+                       listener.onSuccess(otpResponse.body()!!.code,otpResponse.body()!!.message,otpResponse.body()!!.data)
+                   }
+               }
+               else{
+                   listener.onFailed(otpResponse.code(),otpResponse.message())
 
-            }
+               }
+           }
+           catch (e: Exception)
+           {
+               listener.onFailed(Constants.EXCEPTION_CODE,e.message)
+
+           }
         }
 
         }
 
     fun verifyAccount(mobile:String,otpCode:String,key:String,listener: OnResponseListener) {
         viewModelScope.launch {
-            val response = userRepo.verifyAccount(mobile,otpCode,key)
+           try {
+               val response = userRepo.verifyAccount(mobile,otpCode,key)
 
-            if(!response.status)
-            {
-                listener.onFailed(response.code,response.message)
-            }
-            else
-            {
-                listener.onSuccess(response.code,response.message,response.data)
-            }
+               if(!response.status)
+               {
+                   listener.onFailed(response.code,response.message)
+               }
+               else
+               {
+                   listener.onSuccess(response.code,response.message,response.data)
+               }
+           }
+           catch (e: Exception)
+           {
+               listener.onFailed(Constants.EXCEPTION_CODE,e.message)
+
+           }
         }
     }
 
     fun registerNewAccount(registerModel: RegisterModel,listener: OnResponseListener) {
         viewModelScope.launch {
-            val registerResponse = userRepo.registerNewAccount(registerModel)
+           try{
+               val registerResponse = userRepo.registerNewAccount(registerModel)
 
-            if(!registerResponse.status!!)
-            {
-                listener.onFailed(registerResponse.code!!,registerResponse.message)
-            }
-            else
-            {
-                listener.onSuccess(registerResponse.code!!,registerResponse.message,registerResponse.data)
+               if(!registerResponse.status!!)
+               {
+                   listener.onFailed(registerResponse.code!!,registerResponse.message)
+               }
+               else
+               {
+                   listener.onSuccess(registerResponse.code!!,registerResponse.message,registerResponse.data)
 
-            }
+               }
+           }
+           catch (e: Exception)
+           {
+               listener.onFailed(Constants.EXCEPTION_CODE,e.message)
+
+           }
         }
     }
 

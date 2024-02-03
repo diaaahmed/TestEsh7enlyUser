@@ -100,9 +100,10 @@ class MainActivity : BaseActivity()
     @RequiresApi(Build.VERSION_CODES.O)
     private fun login()
     {
-        if (connectivity?.isConnected == true)
-        {
+        if (connectivity?.isConnected == true) {
+
             val phoneNumber = ui.phoneNumber.text.toString().trim()
+
             val password = ui.password.text.toString().trim()
 
             if (phoneNumber.isEmpty()) {
@@ -118,8 +119,18 @@ class MainActivity : BaseActivity()
                     resources.getString(R.string.app__ok)
                 )
                 alertDialog.show()
-            } else {
+            }
+            else if(phoneNumber.length > 11)
+            {
+                alertDialog.showWarningDialog(
+                    resources.getString(R.string.error_message__wrong_phone),
+                    resources.getString(R.string.app__ok)
+                )
+                alertDialog.show()
+            }
+            else {
                 pDialog.show()
+
                 getUserTokenFromFirebase(phoneNumber,password)
             }
         } else {
@@ -147,28 +158,36 @@ class MainActivity : BaseActivity()
 
     private fun userLogin(phoneNumber:String,password: String,token:String)
     {
-        userViewModel.login(phoneNumber, password, token).observe(this)
-        { response ->
-            if (response.isSuccessful)
-            {
-                pDialog.cancel()
-
-                if (!response?.body!!.status!!)
+        try{
+            userViewModel.userLogin(phoneNumber, password, token).observe(this)
+            { response ->
+                if (response.isSuccessful)
                 {
-                    showDialogWithAction(response.body!!.message!!)
+                    pDialog.cancel()
 
+                    if (!response?.body!!.status!!)
+                    {
+                        showDialogWithAction(response.body!!.message!!)
+
+                    } else {
+                        successLoginNavigateToHome(response,password)
+
+                    }
                 } else {
-                    successLoginNavigateToHome(response,password)
-
+                    pDialog.cancel()
+                    showDialogWithAction(response.errorMessage.toString())
                 }
-            } else {
-                pDialog.cancel()
-                showDialogWithAction(response.errorMessage.toString())
             }
+        }
+        catch (e: Exception)
+        {
+            pDialog.cancel()
+            showDialogWithAction(e.message.toString())
         }
     }
 
-    private fun successLoginNavigateToHome(response: ApiResponse<LoginResponse>,
+    private fun successLoginNavigateToHome(
+        response: ApiResponse<LoginResponse>,
                                            password:String)
     {
         sharedHelper?.setStoreName(response.body?.data!!.name)
@@ -246,7 +265,6 @@ class MainActivity : BaseActivity()
 
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     private fun setLanguage(language: String?) {
-
         val locale = Locale(language)
         val dm = resources.displayMetrics
         // val conf = resources.configuration

@@ -105,24 +105,35 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
             if (ui.amountValue.text.toString().isEmpty()) {
                 ui.amountValue.error = resources.getString(R.string.required)
             } else {
-                when (finalPaymentWay) {
-                    PayWays.BANk.toString() -> {
-                        pDialog.show()
 
-                        getTotalAmount(GatewayTransactionType.visa.toString())
+                dialog.showWarningDialogWithAction(
+                    resources.getString(R.string.payment_warning),
+                    resources.getString(R.string.app__ok)
+                )
+                {
+                    dialog.cancel()
+
+                    when (finalPaymentWay) {
+                        PayWays.BANk.toString() -> {
+                            pDialog.show()
+
+                            getTotalAmount(GatewayTransactionType.visa.toString())
+                        }
+
+                        PayWays.WALLET.toString() -> {
+                            pDialog.show()
+
+                            getTotalAmount(GatewayTransactionType.wallet.toString())
+                        }
+
+                        else -> {
+                            Log.d(TAG, "diaa pay no way")
+
+                        }
                     }
 
-                    PayWays.WALLET.toString() -> {
-                        pDialog.show()
+                }.show()
 
-                        getTotalAmount(GatewayTransactionType.wallet.toString())
-                    }
-
-                    else -> {
-                        Log.d(TAG, "diaa pay no way")
-
-                    }
-                }
             }
         }
     }
@@ -134,6 +145,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         val number = Random(9000000000000000000).nextInt()
 
         val configData: PaymentSdkConfigurationDetails =
+
             generatePaytabsConfigurationDetails(
                 number.toString(),
                 totalAmount, drawable
@@ -163,7 +175,6 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         drawable: Drawable?
     ): PaymentSdkConfigurationDetails {
          val profileId = BuildConfig.PROFILE_ID_PRODUCTION
-        //val profileId = "135102"
         val serverKey = BuildConfig.SERVER_KEY_PRODUCTION
         val clientKey = BuildConfig.CLIENT_KEY_PRODUCTION
         val transactionTitle = resources.getString(R.string.paytabs_title)
@@ -218,7 +229,8 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         ui.addBalanceToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun getTotalAmount(transactionType:String) {
+    private fun getTotalAmount(transactionType:String)
+    {
         lifecycleScope.launch {
 
             xPayViewModel.getTotalXPayFlow(sharedHelper?.getUserToken().toString(),
@@ -290,7 +302,8 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         }
     }
 
-    private fun startSessionForPay(totalAmount: String,transactionType:String) {
+    private fun startSessionForPay(totalAmount: String,transactionType:String)
+    {
         lifecycleScope.launch {
             xPayViewModel.startSessionForPay(
                 payment_method_type = GatewayMethod.paytabs.toString(),
@@ -331,7 +344,8 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
 
     }
 
-    private fun showFailedPay(msg: String?, code: Int) {
+    private fun showFailedPay(msg: String?, code: Int)
+    {
         pDialog.cancel()
 
         dialog.showErrorDialogWithAction(
@@ -346,6 +360,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
             }
         }.show()
     }
+
     override fun onError(error: PaymentSdkError)
     {
         pDialog.cancel()
@@ -380,7 +395,8 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         requestChargeFailed(chargeBalanceRequest,"Payment cancelled")
     }
 
-    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
+    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails)
+    {
         val chargeBalanceRequest: ChargeBalanceRequestPaytabs
 
         if(paymentSdkTransactionDetails.isSuccess == true)
@@ -446,7 +462,8 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
 
     }
 
-    private fun requestToChargeBalance(chargeBalanceRequest:ChargeBalanceRequestPaytabs) {
+    private fun requestToChargeBalance(chargeBalanceRequest:ChargeBalanceRequestPaytabs)
+    {
         lifecycleScope.launch {
             xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
                 chargeBalanceRequest,

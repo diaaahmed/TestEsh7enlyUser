@@ -168,24 +168,32 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
         }
     }
 
-    fun getImageAds(token: String, listner: OnResponseListener) {
+    fun getImageAds(token: String, listner: OnResponseListener)
+    {
         viewModelScope.launch {
-            val imageAdResponse = repo.getImageAdResponse(token)
+            try{
+                val imageAdResponse = repo.getImageAdResponse(token)
 
-            if(imageAdResponse.isSuccessful)
-            {
-                if(imageAdResponse.body()!!.status)
+                if(imageAdResponse.isSuccessful)
                 {
-                    listner.onSuccess(imageAdResponse.body()!!.code,imageAdResponse.body()?.message,imageAdResponse.body()?.data)
+                    if(imageAdResponse.body()!!.status)
+                    {
+                        listner.onSuccess(imageAdResponse.body()!!.code,imageAdResponse.body()?.message,imageAdResponse.body()?.data)
+                    }
+                    else
+                    {
+                        listner.onFailed(imageAdResponse.body()!!.code,imageAdResponse.body()!!.message)
+                    }
                 }
                 else
                 {
-                    listner.onFailed(imageAdResponse.body()!!.code,imageAdResponse.body()!!.message)
+                    listner.onFailed(imageAdResponse.code(),imageAdResponse.message())
                 }
             }
-            else
+            catch (e: Exception)
             {
-                listner.onFailed(imageAdResponse.code(),imageAdResponse.message())
+                listner.onFailed(Constants.EXCEPTION_CODE,e.message)
+
             }
         }
     }
@@ -377,25 +385,32 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
 
     fun getScheduleList(token: String,listner: OnResponseListener) {
         viewModelScope.launch {
-            val scheduleListResponse = repo.getScheduleList(token)
+           try {
+               val scheduleListResponse = repo.getScheduleList(token)
 
-            if(scheduleListResponse.isSuccessful)
-            {
-                if(scheduleListResponse.body()?.status == true)
-                {
-                    listner.onSuccess(scheduleListResponse.body()!!.code!!,
-                        scheduleListResponse.body()!!.message,scheduleListResponse.body()!!.data)
+               if(scheduleListResponse.isSuccessful)
+               {
+                   if(scheduleListResponse.body()?.status == true)
+                   {
+                       listner.onSuccess(scheduleListResponse.body()!!.code!!,
+                           scheduleListResponse.body()!!.message,scheduleListResponse.body()!!.data)
 
-                }
-                else
-                {
-                    listner.onFailed(scheduleListResponse.body()!!.code!!,scheduleListResponse.body()!!.message)
-                }
-            }
-            else
-            {
-                listner.onFailed(scheduleListResponse.code(),scheduleListResponse.message())
-            }
+                   }
+                   else
+                   {
+                       listner.onFailed(scheduleListResponse.body()!!.code!!,scheduleListResponse.body()!!.message)
+                   }
+               }
+               else
+               {
+                   listner.onFailed(scheduleListResponse.code(),scheduleListResponse.message())
+               }
+           }
+           catch (e: Exception)
+           {
+               listner.onFailed(Constants.EXCEPTION_CODE,e.message)
+
+           }
         }
     }
 

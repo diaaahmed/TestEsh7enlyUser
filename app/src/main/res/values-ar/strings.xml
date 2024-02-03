@@ -61,8 +61,6 @@
     <string name="add_balance">أضف رصيد</string>
     <string name="confirm_password">تأكيد الرقم السرى</string>
     <string name="insert_card_please">من فضلك اضغط استعلام ثم ضع الكارت</string>
-    <string name="payment_details">تفاصيل الدفع</string>
-    <string name="balance_available"> جنية متاح</string>
 
     <string name="email">البريد الإلكترونى</string>
     <string name="bank_card">الكارت البنكى</string>
@@ -77,17 +75,17 @@
     <string name="next">التالى</string>
     <string name="update_data">تحديث البيانات</string>
     <string name="enter_new_mobile">أدخل الرقم الجديد</string>
-    <string name="enter_new_name">أدخل الإسم الجديد</string>
     <string name="enter_new_email">أدخل البريد الإلكترونى الجديد</string>
     <string name="change_user_data">تحديث بيانات المستخدم</string>
     <string name="password_instructions">الرقم السرى يجب أن يحتوى على حروف كبيرة وصغيرة وأرقام وروموز، ولا يقل عن 8!</string>
 
-    <string name="vodafone_cash">فودافون كاش</string>
 
     <string name="deposit_id">معرف الإيداع: </string>
     <string name="paytabs_title">ادفع الآن مع اشحنلى </string>
     <string name="confirm">تأكيد</string>
     <string name="error"> خطأ </string>
+    <string name="payment_warning">رجاءًا عدم مغاردة صفحة الدفع قبل التحويل التلقائى حتى يتم الدفع بنحاج</string>
+
     <string name="warning"> تحذير </string>
     <string name="success">ناجح</string>
     <string name="info"> INFO </string>
@@ -171,7 +169,7 @@
     <string name="your_password">الباسورد الخاص بك</string>
     <string name="have_account">لديك حساب، سجل الدخول</string>
     <string name="error_message__blank_phone"> يرجى إدخال رقم الهاتف. </string>
-    <string name="error_message__blank_full_name"> يرجى إدخال الإسم. </string>
+    <string name="error_message__wrong_phone">برجاء إدخال رقم الهاتف بشكل صحيح</string>
     <string name="error_message__blank_password"> يرجى إدخال كلمة المرور. </string>
     <string name="error_message__blank_phone_number">يرجى إدخال رقم هاتف صحيح.</string>
     <string name="error_message__blank_otp">يرجى إدخال الرقم بشكل صحيح.</string>
@@ -192,7 +190,7 @@
     <string name="trans_id_title">"رقم العملية : "</string>
     <string name="change_language">تغيير اللغة</string>
     <string name="language">اللغة</string>
-    <string name="share">شارك واربح</string>
+    <string name="share">شارك التطبيق</string>
     <string name="enter_old_password">أدخل الرقم السرى الحالى</string>
     <string name="enter_new_password">أدخل الرقم السرى الجديد</string>
     <string name="confirm_new_password">تأكيد الرقم السرى الجديد</string>
@@ -202,8 +200,6 @@
     <string name="type_confirm_new_password">قم بكتابة الرقم السرى الجديد مرة أخرى</string>
 
     <string name="change_password">تغيير الرقم السرى</string>
-
-    <string name="need_permission">نحتاج الإذن لحفظ الملف</string>
 
     <string name="logout">تسجيل خروج</string>
     <string name="presents">الهدايا</string>

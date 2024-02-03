@@ -15,6 +15,7 @@ public class Constants {
     public static final String STORE_NAME = "store_name";
 
     public static final String IS_LOGIN = "isLogin";
+    public static final int EXCEPTION_CODE = 400;
     public static final String USER_ID = "user_id";
     public static  String BILLING_ACCOUNT_CARD = "billing_account_card";
     public static final String USER_NAME = "user_name";

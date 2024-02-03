@@ -2,11 +2,8 @@ package com.esh7enly.esh7enlyuser.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.adapter.ProviderAdapter
 import com.esh7enly.esh7enlyuser.click.ProviderClick
@@ -61,18 +58,6 @@ class ProviderActivity : AppCompatActivity(),ProviderClick,IToolbarTitle
 
             ui.providerRv.adapter = providerAdapter
         }
-//        lifecycleScope.launch(Dispatchers.IO){
-//            val response = RoomDatabase.getDatabase(this@ProviderActivity)
-//                .providerDao().getProviders(category_id)
-//
-//            withContext(Dispatchers.Main)
-//            {
-//                providerAdapter.submitList(response)
-//
-//                ui.providerRv.adapter = providerAdapter
-//            }
-//
-//        }
     }
 
     override fun click(provider: Provider)

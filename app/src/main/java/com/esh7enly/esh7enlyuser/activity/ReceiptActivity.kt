@@ -4,17 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.pdf.PdfDocument
+
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.util.DisplayMetrics
+
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.esh7enly.domain.entity.PaymentEntity
@@ -24,8 +19,7 @@ import com.esh7enly.esh7enlyuser.databinding.ActivityReceiptBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Screenshot
 import com.esh7enly.esh7enlyuser.util.Utils
-import java.io.File
-import java.io.FileOutputStream
+
 
 private const val TAG = "ReceiptActivity"
 
@@ -68,8 +62,6 @@ class ReceiptActivity : AppCompatActivity()
         }
     }
 
-    lateinit var bmp:Bitmap
-
     private val ui by lazy{
         ActivityReceiptBinding.inflate(layoutInflater)
     }
@@ -82,65 +74,13 @@ class ReceiptActivity : AppCompatActivity()
 
         view = window.decorView.rootView
 
-//        ui.backBtn.setOnClickListener {
-//            finish()
-//        }
-
         ui.chatWhats.setOnClickListener {
             shareImage() }
 
-//        ui.generatePdf.setOnClickListener{
-//            bmp = loadBitmap(view,view.width,view.height) as Bitmap
-//            pdf()
-//        }
 
         initData()
 
     }
-
-//    private fun loadBitmap(linear: View, width: Int, height: Int): Bitmap? {
-//        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-//        val canvas = Canvas(bitmap)
-//        linear.draw(canvas)
-//        return bitmap
-//    }
-//
-//    @RequiresApi(Build.VERSION_CODES.KITKAT)
-//    private fun pdf() {
-//        val displayMetrics = DisplayMetrics()
-//        this.windowManager.defaultDisplay.getMetrics(displayMetrics)
-//        val width = displayMetrics.widthPixels
-//        val height = displayMetrics.heightPixels
-//        val convertWidth = width
-//        val convertHeight = height
-//
-//        val pdfDocument = PdfDocument()
-//        val pageInfo = PdfDocument.PageInfo.Builder(
-//            convertWidth,
-//            convertHeight, 1
-//        ).create()
-//        val page = pdfDocument.startPage(pageInfo)
-//        val canvas = page.canvas
-//        val paint = Paint()
-//        canvas.drawPaint(paint)
-//        val bitmap = Bitmap.createScaledBitmap(bmp, convertWidth, convertHeight, true)
-//        canvas.drawBitmap(bitmap, 0f, 0f, null)
-//        pdfDocument.finishPage(page)
-//
-//
-//        //val targetPdf = "sdcard/page.pdf"
-//        val targetPdf = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-//        val file = File(targetPdf, "page.pdf")
-//        try{
-//            pdfDocument.writeTo(FileOutputStream(file))
-//            Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show()
-//        }
-//        catch(e:Exception)
-//        {
-//            Toast.makeText(this, "Wrong ${e.message}", Toast.LENGTH_SHORT).show()
-//            Log.d(TAG, "diaa pdf error: ${e.message}")
-//        }
-//    }
 
     @SuppressLint("SetTextI18n")
     private fun initData() {
@@ -151,7 +91,6 @@ class ReceiptActivity : AppCompatActivity()
             {
                 val lines = DATA_ENTITY?.description!!.split("\n") as ArrayList<String>
 
-                Log.d(TAG, "diaa lines one: $lines")
                 for(oneLine in lines)
                 {
                     if(oneLine.contains("PIN"))
@@ -189,8 +128,6 @@ class ReceiptActivity : AppCompatActivity()
         if(DATA_ENTITY!!.description != null && DATA_ENTITY!!.description != "")
         {
             val lines = DATA_ENTITY!!.description.split("\n")
-
-            Log.d(TAG, "diaa lines two: $lines")
 
             for(oneline in lines)
             {

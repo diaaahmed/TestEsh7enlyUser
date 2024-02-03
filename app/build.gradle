@@ -17,8 +17,8 @@ android {
         applicationId "com.esh7enly.esh7enlyuser"
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 2
-        versionName "1.1"
+        versionCode 6
+        versionName "1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "IMAGE_URL", IMAGE_URL)

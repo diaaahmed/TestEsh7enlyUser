@@ -372,6 +372,34 @@ public class AppDialogMsg {
         return dialog;
     }
 
+    public Dialog showWarningDialogWithAction(String message, String okTitle, final CallBack callBack) {
+
+        this.dialog.setContentView(R.layout.dialog_alert);
+        view = dialog.findViewById(R.id.dialogTitleView);
+        titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
+        //imageView = dialog.findViewById(R.id.dialogIconImageView);
+        //imageView.setImageResource(R.drawable.baseline_error_white_24);
+        titleTextView.setTextColor(dialog.getContext().getResources().getColor(R.color.red_900));
+
+        msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
+        okButton = dialog.findViewById(R.id.dialogOkButton);
+
+        titleTextView.setText(dialog.getContext().getString(R.string.warning));
+        msgTextView.setText(message);
+        msgTextView.setMovementMethod(new ScrollingMovementMethod());
+        okButton.setText(okTitle);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setAttributes(getLayoutParams(dialog));
+
+            this.dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            this.dialog.setCancelable(cancelable);
+            okButton.setOnClickListener(view -> callBack.onClick());
+        }
+        return dialog;
+    }
+
+
     public void showWarningDialog(String message, String okTitle) {
         this.dialog.setContentView(R.layout.dialog_alert);
         view = dialog.findViewById(R.id.dialogTitleView);

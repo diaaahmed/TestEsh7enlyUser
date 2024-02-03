@@ -47,8 +47,7 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
 
     }
 
-    private fun checkScheduleVisibility()
-    {
+    private fun checkScheduleVisibility() {
         if(ui.scheduleRv.visibility == View.GONE)
         {
             getScheduleList()
@@ -58,8 +57,8 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
             ui.scheduleRv.visibility = View.GONE
         }
     }
-    private fun getScheduleList()
-    {
+
+    private fun getScheduleList() {
         pDialog.show()
 
         lifecycleScope.launch {
