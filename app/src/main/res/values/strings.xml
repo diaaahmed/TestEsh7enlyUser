@@ -307,5 +307,6 @@ Some products cannot be returned, and they are:
     <string name="points">Point</string>
     <string name="email_not_valid">Email is not valid</string>
     <string name="my_bills">My Bills</string>
+    <string name="vodafone_cash">Vodafone Cash</string>
 
 </resources>

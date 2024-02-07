@@ -17,8 +17,8 @@ android {
         applicationId "com.esh7enly.esh7enlyuser"
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 6
-        versionName "1.5"
+        versionCode 8
+        versionName "1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "IMAGE_URL", IMAGE_URL)
@@ -45,9 +45,11 @@ android {
 
     }
 
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -132,7 +134,7 @@ dependencies {
     implementation 'com.intuit.ssp:ssp-android:1.1.0'
 
     // Leak canary
-   // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
     // splash screen api
     implementation 'androidx.core:core-splashscreen:1.0.1'
@@ -140,7 +142,7 @@ dependencies {
 
     // NFC fawry
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-   // implementation files('libs/FawryNFC_1.0.0_29052023.aar')
+    // implementation files('libs/FawryNFC_1.0.0_29052023.aar')
     implementation files('libs/FawryNFC_1.4.0_27082023_release.aar')
 
     // Lottie
@@ -152,6 +154,9 @@ dependencies {
     implementation "androidx.core:core-splashscreen:1.0.1"
 
     // paytabs
-    implementation 'com.paytabs:payment-sdk:6.3.2'
+    implementation ('com.paytabs:payment-sdk:6.3.2')
+            {
+                exclude group: "com.paytabs", module: "scan-card"
+            }
 
 }

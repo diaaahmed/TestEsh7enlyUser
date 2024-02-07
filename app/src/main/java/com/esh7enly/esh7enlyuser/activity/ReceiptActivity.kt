@@ -8,8 +8,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 
-import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.esh7enly.domain.entity.PaymentEntity
@@ -189,8 +189,14 @@ class ReceiptActivity : AppCompatActivity()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
             Build.VERSION.SDK_INT > Build.VERSION_CODES.Q
         ) {
-            val screenShootPath = Screenshot.takeScreenshot(this, view)
-            Screenshot.share(this, screenShootPath)
+            try{
+                val screenShootPath = Screenshot.takeScreenshot(this, view)
+                Screenshot.share(this, screenShootPath)
+            }
+            catch (e: Exception)
+            {
+                Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+            }
         } else {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_DENIED ||
@@ -203,8 +209,14 @@ class ReceiptActivity : AppCompatActivity()
                 )
                 requestPermissions(permission, Constants.REQUEST_CODE__PERMISSION_CODE)
             } else {
-                val screenShootPath = Screenshot.takeScreenshot(this, view)
-                Screenshot.share(this, screenShootPath)
+                try{
+                    val screenShootPath = Screenshot.takeScreenshot(this, view)
+                    Screenshot.share(this, screenShootPath)
+                }
+                catch (e: Exception)
+                {
+                    Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

@@ -2,9 +2,7 @@ package com.esh7enly.data.local
 
 import androidx.room.Database
 import androidx.room.TypeConverters
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
-import com.esh7enly.domain.entity.Converters
+import com.esh7enly.domain.Converters
 import com.esh7enly.domain.entity.FawryEntity
 import com.esh7enly.domain.entity.VersionEntity
 import com.esh7enly.domain.entity.userservices.*

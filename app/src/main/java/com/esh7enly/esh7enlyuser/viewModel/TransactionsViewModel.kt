@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "TransactionsViewModel"
+
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
     private val transactionsRepo: TransactionsRepo
@@ -25,7 +27,6 @@ class TransactionsViewModel @Inject constructor(
     var responseTransactions: LiveData<NetworkResult<TransactionApiResponse>> = _responseTransactions
 
     private val _transactions: MutableStateFlow<TransactionApiResponse.TransactionDataEntity?> = MutableStateFlow(null)
-
 
     fun getTransactions(token: String, page: Int)
     {

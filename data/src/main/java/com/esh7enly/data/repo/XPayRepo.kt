@@ -6,9 +6,8 @@ import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.startsessionresponse.StartSessionResponse
 import com.esh7enly.domain.entity.totalamountxpayresponse.GetTotalAmountXPayResponse
 import retrofit2.Response
-import javax.inject.Inject
 
-class XPayRepo @Inject constructor(private val apiService: ApiService)
+class XPayRepo (private val apiService: ApiService)
 {
     suspend fun chargeBalanceWithPaytabs(token: String, chargeBalanceRequest: ChargeBalanceRequestPaytabs)
             : Response<ChargeBalanceResponse> = apiService.chargeBalanceWithPaytabs(token, chargeBalanceRequest)

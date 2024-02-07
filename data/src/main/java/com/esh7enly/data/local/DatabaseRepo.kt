@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import com.esh7enly.domain.entity.FawryEntity
 import com.esh7enly.domain.entity.VersionEntity
 import com.esh7enly.domain.entity.userservices.*
-import javax.inject.Inject
 
-class DatabaseRepo @Inject constructor(private val database: DatabaseRoom)
+class DatabaseRepo (private val database: DatabaseRoom)
 {
     fun insertFawryDao(fawryEntity: FawryEntity) = database.fawryDao().insert(fawryEntity)
 

@@ -17,6 +17,7 @@ import com.esh7enly.esh7enlyuser.click.TransactionClick
 import com.esh7enly.esh7enlyuser.databinding.ActivityTransactionsBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.NetworkResult
 import com.esh7enly.esh7enlyuser.util.Utils
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
@@ -95,6 +96,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
             message, resources.getString(R.string.app__ok)
         ) {
             alertDialog.cancel()
+            NavigateToActivity.navigateToMainActivity(this)
         }.show()
     }
 

@@ -106,7 +106,8 @@ class ProfileFragment : BaseFragment() {
         startActivity(site)
     }
 
-    private fun openTransactionsActivity() {
+    private fun openTransactionsActivity()
+    {
         NavigateToActivity.navigateToTransactionsActivity(requireActivity())
     }
 }

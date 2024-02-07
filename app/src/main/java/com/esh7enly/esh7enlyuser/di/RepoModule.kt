@@ -33,4 +33,9 @@ object RepoModule
         return UserRepo(apiService)
     }
 
+    @Provides
+    fun provideXpayRepo(apiService: ApiService):XPayRepo{
+        return XPayRepo(apiService)
+    }
+
 }

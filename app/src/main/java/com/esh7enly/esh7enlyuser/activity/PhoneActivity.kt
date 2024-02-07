@@ -2,7 +2,6 @@ package com.esh7enly.esh7enlyuser.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.esh7enly.domain.entity.forgetpasswordotp.Data
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -29,6 +28,7 @@ class PhoneActivity : BaseActivity()
         setContentView(ui.root)
 
         pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
+
         pDialog.setCancelable(false)
 
         ui.btnSendOTP.setOnClickListener{
@@ -39,6 +39,7 @@ class PhoneActivity : BaseActivity()
                 val userPhoneNumber = ui.userPhoneNumber.text.toString().trim()
 
                 val otp = Intent(this, OTPActivity::class.java)
+
                 otp.putExtra(Constants.USER_ID,userPhoneNumber)
 
                 if(userPhoneNumber.isEmpty() || userPhoneNumber.length < 11 || userPhoneNumber.length > 11)
@@ -63,7 +64,6 @@ class PhoneActivity : BaseActivity()
                                     val response = obj as Data
                                     otp.putExtra("otp",response.otp)
                                     otp.putExtra("phone",userPhoneNumber)
-                                    Log.d("TAG", "diaa response otp: ${response.otp}")
                                     startActivity(otp)
 
                                 }

@@ -18,7 +18,7 @@
             android:background="@drawable/gradiant_color_normal"
             android:id="@+id/app_bar"
             android:padding="@dimen/_5sdp"
-            android:elevation="@dimen/_20sdp"
+            app:elevation="@dimen/_20sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -118,7 +118,7 @@
                                 android:padding="@dimen/_5sdp"
                                 android:id="@+id/digitalWalletWay"
                                 android:drawablePadding="@dimen/_6sdp"
-                                android:text="@string/digital_wallet"
+                                android:text="@string/vodafone_cash"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 app:drawableStartCompat="@drawable/wallet" />
@@ -126,92 +126,28 @@
                         </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:padding="@dimen/_10sdp"
-                        android:id="@+id/observeValue"
-                        android:visibility="gone"
+                        android:id="@+id/fillPhoneNumber"
+                        showFillPhoneNumber="@{xPayViewModel.showPhoneNumber.booleanValue()}"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_30sdp"
-                        android:layout_marginTop="@dimen/_30sdp"
-                        android:layout_marginEnd="@dimen/_30sdp"
-                        app:hintTextColor="@color/colorPrimary"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/fillPrice">
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginEnd="@dimen/_20sdp"
+                        android:hint="@string/enter_phone_number"
+                        app:boxCornerRadiusBottomEnd="@dimen/_10sdp"
+                        app:boxCornerRadiusBottomStart="@dimen/_10sdp"
+                        app:boxCornerRadiusTopEnd="@dimen/_10sdp"
+                        app:boxCornerRadiusTopStart="@dimen/_10sdp"
+                        app:hintTextColor="@color/colorPrimary">
 
                         <!--this is the actual edit text which takes the input-->
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/phoneNumber"
+                            android:inputType="number"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                android:fontFamily="@font/readexrromedium"
-                                android:id="@+id/service_value_txt"
-                                android:text="@string/service_value"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#606060" />
-
-                            <TextView
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                android:fontFamily="@font/readexrromedium"
-                                android:id="@+id/service_value"
-                                android:text="2.5 EGP"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#606060" />
-
-                            <TextView
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/service_value_txt"
-                                android:fontFamily="@font/readexrromedium"
-                                android:layout_marginTop="@dimen/_20sdp"
-                                android:id="@+id/service_fee_txt"
-                                android:text="@string/service_fees"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#606060" />
-
-                            <TextView
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/service_value_txt"
-                                android:fontFamily="@font/readexrromedium"
-                                android:layout_marginTop="@dimen/_20sdp"
-                                android:id="@+id/service_fee"
-                                android:text="1.75 EGP"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="#606060" />
-
-                            <TextView
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/service_fee_txt"
-                                android:fontFamily="@font/readexrromedium"
-                                android:layout_marginTop="@dimen/_20sdp"
-                                android:id="@+id/total_amount_txt"
-                                android:text="@string/total_amount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/colorPrimary" />
-
-                            <TextView
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/service_fee_txt"
-                                android:fontFamily="@font/readexrromedium"
-                                android:layout_marginTop="@dimen/_20sdp"
-                                android:id="@+id/total_amount"
-                                android:text="4.25 EGP"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/colorPrimary" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 

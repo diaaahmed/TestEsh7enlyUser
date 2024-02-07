@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
+import com.esh7enly.domain.entity.PaymentPojoModel
+import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.totalamountxpayresponse.Data
 import com.esh7enly.esh7enlyuser.BuildConfig
@@ -43,7 +45,7 @@ import kotlin.random.Random
 private const val TAG = "AddBalance"
 
 @AndroidEntryPoint
-class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
+class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
     private val ui by lazy {
         ActivityAddBalanceBinding.inflate(layoutInflater)
@@ -74,9 +76,9 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         ui.amountValue.addTextChangedListener { value ->
 
             if (value.toString().isBlank()) {
-                ui.serviceFee.text = ""
-                ui.totalAmount.text = ""
-                ui.serviceValue.text = ""
+//                ui.serviceFee.text = ""
+//                ui.totalAmount.text = ""
+//                ui.serviceValue.text = ""
             } else {
                 if (finalPaymentWay == PayWays.BANk.toString()) {
                     lifecycleScope.launch { xPayViewModel.amountNumber.emit(value.toString()) }
@@ -85,7 +87,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         }
 
         ui.bankWay.setOnClickListener {
-
+            xPayViewModel.setShowNumber(false)
             xPayViewModel.setShowNumberNew(PayWays.BANk.toString())
             xPayViewModel.buttonClicked.value = PayWays.BANk.toString()
             ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
@@ -93,9 +95,9 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         }
 
         ui.digitalWalletWay.setOnClickListener {
-
             xPayViewModel.setShowNumberNew(PayWays.WALLET.toString())
-            xPayViewModel.buttonClicked.value = PayWays.WALLET.toString()
+            xPayViewModel.setShowNumber(true)
+            xPayViewModel.buttonClicked.value = PayWays.CASH.toString()
             ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
         }
 
@@ -106,42 +108,110 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
                 ui.amountValue.error = resources.getString(R.string.required)
             } else {
 
-                dialog.showWarningDialogWithAction(
-                    resources.getString(R.string.payment_warning),
-                    resources.getString(R.string.app__ok)
-                )
-                {
-                    dialog.cancel()
+                when (finalPaymentWay) {
+                    PayWays.BANk.toString() -> {
 
-                    when (finalPaymentWay) {
-                        PayWays.BANk.toString() -> {
+                        dialog.showWarningDialogWithAction(
+                            resources.getString(R.string.payment_warning),
+                            resources.getString(R.string.app__ok)
+                        )
+                        {
+                            dialog.cancel()
                             pDialog.show()
 
                             getTotalAmount(GatewayTransactionType.visa.toString())
-                        }
 
-                        PayWays.WALLET.toString() -> {
-                            pDialog.show()
+                        }.show()
 
-                            getTotalAmount(GatewayTransactionType.wallet.toString())
-                        }
-
-                        else -> {
-                            Log.d(TAG, "diaa pay no way")
-
-                        }
                     }
 
-                }.show()
+                    PayWays.CASH.toString() -> {
+                        pDialog.show()
+
+                        getTotalWithCash()
+
+                    }
+
+                    else -> {
+                        Log.d(TAG, "diaa pay no way")
+
+                    }
+                }
 
             }
         }
     }
 
+    private fun getTotalWithCash() {
+        lifecycleScope.launch {
+
+            val params =
+                TotalAmountPojoModel.Params("billing_account", ui.phoneNumber.text.toString())
+
+            val totalAmountPojoModel = TotalAmountPojoModel(
+                Constants.IMEI,
+                3968, ui.amountValue.text.toString(), mutableListOf(params)
+            )
+
+            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+                totalAmountPojoModel,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        // pDialog.dismiss()
+
+                        val paymentPojoModel =
+                            PaymentPojoModel(
+                                Constants.IMEI,
+                                "",
+                                3968,
+                                ui.amountValue.text.toString(),
+                                mutableListOf(params)
+                            )
+
+                        payWithCash(paymentPojoModel)
+
+                    }
+
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
+                    }
+                })
+        }
+    }
+
+    private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
+        pDialog.show()
+
+        lifecycleScope.launch {
+            serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        pDialog.dismiss()
+
+                        dialog.showSuccessDialog(
+                            resources.getString(R.string.balance_added),
+                            resources.getString(R.string.app__ok)
+                        )
+                        {
+                            dialog.cancel()
+                            finish()
+
+                        }
+                        dialog.show()
+                    }
+
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
+                        Log.d(TAG, "diaa payWithCash error: $msg")
+                    }
+                })
+        }
+    }
+
 
     private fun paytabsClick(
-        transactionType:String, totalAmount: String, drawable: Drawable?)
-    {
+        transactionType: String, totalAmount: String, drawable: Drawable?
+    ) {
         val number = Random(9000000000000000000).nextInt()
 
         val configData: PaymentSdkConfigurationDetails =
@@ -151,19 +221,18 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
                 totalAmount, drawable
             )
 
-        when(transactionType)
-        {
-            GatewayTransactionType.visa.toString() ->{
+        when (transactionType) {
+            GatewayTransactionType.visa.toString() -> {
                 transactionTypeFinal = GatewayTransactionType.visa.toString()
 
-                PaymentSdkActivity.startCardPayment(this,configData,this)
+                PaymentSdkActivity.startCardPayment(this, configData, this)
 
             }
 
-            GatewayTransactionType.wallet.toString() ->{
+            GatewayTransactionType.wallet.toString() -> {
                 transactionTypeFinal = GatewayTransactionType.wallet.toString()
 
-                PaymentSdkActivity.startAlternativePaymentMethods(this,configData,this)
+                PaymentSdkActivity.startAlternativePaymentMethods(this, configData, this)
             }
 
         }
@@ -174,7 +243,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         value: String,
         drawable: Drawable?
     ): PaymentSdkConfigurationDetails {
-         val profileId = BuildConfig.PROFILE_ID_PRODUCTION
+        val profileId = BuildConfig.PROFILE_ID_PRODUCTION
         val serverKey = BuildConfig.SERVER_KEY_PRODUCTION
         val clientKey = BuildConfig.CLIENT_KEY_PRODUCTION
         val transactionTitle = resources.getString(R.string.paytabs_title)
@@ -182,8 +251,10 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         val currency = "EGP"
         val merchantCountryCode = "EG"
         val amount: Double = value.toDouble()
-        val locale =
-            if (Constants.LANG == "ar") PaymentSdkLanguageCode.AR else PaymentSdkLanguageCode.EN
+//        val locale =
+//            if (Constants.LANG == "ar") PaymentSdkLanguageCode.AR else PaymentSdkLanguageCode.EN
+
+        val locale = PaymentSdkLanguageCode.AR
 
         val billingData = PaymentSdkBillingDetails(
             "City",
@@ -203,7 +274,6 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
             sharedHelper?.getUserPhone().toString(), "zipcode",
             "Egypt", ""
         )
-
 
         val configData = PaymentSdkConfigBuilder(
             profileId, serverKey, clientKey, amount, currency
@@ -229,16 +299,14 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         ui.addBalanceToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun getTotalAmount(transactionType:String)
-    {
+    private fun getTotalAmount(transactionType: String) {
         lifecycleScope.launch {
 
             xPayViewModel.getTotalXPayFlow(sharedHelper?.getUserToken().toString(),
                 payment_method_type = GatewayMethod.paytabs.toString(),
                 transaction_type = transactionType,
                 ui.amountValue.text.toString(), object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
 
                         val data = obj as Data
@@ -279,7 +347,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
 
                             pDialog.show()
 
-                            startSessionForPay(data.amount.toString(),transactionType)
+                            startSessionForPay(data.amount.toString(), transactionType)
 
                         }.show()
 
@@ -302,8 +370,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         }
     }
 
-    private fun startSessionForPay(totalAmount: String,transactionType:String)
-    {
+    private fun startSessionForPay(totalAmount: String, transactionType: String) {
         lifecycleScope.launch {
             xPayViewModel.startSessionForPay(
                 payment_method_type = GatewayMethod.paytabs.toString(),
@@ -313,8 +380,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
                 totalAmount,
                 "69",
                 object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         lifecycleScope.launch {
                             try {
                                 val drawable =
@@ -344,8 +410,7 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
 
     }
 
-    private fun showFailedPay(msg: String?, code: Int)
-    {
+    private fun showFailedPay(msg: String?, code: Int) {
         pDialog.cancel()
 
         dialog.showErrorDialogWithAction(
@@ -361,8 +426,11 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
         }.show()
     }
 
-    override fun onError(error: PaymentSdkError)
-    {
+    override fun onError(error: PaymentSdkError) {
+        Log.d(TAG, "diaa responseCode: error msg ${error.msg}")
+        Log.d(TAG, "diaa responseCode: error code ${error.code}")
+
+
         pDialog.cancel()
 
         val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
@@ -375,11 +443,13 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
             transaction_type = transactionTypeFinal
         )
 
-        requestChargeFailed(chargeBalanceRequest,error.msg.toString())
+        requestChargeFailed(chargeBalanceRequest, error.msg.toString())
     }
 
-    override fun onPaymentCancel()
-    {
+    override fun onPaymentCancel() {
+
+        Log.d(TAG, "diaa responseCode: cancel")
+
         pDialog.cancel()
 
         val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
@@ -392,78 +462,62 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
             transaction_type = transactionTypeFinal
         )
 
-        requestChargeFailed(chargeBalanceRequest,"Payment cancelled")
+        requestChargeFailed(chargeBalanceRequest, "Payment cancelled")
     }
 
-    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails)
-    {
-        val chargeBalanceRequest: ChargeBalanceRequestPaytabs
+    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
 
-        if(paymentSdkTransactionDetails.isSuccess == true)
-        {
-            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                status = PaymentStatus.SUCCESSFUL.toString(),
-                id = Constants.START_SESSION_ID,
-                amount = ui.amountValue.text.toString(),
-                card_id = paymentSdkTransactionDetails.cartID,
-                total_amount = paymentSdkTransactionDetails.cartAmount,
-                cartDescription = paymentSdkTransactionDetails.cartDescription,
-                errorCode = paymentSdkTransactionDetails.errorCode,
-                errorMsg = paymentSdkTransactionDetails.errorMsg,
-                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-                isOnHold = paymentSdkTransactionDetails.isOnHold,
-                isPending = paymentSdkTransactionDetails.isPending,
-                isProcessed = paymentSdkTransactionDetails.isProcessed,
-                isSuccess = paymentSdkTransactionDetails.isSuccess,
-                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-                token = paymentSdkTransactionDetails.token,
-                transactionReference = paymentSdkTransactionDetails.transactionReference,
-                transactionType = paymentSdkTransactionDetails.transactionType,
-                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionTypeFinal
+        var chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+            id = Constants.START_SESSION_ID,
+            amount = ui.amountValue.text.toString(),
+            card_id = paymentSdkTransactionDetails.cartID,
+            total_amount = paymentSdkTransactionDetails.cartAmount,
+            cartDescription = paymentSdkTransactionDetails.cartDescription,
+            errorCode = paymentSdkTransactionDetails.errorCode,
+            errorMsg = paymentSdkTransactionDetails.errorMsg,
+            isAuthorized = paymentSdkTransactionDetails.isAuthorized,
+            isOnHold = paymentSdkTransactionDetails.isOnHold,
+            isPending = paymentSdkTransactionDetails.isPending,
+            isProcessed = paymentSdkTransactionDetails.isProcessed,
+            isSuccess = paymentSdkTransactionDetails.isSuccess,
+            payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
+            redirectUrl = paymentSdkTransactionDetails.redirectUrl,
+            token = paymentSdkTransactionDetails.token,
+            transactionReference = paymentSdkTransactionDetails.transactionReference,
+            transactionType = paymentSdkTransactionDetails.transactionType,
+            responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
+            responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
+            responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
+            transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
+            payment_method_type = GatewayMethod.paytabs.toString(),
+            transaction_type = transactionTypeFinal
+        )
+
+        chargeBalanceRequest = if (paymentSdkTransactionDetails.isSuccess == true) {
+            chargeBalanceRequest.copy(
+                status = PaymentStatus.SUCCESSFUL.toString()
+            )
+        } else {
+            chargeBalanceRequest.copy(
+                status = PaymentStatus.FAILED.toString()
             )
         }
-        else
-        {
-            chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                status = PaymentStatus.FAILED.toString(),
-                id = Constants.START_SESSION_ID,
-                amount = ui.amountValue.text.toString(),
-                card_id = paymentSdkTransactionDetails.cartID,
-                total_amount = paymentSdkTransactionDetails.cartAmount,
-                cartDescription = paymentSdkTransactionDetails.cartDescription,
-                errorCode = paymentSdkTransactionDetails.errorCode,
-                errorMsg = paymentSdkTransactionDetails.errorMsg,
-                isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-                isOnHold = paymentSdkTransactionDetails.isOnHold,
-                isPending = paymentSdkTransactionDetails.isPending,
-                isProcessed = paymentSdkTransactionDetails.isProcessed,
-                isSuccess = paymentSdkTransactionDetails.isSuccess,
-                payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-                redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-                token = paymentSdkTransactionDetails.token,
-                transactionReference = paymentSdkTransactionDetails.transactionReference,
-                transactionType = paymentSdkTransactionDetails.transactionType,
-                responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-                responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-                responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-                transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionTypeFinal
-            )
-        }
+
+        Log.d(TAG, "diaa responseCode: ${paymentSdkTransactionDetails.paymentResult?.responseCode}")
+        Log.d(
+            TAG,
+            "diaa responseMessage: ${paymentSdkTransactionDetails.paymentResult?.responseMessage}"
+        )
+        Log.d(
+            TAG,
+            "diaa responseStatus: ${paymentSdkTransactionDetails.paymentResult?.responseStatus}"
+        )
 
         requestToChargeBalance(chargeBalanceRequest)
 
     }
 
-    private fun requestToChargeBalance(chargeBalanceRequest:ChargeBalanceRequestPaytabs)
-    {
+    private fun requestToChargeBalance(chargeBalanceRequest: ChargeBalanceRequestPaytabs) {
         lifecycleScope.launch {
             xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
                 chargeBalanceRequest,
@@ -484,24 +538,23 @@ class AddBalance : BaseActivity(), IToolbarTitle,CallbackPaymentInterface {
 
                     }
 
-                    override fun onFailed(code: Int, msg: String?)
-                    {
+                    override fun onFailed(code: Int, msg: String?) {
                         showFailedPay(msg, code)
                     }
                 })
         }
     }
 
-    private fun requestChargeFailed(chargeBalanceRequest:ChargeBalanceRequestPaytabs,
-    errorMsg:String)
-    {
+    private fun requestChargeFailed(
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+        errorMsg: String
+    ) {
         lifecycleScope.launch {
             xPayViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
                 chargeBalanceRequest,
                 object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
-                        showFailedPay(errorMsg,code)
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        showFailedPay(errorMsg, code)
                     }
 
                     override fun onFailed(code: Int, msg: String?) {

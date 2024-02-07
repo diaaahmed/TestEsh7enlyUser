@@ -6,19 +6,6 @@ import com.esh7enly.domain.entity.VersionEntity
 @Dao
 interface UserDao
 {
-
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insert(user:UserEntity)
-//
-//    @Update(onConflict = OnConflictStrategy.REPLACE)
-//    fun update(user:UserEntity)
-//
-//    @Query("SELECT * from UserEntity")
-//    fun getUser():LiveData<UserEntity>
-//
-//    @Query("DELETE From UserEntity")
-//    fun deleteUser()
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(versionEntity: VersionEntity)
 

@@ -37,6 +37,7 @@ roomktx = {group = "androidx.room",name = "room-ktx", version.ref = "roomruntime
 roomrxjava = {group = "androidx.room",name = "room-rxjava3", version.ref = "roomruntime"}
 
 [plugins]
+
 androidlib = {id = "com.android.library",version.ref = "androidLib"}
 kotlinAndroid = {id = "org.jetbrains.kotlin.android",version.ref = "kotlinAndroid"}
 

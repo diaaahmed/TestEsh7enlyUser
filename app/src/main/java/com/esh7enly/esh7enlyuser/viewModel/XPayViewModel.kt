@@ -23,6 +23,14 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
     private var _showPhoneNumberNew:MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
     var showPhoneNumberNew:LiveData<String>  = _showPhoneNumberNew
 
+    private var _showPhoneNumber:MutableLiveData<Boolean> = MutableLiveData(false)
+    var showPhoneNumber:LiveData<Boolean>  = _showPhoneNumber
+
+    fun setShowNumber(isShow:Boolean)
+    {
+        _showPhoneNumber.postValue(isShow)
+    }
+
     fun setShowNumberNew(type:String)
     {
         _showPhoneNumberNew.postValue(type)

@@ -1,7 +1,8 @@
-package com.esh7enly.domain.entity;
+package com.esh7enly.domain;
 
 import androidx.room.TypeConverter;
 
+import com.esh7enly.domain.entity.PaymentEntity;
 import com.esh7enly.domain.entity.userservices.TypeValue;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

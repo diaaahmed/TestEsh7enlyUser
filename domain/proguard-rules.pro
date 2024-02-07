@@ -12,6 +12,12 @@
 #   public *;
 #}
 
+-keep class com.esh7enly.domain.** {*;}
+
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-dontwarn androidx.room.paging.**
+
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable

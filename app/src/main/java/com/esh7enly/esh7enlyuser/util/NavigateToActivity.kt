@@ -5,7 +5,6 @@ import android.content.Intent
 import android.util.Log
 import com.esh7enly.domain.entity.userservices.Category
 import com.esh7enly.esh7enlyuser.activity.*
-import com.esh7enly.esh7enlyuser.fragment.BalanceFragment
 
 class NavigateToActivity
 {

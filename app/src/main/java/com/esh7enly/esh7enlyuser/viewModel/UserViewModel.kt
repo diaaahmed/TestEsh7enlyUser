@@ -1,5 +1,6 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "UserViewModel"
 
 @HiltViewModel
 class UserViewModel @Inject constructor(private val userRepo: UserRepo):

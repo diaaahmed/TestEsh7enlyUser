@@ -3,7 +3,6 @@ package com.esh7enly.data.sharedhelper
 import android.content.Context
 import android.util.Base64
 import com.esh7enly.data.R
-import javax.inject.Inject
 
 class SharedHelper (var context:Context)
 {

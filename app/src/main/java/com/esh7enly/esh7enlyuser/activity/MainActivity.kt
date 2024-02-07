@@ -188,7 +188,7 @@ class MainActivity : BaseActivity()
 
     private fun successLoginNavigateToHome(
         response: ApiResponse<LoginResponse>,
-                                           password:String)
+        password:String)
     {
         sharedHelper?.setStoreName(response.body?.data!!.name)
         sharedHelper?.setUserToken(response.body?.data!!.token)
