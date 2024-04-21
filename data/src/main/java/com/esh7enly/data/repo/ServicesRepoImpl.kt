@@ -8,13 +8,18 @@ import com.esh7enly.domain.entity.PaymentEntity
 import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.TotalAmountEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel
+import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
 import com.esh7enly.domain.entity.imageadsresponse.ImageAdResponse
+import com.esh7enly.domain.entity.parametersNew.ParametersResponse
 import com.esh7enly.domain.entity.pointsresponse.PointsResponse
+import com.esh7enly.domain.entity.providersNew.ProviderResponse
 import com.esh7enly.domain.entity.replacepointsresponse.ReplacePointsResponse
 import com.esh7enly.domain.entity.scedulelistresponse.ScheduleListResponse
 import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireResponse
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
+import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.esh7enly.domain.entity.userservices.Category
+import com.esh7enly.domain.entity.userservices.Provider
 import com.esh7enly.domain.entity.userservices.UserServicesResponse
 import com.google.gson.JsonElement
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +42,18 @@ class ServicesRepoImpl(
     ): Response<ScheduleInvoiceResponse> =
         apiService.scheduleInvoice(token, serviceId, scheduleDay, invoice_number)
 
+    suspend fun getProviders(token: String,id: String): Response<ProviderResponse> =
+        apiService.getProviders(token, id)
+
+    suspend fun getServices(token: String,id: String): Response<ServiceResponse> =
+        apiService.getServices(token, id)
+
+    suspend fun getParameters(token: String,id: String): Response<ParametersResponse> =
+        apiService.getParameters(token, id)
+
+    suspend fun getCategories(token: String): Response<CategoriesResponse> =
+        apiService.getCategories(token)
+
     suspend fun getScheduleList(token: String): Response<ScheduleListResponse> =
         apiService.getScheduleList(token)
 
@@ -54,6 +71,7 @@ class ServicesRepoImpl(
 
 
     fun getFilteredCategories(): List<Category> {
+
         val allCategories = databaseRoom.categoryDao().getCategories()
         val other = Category(
             "", 0, "خدمات أخرى",

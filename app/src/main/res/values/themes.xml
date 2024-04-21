@@ -109,6 +109,26 @@
     <style name="MyAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
+
+
+    <style name="MyAlertDialogStyleNew">
+        <item name="android:indeterminate">true</item>
+        <item name="android:indeterminateTint" tools:targetApi="lollipop">@color/colorPrimary</item>
+    </style>
     <!-- Base application theme. -->
+    
+    <style name="Theme.Test" parent="Theme.Esh7enlyUser"/>
+
+    <style name="Theme.Splash" parent="Theme.Esh7enlyUser">
+
+        <item name="android:windowBackground">@drawable/launch_bg</item>
+
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimary</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+
+    </style>
+
 
 </resources>

@@ -78,11 +78,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/account_setting_text"
                 android:textSize="@dimen/_13ssp"
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/account_setting"
+                tools:text="@string/account_setting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/account_setting" />
@@ -105,11 +106,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/transactions_text"
                 android:textSize="@dimen/_13ssp"
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/transactions"
+                tools:text="@string/transactions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/transaction" />
@@ -132,11 +134,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/share_app_text"
                 android:textSize="@dimen/_13ssp"
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/share"
+                tools:text="@string/share"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/share" />
@@ -159,10 +162,11 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/policy_text"
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/privacy_policy"
+                tools:text="@string/privacy_policy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/privacy" />
@@ -185,11 +189,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/contact_us_text"
                 android:textSize="@dimen/_13ssp"
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/contact_us"
+                tools:text="@string/contact_us"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/callus" />
@@ -212,11 +217,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/terms_text"
                 android:textSize="@dimen/_13ssp"
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/terms"
+                tools:text="@string/terms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/terms" />
@@ -239,11 +245,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/refund_text"
                 android:textSize="@dimen/_13ssp"
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/refund"
+                tools:text="@string/refund"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/refund" />
@@ -271,7 +278,7 @@
                 android:drawablePadding="@dimen/_10sdp"
                 android:padding="@dimen/_10sdp"
                 android:textColor="@color/colorPrimary"
-                android:text="@string/logout"
+                tools:text="@string/logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:drawableStartCompat="@drawable/logout" />

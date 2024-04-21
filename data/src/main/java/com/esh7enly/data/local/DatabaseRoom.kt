@@ -11,7 +11,7 @@ import com.esh7enly.domain.entity.userservices.*
     entities = [Category::class,Provider::class,
         Service::class, Parameter::class,Image::class, VersionEntity::class, FawryEntity::class],
     version = 9 ,                // <- Database version
-    exportSchema = true,
+//    autoMigrations = [AutoMigration(from = 8, to = 9)],
 )
 @TypeConverters(Converters::class)
 abstract class DatabaseRoom: androidx.room.RoomDatabase()

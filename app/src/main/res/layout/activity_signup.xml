@@ -31,7 +31,7 @@
                 android:id="@+id/txt_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/register"
+                tools:text="@string/register"
                 />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -42,7 +42,7 @@
                 android:layout_width="@dimen/_120sdp"
                 android:layout_height="wrap_content"
                 app:hintTextColor="@color/colorPrimary"
-                android:hint="@string/first_name">
+                tools:hint="@string/first_name">
 
                 <!--this is the actual edit text which takes the input-->
                 <com.google.android.material.textfield.TextInputEditText
@@ -60,7 +60,7 @@
                 style="@style/NewEditText"
                 android:layout_width="@dimen/_120sdp"
                 android:layout_height="wrap_content"
-                android:hint="@string/last_name"
+                tools:hint="@string/last_name"
                 app:hintTextColor="@color/colorPrimary"
                 app:layout_constraintStart_toEndOf="@+id/fill_first_name"
                 >
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 app:passwordToggleEnabled="true"
                 app:hintTextColor="@color/colorPrimary"
-                android:hint="@string/your_password">
+                tools:hint="@string/your_password">
 
                 <!--this is the actual edit text which takes the input-->
                 <com.google.android.material.textfield.TextInputEditText
@@ -129,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintTextColor="@color/colorPrimary"
-                android:hint="@string/confirm_password">
+                tools:hint="@string/confirm_password">
 
                 <!--this is the actual edit text which takes the input-->
                 <com.google.android.material.textfield.TextInputEditText
@@ -149,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:hintTextColor="@color/colorPrimary"
-                android:hint="@string/email">
+                tools:hint="@string/email">
 
                 <!--this is the actual edit text which takes the input-->
                 <com.google.android.material.textfield.TextInputEditText
@@ -167,7 +167,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:text="@string/accept_privacy"
+                tools:text="@string/accept_privacy"
                 app:layout_constraintTop_toBottomOf="@+id/fillEmail" />
 
             <com.google.android.material.button.MaterialButton
@@ -179,7 +179,7 @@
                 android:layout_marginTop="@dimen/_16sdp"
                 android:backgroundTint="@color/colorPrimary"
                 android:padding="@dimen/_10sdp"
-                android:text="@string/signUp"
+                tools:text="@string/signUp"
                 app:cornerRadius="@dimen/_8sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -189,11 +189,11 @@
                 android:textSize="@dimen/_20ssp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/no_account"
+                android:id="@+id/have_account"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:text="@string/have_account"
+                tools:text="@string/have_account"
                 app:layout_constraintTop_toBottomOf="@+id/btnSignup" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,12 @@ public class Urls {
 
     public static final String LOGIN = "auth/login";
     public static final String UPDATE_PASSWORD = "misc/change-password";
+
+    public static final String PROVIDERS = "service/providers";
+    public static final String SERVICES_NEW = "service/services";
+    public static final String PARAMETERS = "service/parameters";
+    public static final String CATEGORIES = "service/categories";
+
     public static final String UPDATE_PROFILE = "misc/update-profile";
     public static final String GET_DEPOSITS = "payment-method/list";
     public static final String FORGET_PASSWORD = "auth/send-forget-password-otp";

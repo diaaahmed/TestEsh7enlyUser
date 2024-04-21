@@ -19,8 +19,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
+import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.domain.entity.imageadsresponse.Data
-import com.esh7enly.domain.entity.userservices.Category
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.activity.SearchActivity
@@ -31,9 +31,8 @@ import com.esh7enly.esh7enlyuser.click.CategoryClick
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.FragmentHomeBinding
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.util.ServiceStatus
-import com.esh7enly.esh7enlyuser.util.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -45,6 +44,9 @@ private const val TAG = "HomeFragment"
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(), CategoryClick {
 
+    var categories:List<CategoryData> ?= null
+
+
     private var imageAdsAdapter: ImageAdsAdapter? = null
 
     private val ui by lazy {
@@ -53,25 +55,11 @@ class HomeFragment : BaseFragment(), CategoryClick {
 
     lateinit var categoriesAdapter: CategoryAdapterNew
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "diaa onCreate: ")
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?)
-    {
-        super.onViewStateRestored(savedInstanceState)
-        Log.d(TAG, "diaa onViewStateRestored: ")
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        Log.d(TAG, "diaa onCreateView: ")
-
         return ui.root
     }
 
@@ -80,17 +68,20 @@ class HomeFragment : BaseFragment(), CategoryClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Language.setLanguageNew(requireActivity(), Constants.LANG)
+
+
         Log.d(TAG, "diaa onViewCreated: ")
 
         ui.servicesRv.setHasFixedSize(true)
 
-        pDialog.setMessage(
-            Utils.getSpannableString(
-                requireActivity(),
-                resources.getString(R.string.message__please_wait)
-            )
-        )
-        pDialog.setCancelable(false)
+//        pDialog.setMessage(
+//            Utils.getSpannableString(
+//                requireActivity(),
+//                resources.getString(R.string.message__please_wait)
+//            )
+//        )
+//        pDialog.setCancelable(false)
 
         ui.txtWelcome.text =
             resources.getString(R.string.welcome) + " " + sharedHelper?.getStoreName()
@@ -103,12 +94,6 @@ class HomeFragment : BaseFragment(), CategoryClick {
 
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        ui.shimmerViewContainer.startShimmerAnimation()
-//        Log.d(TAG, "diaa onResume: ")
-//
-//    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -230,27 +215,31 @@ class HomeFragment : BaseFragment(), CategoryClick {
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     private fun getData()
     {
-        lifecycleScope.launch(Dispatchers.IO)
-        {
-            val number: String = serviceViewModel.getDbVersion()
-
-            Log.d(
-                "TAG", "diaa get db version: " +
-                        "$number Constant ${Constants.SERVICE_UPDATE_NUMBER}"
-            )
-
-            if(number != Constants.SERVICE_UPDATE_NUMBER)
-            {
-                if(connectivity?.isConnected == true)
-                {
-                    getDataFromServer()
-                }
-            }
-            else
-            {
-               getDataFromDB()
-            }
-        }
+        getDataFromServer()
+//        lifecycleScope.launch(Dispatchers.IO)
+//        {
+//
+//            getDataFromServer()
+//
+////            val number: String = serviceViewModel.getDbVersion()
+////
+////            Log.d(
+////                "TAG", "diaa get db version: " +
+////                        "$number Constant ${Constants.SERVICE_UPDATE_NUMBER}"
+////            )
+////
+////            if(number != Constants.SERVICE_UPDATE_NUMBER)
+////            {
+////                if(connectivity?.isConnected == true)
+////                {
+////                    getDataFromServer()
+////                }
+////            }
+////            else
+////            {
+////               getDataFromDB()
+////            }
+//        }
 
         if(connectivity?.isConnected == true)
         {
@@ -306,61 +295,99 @@ class HomeFragment : BaseFragment(), CategoryClick {
         ui.esh7enlyAds.adapter = flipAdsAdapter
     }
 
-    private fun getDataFromDB()
-    {
-        Log.d(TAG, "diaa getDataFromDB: ")
-
-        lifecycleScope.launch(Dispatchers.IO) {
-           // val filteredCategory = serviceViewModel.getFilteredList()
-            val filteredCategory = serviceViewModel.getFilteredList()
-            replaceData(filteredCategory)
-        }
-
-        ui.shimmerViewContainer.stopShimmerAnimation()
-        ui.shimmerViewContainer.visibility = View.GONE
-        ui.servicesRv.visibility = View.VISIBLE
-
-    }
+//    private fun getDataFromDB()
+//    {
+//        Log.d(TAG, "diaa getDataFromDB: ")
+//
+//        lifecycleScope.launch(Dispatchers.IO) {
+//           // val filteredCategory = serviceViewModel.getFilteredList()
+//            val filteredCategory = serviceViewModel.getFilteredList()
+//            replaceData(filteredCategory)
+//        }
+//
+//        ui.shimmerViewContainer.stopShimmerAnimation()
+//        ui.shimmerViewContainer.visibility = View.GONE
+//        ui.servicesRv.visibility = View.VISIBLE
+//
+//    }
 
     private fun getDataFromServer()
     {
         Log.d(TAG, "diaa getDataFromServer: ")
 
-        serviceViewModel.getService(sharedHelper?.getUserToken().toString())
+//        lifecycleScope.launch(Dispatchers.IO) {
 
-        lifecycleScope.launch(Dispatchers.Main)
-        {
-            serviceViewModel._dataStatus.observe(requireActivity())
-            {
-                when (it) {
-                    ServiceStatus.SUCCESS -> {
-                        Log.d(TAG, "diaa here call")
+            ui.shimmerViewContainer.startShimmerAnimation()
 
-                        lifecycleScope.launch(Dispatchers.Main)
-                        {
-                            getDataFromDB()
-                        }
+            serviceViewModel.getCategories(sharedHelper?.getUserToken().toString(),
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
+                    {
+                         categories = obj as List<CategoryData>
+
+                        val other = CategoryData(
+                            name_ar = "خدمات أخرى",
+                            name_en = "Other Service",
+                            id = 0
+                        )
+
+                        val filteredCategory = listOf(categories!![0],categories!![1],other)
+
+                        replaceData(filteredCategory)
+
+//                        lifecycleScope.launch(Dispatchers.IO) {
+//                            // val filteredCategory = serviceViewModel.getFilteredList()
+//                            val filteredCategory = serviceViewModel.getFilteredList()
+//                            replaceData(filteredCategory)
+//                        }
+
+                        ui.shimmerViewContainer.stopShimmerAnimation()
+                        ui.shimmerViewContainer.visibility = View.GONE
+                        ui.servicesRv.visibility = View.VISIBLE
                     }
-                    ServiceStatus.ERROR -> {
-                        dialog.showErrorDialogWithAction(resources.getString(R.string.error),resources.getString(R.string.app__ok)
-                        ) {
-                            dialog.cancel()
 
-                            NavigateToActivity.navigateToMainActivity(requireActivity())
+                    override fun onFailed(code: Int, msg: String?)
+                    {
+                        Log.d(TAG, "onFailed: ")
+                    }
+                })
+        //}
 
-                        }.show()
-                    }
-                    else -> {
-                        ui.shimmerViewContainer.startShimmerAnimation()
-                        Log.d(TAG, "diaa dataFrom service loading: ")
-                    }
-                }
-            }
-        }
+//        serviceViewModel.getService(sharedHelper?.getUserToken().toString())
+//
+//        lifecycleScope.launch(Dispatchers.Main)
+//        {
+//            serviceViewModel._dataStatus.observe(requireActivity())
+//            {
+//                when (it) {
+//                    ServiceStatus.SUCCESS -> {
+//                        Log.d(TAG, "diaa here call")
+//
+//                        lifecycleScope.launch(Dispatchers.Main)
+//                        {
+//                            getDataFromDB()
+//                        }
+//                    }
+//                    ServiceStatus.ERROR -> {
+//                        dialog.showErrorDialogWithAction(resources.getString(R.string.error),resources.getString(R.string.app__ok)
+//                        ) {
+//                            dialog.cancel()
+//
+//                            NavigateToActivity.navigateToMainActivity(requireActivity())
+//
+//                        }.show()
+//                    }
+//                    else -> {
+//                        ui.shimmerViewContainer.startShimmerAnimation()
+//                        Log.d(TAG, "diaa dataFrom service loading: ")
+//                    }
+//                }
+//            }
+//        }
     }
 
 
-    private fun replaceData(category: List<Category>)
+    private fun replaceData(category: List<CategoryData>)
     {
         lifecycleScope.launch(Dispatchers.Main)
         {
@@ -369,18 +396,21 @@ class HomeFragment : BaseFragment(), CategoryClick {
         }
     }
 
-    override fun click(category: Category)
+    override fun click(category: CategoryData)
     {
         if (category.id == 0)
         {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val allCategories = serviceViewModel.getAllCategories()
-                withContext(Dispatchers.Main)
-                {
-                    replaceData(allCategories)
 
-                }
-            }
+            replaceData(categories!!)
+
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                val allCategories = serviceViewModel.getAllCategories()
+//                withContext(Dispatchers.Main)
+//                {
+//                    replaceData(allCategories)
+//
+//                }
+//            }
         }
         else
         {

@@ -1,12 +1,14 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.EditText
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -14,6 +16,7 @@ import com.esh7enly.esh7enlyuser.databinding.ActivityOtpactivityBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,9 +40,16 @@ class OTPActivity : AppCompatActivity()
         AppDialogMsg(this, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        Language.setLanguageNew(this, Constants.LANG)
+
+        ui.verification.text = resources.getString(R.string.verification_code)
+        ui.txtOtpMsg.text = resources.getString(R.string.otp_msg)
+        ui.btnVerifyOtp.text = resources.getString(R.string.verify_otp)
 
         getIntentData()
 

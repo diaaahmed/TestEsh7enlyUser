@@ -1,17 +1,14 @@
 package com.esh7enly.esh7enlyuser.activity
 
-import android.app.ProgressDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.view.View
+
+import android.util.Patterns
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.esh7enlyuser.R
@@ -20,10 +17,10 @@ import com.esh7enly.esh7enlyuser.databinding.ActivitySignupBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.util.Language
+import com.esh7enly.esh7enlyuser.util.ProgressDialog
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 
@@ -42,7 +39,7 @@ class SignupActivity : AppCompatActivity()
     }
 
     private val pDialog by lazy{
-        ProgressDialog(this,R.style.MyAlertDialogStyle)
+        ProgressDialog.createProgressDialog(this)
     }
 
     private var spannableString:SpannableString?= null
@@ -50,49 +47,35 @@ class SignupActivity : AppCompatActivity()
     var connectivity: Connectivity? = null
         @Inject set
 
-
     var sharedHelper: SharedHelper? = null
         @Inject set
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
+        Language.setLanguageNew(this, Constants.LANG)
+
+        ui.txtRegister.text = resources.getString(R.string.register)
+        ui.haveAccount.text = resources.getString(R.string.have_account)
+        ui.btnSignup.text = resources.getString(R.string.signUp)
+        ui.checkBox.text = resources.getString(R.string.accept_privacy)
+        ui.fillFirstName.hint = resources.getString(R.string.first_name)
+        ui.fillLastName.hint = resources.getString(R.string.last_name)
+        ui.fillPassword.hint = resources.getString(R.string.your_password)
+        ui.fillConfirmPassword.hint = resources.getString(R.string.confirm_password)
+        ui.fillEmail.hint = resources.getString(R.string.email)
+
         getIntentData()
 
-        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
-        pDialog.setCancelable(false)
 
-        val string = resources.getString(R.string.have_account)
-        spannableString = SpannableString(string)
-
-        val clickableSpan = object : ClickableSpan()
-        {
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-            //    ds.color = resources.getColor(R.color.colorPrimary)
-                ds.color = ContextCompat.getColor(this@SignupActivity,R.color.colorPrimary)
-            }
-
-            override fun onClick(widget: View)
-            {
-                startActivity(Intent(this@SignupActivity,MainActivity::class.java))
-                finish()
-            }
+        ui.haveAccount.setOnClickListener {
+            startActivity(Intent(this@SignupActivity,MainActivity::class.java))
+            finish()
         }
-
-        try
-        {
-            spannableString?.setSpan(clickableSpan,17,24, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        catch(e:Exception)
-        {
-            spannableString?.setSpan(clickableSpan,11,21, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-
-        ui.noAccount.text = spannableString
-        ui.noAccount.movementMethod = LinkMovementMethod.getInstance()
 
 
         ui.btnSignup.setOnClickListener {
@@ -143,16 +126,16 @@ class SignupActivity : AppCompatActivity()
             }
             else if(!ui.checkBox.isChecked)
             {
-                ui.checkBox.error = "Required"
+                ui.checkBox.error = getString(R.string.required)
             } else if(!isValidPassword(password))
             {
-                alertDialog.showWarningDialog("Password is not valid please use (Aa1@#$%)",
+                alertDialog.showWarningDialog(getString(R.string.password_is_not_valid_please_use_aa1),
                     resources.getString(R.string.app__ok))
                 alertDialog.show()
             }
             else if(!isValidEmailId(email))
             {
-                alertDialog.showWarningDialog("Email is not valid",
+                alertDialog.showWarningDialog(getString(R.string.email_is_not_valid),
                     resources.getString(R.string.app__ok))
                 alertDialog.show()
             }
@@ -192,16 +175,8 @@ class SignupActivity : AppCompatActivity()
 
     }
 
-    private fun isValidEmailId(email: String): Boolean {
-        return Pattern.compile(
-            "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]|[\\w-]{2,}))@"
-                    + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                    + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
-                    + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
-                    + "[0-9]{1,2}|25[0-5]|2[0-4][0-9]))|"
-                    + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$"
-        ).matcher(email).matches()
-    }
+    private fun isValidEmailId(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.click.CategoryClick
 import com.esh7enly.esh7enlyuser.databinding.ItemLayoutBinding
@@ -14,7 +15,7 @@ import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.Utils
 
 class CategoryAdapter (val click: CategoryClick) :
-    ListAdapter<Category, CategoryAdapter.ViewHolder>(CategoryDiffCallback())
+    ListAdapter<CategoryData, CategoryAdapter.ViewHolder>(CategoryDiffCallback())
 {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemBinding = ItemLayoutBinding.inflate(
@@ -31,8 +32,9 @@ class CategoryAdapter (val click: CategoryClick) :
     inner class ViewHolder(private val itemBinding: ItemLayoutBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         @SuppressLint("CheckResult")
 
-        fun bind(service: Category) = with(itemBinding)
+        fun bind(service: CategoryData) = with(itemBinding)
         {
+
             Utils.displayImageOriginalFromCache(root.context,categoryIcon,service.icon
             ,NetworkUtils.isConnectedWifi(root.context))
 
@@ -51,18 +53,18 @@ class CategoryAdapter (val click: CategoryClick) :
         }
     }
 
-    class CategoryDiffCallback : DiffUtil.ItemCallback<Category>()
+    class CategoryDiffCallback : DiffUtil.ItemCallback<CategoryData>()
     {
         override fun areItemsTheSame(
-            oldItem: Category,
-            newItem: Category
+            oldItem: CategoryData,
+            newItem: CategoryData
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: Category,
-            newItem: Category
+            oldItem: CategoryData,
+            newItem: CategoryData
         ): Boolean {
             return oldItem == newItem
         }

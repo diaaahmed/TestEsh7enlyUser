@@ -1,18 +1,19 @@
 package com.esh7enly.esh7enlyuser.activity
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.view.View
+import android.view.animation.AnticipateInterpolator
+
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.esh7enlyuser.R
@@ -21,6 +22,7 @@ import com.esh7enly.esh7enlyuser.util.*
 import com.google.firebase.messaging.FirebaseMessaging
 
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -43,36 +45,42 @@ class MainActivity : BaseActivity()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+        //initSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
+       // validateToken()
+
+        val appLanguage = sharedHelper?.getAppLanguage()
+
+        Constants.LANG = appLanguage
+
+        Language.setLanguageNew(this, Constants.LANG)
+
+        ui.textView.text = resources.getString(R.string.welcome_back)
+        ui.checkBox.text = resources.getString(R.string.remember_me)
+        ui.forgetPassword.text = resources.getString(R.string.forget_password)
+        ui.btnLogin.text = resources.getString(R.string.login_btn)
+        ui.language.text = resources.getString(R.string.language)
+        ui.noAccount.text = resources.getString(R.string.no_account)
+        ui.fillPhoneNumber.hint = resources.getString(R.string.enter_phone_number)
+        ui.fillPassword.hint = resources.getString(R.string.enter_password)
+
         setUpRemember()
+
+//        ui.lifecycleOwner = this
+//        ui.loginViewModel = userViewModel
 
         ui.phoneNumber.setText(sharedHelper?.getUserName())
 
-        pDialog.setMessage(
-            Utils.getSpannableString(
-                this,
-                resources.getString(R.string.message__please_wait)
-            )
-        )
-        pDialog.setCancelable(false)
+//        pDialog.setMessage(
+//            Utils.getSpannableString(
+//                this,
+//                resources.getString(R.string.message__please_wait)
+//            )
+//        )
+//        pDialog.setCancelable(false)
 
-        val string = resources.getString(R.string.no_account)
-
-        spannableString = SpannableString(string)
-
-        val clickableSpan = object : ClickableSpan() {
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.color = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
-            }
-
-            override fun onClick(widget: View) {
-                startActivity(Intent(this@MainActivity, PhoneActivity::class.java))
-                finishAffinity()
-            }
-        }
 
         ui.forgetPassword.setOnClickListener {
             val forgetPasswordIntent = Intent(this, PhoneActivity::class.java)
@@ -80,20 +88,65 @@ class MainActivity : BaseActivity()
             startActivity(forgetPasswordIntent)
         }
 
-        try {
-            spannableString?.setSpan(clickableSpan, 23, 29, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } catch (e: Exception) {
-            spannableString?.setSpan(clickableSpan, 15, 23, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-        ui.noAccount.text = spannableString
-        ui.noAccount.movementMethod = LinkMovementMethod.getInstance()
-
         ui.language.setOnClickListener {
             showLanguage()
         }
 
+        ui.noAccount.setOnClickListener {
+            startActivity(Intent(this@MainActivity, PhoneActivity::class.java))
+            finishAffinity()
+        }
         ui.btnLogin.setOnClickListener {
             login()
+        }
+    }
+
+    private fun initSplashScreen()
+    {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+        {
+            installSplashScreen()
+
+            splashScreen.setOnExitAnimationListener {splashScreenView->
+                val slideUp = ObjectAnimator.ofFloat(
+                    splashScreenView, View.TRANSLATION_Y,0F,splashScreenView.height.toFloat()
+                )
+
+                slideUp.interpolator = AnticipateInterpolator()
+                slideUp.duration = 1000L
+
+                slideUp.doOnEnd { splashScreenView.remove() }
+                slideUp.start()
+            }
+        }
+        else
+        {
+            setTheme(R.style.Theme_Test)
+        }
+
+
+    }
+
+    private fun validateToken()
+    {
+        userViewModel.token = sharedHelper?.getUserToken().toString()
+
+        userViewModel.validateTokenResponseUser(userViewModel.token)
+
+        lifecycleScope.launch {
+            userViewModel.login.observe(this@MainActivity)
+            {
+                if (it == true)
+                {
+                    NavigateToActivity.navigateToHomeActivity(this@MainActivity)
+                    return@observe
+                }
+                else
+                {
+                    setContentView(ui.root)
+                    return@observe
+                }
+            }
         }
     }
 
@@ -131,6 +184,8 @@ class MainActivity : BaseActivity()
             else {
                 pDialog.show()
 
+               // pDialog.show()
+
                 getUserTokenFromFirebase(phoneNumber,password)
             }
         } else {
@@ -163,6 +218,7 @@ class MainActivity : BaseActivity()
             { response ->
                 if (response.isSuccessful)
                 {
+                  //  pDialog.cancel()
                     pDialog.cancel()
 
                     if (!response?.body!!.status!!)
@@ -174,6 +230,7 @@ class MainActivity : BaseActivity()
 
                     }
                 } else {
+                   // pDialog.cancel()
                     pDialog.cancel()
                     showDialogWithAction(response.errorMessage.toString())
                 }
@@ -181,6 +238,7 @@ class MainActivity : BaseActivity()
         }
         catch (e: Exception)
         {
+          //  pDialog.cancel()
             pDialog.cancel()
             showDialogWithAction(e.message.toString())
         }

@@ -39,18 +39,38 @@ class BalanceFragment : BaseFragment()
         return ui.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ui.txtBalance.text = resources.getString(R.string.balance)
+
+        if(connectivity?.isConnected == true)
+        {
+            balanceViewModel.balance.observe(requireActivity())
+            {
+                ui.userBalance.text = "$it ${resources.getString(R.string.egp)}"
+            }
+
+            getBalance()
+            initRecyclerView()
+            getDeposits()
+        }
+        else
+        {
+            dialog.showErrorDialogWithAction(resources.getString(R.string.no_internet_error),
+                resources.getString(R.string.app__ok))
+            {
+                dialog.cancel()
+
+            }.show()
+        }
 
         ui.addBalance.setOnClickListener{
             NavigateToActivity.navigateToAddBalanceActivity(requireActivity())
         }
 
-        balanceViewModel.balance.observe(requireActivity())
-        {
-            ui.userBalance.text = "$it ${resources.getString(R.string.egp)}"
-        }
 
         ui.reload.setOnClickListener {
            getBalance()
@@ -66,11 +86,11 @@ class BalanceFragment : BaseFragment()
     }
 
 
-    private fun getDeposits()
-    {
+    private fun getDeposits() {
+
         balanceViewModel.getNewDeposits(sharedHelper?.getUserToken().toString(),page)
 
-        balanceViewModel.responseDeposits.observe(this)
+        balanceViewModel.responseDeposits.observe(viewLifecycleOwner)
         {
                 response->
             when(response)
@@ -111,25 +131,25 @@ class BalanceFragment : BaseFragment()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onResume() {
+    override fun onResume()
+    {
         super.onResume()
 
-        if(connectivity?.isConnected == true)
-        {
-            getBalance()
-            initRecyclerView()
-            getDeposits()
-
-        }
-        else
-        {
-            dialog.showErrorDialogWithAction(resources.getString(R.string.no_internet_error),
-                resources.getString(R.string.app__ok))
-            {
-                dialog.cancel()
-
-            }.show()
-        }
+//        if(connectivity?.isConnected == true)
+//        {
+//            getBalance()
+//            initRecyclerView()
+//            getDeposits()
+//        }
+//        else
+//        {
+//            dialog.showErrorDialogWithAction(resources.getString(R.string.no_internet_error),
+//                resources.getString(R.string.app__ok))
+//            {
+//                dialog.cancel()
+//
+//            }.show()
+//        }
     }
 
 }

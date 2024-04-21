@@ -23,6 +23,7 @@ object RepoModule
         return ServicesRepoImpl(apiService,notificationService,databaseRoom)
     }
 
+
     @Provides
     fun provideTransactionsRepo(apiService: ApiService):TransactionsRepo{
         return TransactionsRepo(apiService)

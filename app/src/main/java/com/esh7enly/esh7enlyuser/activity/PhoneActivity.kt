@@ -1,14 +1,16 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import com.esh7enly.domain.entity.forgetpasswordotp.Data
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityPhoneBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.util.Language
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,16 +24,23 @@ class PhoneActivity : BaseActivity()
         AppDialogMsg(this,false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
-        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
+        Language.setLanguageNew(this, Constants.LANG)
 
-        pDialog.setCancelable(false)
+        ui.phoneNumberMsg.text = resources.getString(R.string.phone_number_msg)
+        ui.btnSendOTP.text = resources.getString(R.string.send_otp)
+        ui.fillPhone.hint = resources.getString(R.string.enter_phone_number)
+
+        Language.setLanguageNew(this, Constants.LANG)
+
 
         ui.btnSendOTP.setOnClickListener{
+
             if(connectivity?.isConnected == true)
             {
                 pDialog.show()
@@ -95,8 +104,6 @@ class PhoneActivity : BaseActivity()
                             }
                         })
                     }
-
-
                 }
             }
             else
@@ -107,8 +114,6 @@ class PhoneActivity : BaseActivity()
                     alertDialog.cancel()
                 }.show()
             }
-
-
         }
     }
 }

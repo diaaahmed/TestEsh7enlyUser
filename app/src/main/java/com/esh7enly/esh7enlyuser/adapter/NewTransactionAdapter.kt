@@ -25,6 +25,7 @@ class NewTransactionAdapter (val click: TransactionClick) :
             @SuppressLint("SetTextI18n")
             fun bind(transactionEntity: List<TransactionEntity>, position: Int) = with(binding)
             {
+
                 tvService.text = transactionEntity[position].service.name
 
                 tvId.text = binding.root.resources.getString(R.string.trans_id_title) +

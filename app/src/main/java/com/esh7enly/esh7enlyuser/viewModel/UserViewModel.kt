@@ -27,6 +27,10 @@ class UserViewModel @Inject constructor(private val userRepo: UserRepo):
     var password:String?= null
     var imei:String?= null
 
+
+    var newPhoneNumber = ""
+    var newPassword = ""
+
     var token = ""
 
     fun userLogin(mobile:String, password:String, device_token:String):

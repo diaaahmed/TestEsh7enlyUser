@@ -60,6 +60,7 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
     }
 
 
+
     fun clearFawryOperations()
     {
         viewModelScope.launch(Dispatchers.IO) {
@@ -72,6 +73,134 @@ class ServiceViewModel @Inject constructor(private val repo: ServicesRepoImpl,
             databaseRepo.deleteFawryOperation(id)
         }
     }
+
+    fun getProviders(token: String,id: String, listner: OnResponseListener)
+    {
+        viewModelScope.launch {
+            try {
+                val providers = repo.getProviders(token,id)
+
+                if(providers.isSuccessful)
+                {
+                    if(providers.body()!!.status)
+                    {
+
+                        listner.onSuccess(providers.body()!!.code,providers.body()!!.message,providers.body()!!.data)
+                    }
+                    else
+                    {
+                        listner.onFailed(providers.body()!!.code,providers.body()!!.message)
+                    }
+                }
+                else
+                {
+                    listner.onFailed(providers.code(),providers.message())
+                }
+            }
+            catch (e: Exception)
+            {
+                listner.onFailed(404,e.message)
+
+            }
+        }
+    }
+
+    fun getServices(token: String,id: String, listner: OnResponseListener)
+    {
+        viewModelScope.launch {
+            try {
+                val services = repo.getServices(token,id)
+
+
+                if(services.isSuccessful)
+                {
+                    if(services.body()!!.status)
+                    {
+
+                        listner.onSuccess(services.body()!!.code,services.body()!!.message,services.body()!!.data)
+                    }
+                    else
+                    {
+                        listner.onFailed(services.body()!!.code,services.body()!!.message)
+                    }
+                }
+                else
+                {
+                    listner.onFailed(services.code(),services.message())
+                }
+            }
+            catch (e: Exception)
+            {
+                listner.onFailed(404,e.message)
+
+            }
+        }
+    }
+
+    fun getParameters(token: String,id: String, listner: OnResponseListener)
+    {
+        viewModelScope.launch {
+            try {
+                val parameters = repo.getParameters(token,id)
+
+
+                if(parameters.isSuccessful)
+                {
+                    if(parameters.body()!!.status)
+                    {
+
+                        listner.onSuccess(parameters.body()!!.code,parameters.body()!!.message,parameters.body()!!.data)
+                    }
+                    else
+                    {
+                        listner.onFailed(parameters.body()!!.code,parameters.body()!!.message)
+                    }
+                }
+                else
+                {
+                    listner.onFailed(parameters.code(),parameters.message())
+                }
+            }
+            catch (e: Exception)
+            {
+                listner.onFailed(404,e.message)
+
+            }
+        }
+    }
+
+    fun getCategories(token: String, listner: OnResponseListener)
+    {
+        viewModelScope.launch {
+            try {
+                val categories = repo.getCategories(token)
+
+
+                if(categories.isSuccessful)
+                {
+                    if(categories.body()!!.status)
+                    {
+
+                        listner.onSuccess(categories.body()!!.code,categories.body()!!.message,categories.body()!!.data)
+                    }
+                    else
+                    {
+                        listner.onFailed(categories.body()!!.code,categories.body()!!.message)
+                    }
+                }
+                else
+                {
+                    listner.onFailed(categories.code(),categories.message())
+                }
+            }
+            catch (e: Exception)
+            {
+                listner.onFailed(404,e.message)
+
+            }
+        }
+    }
+
 
     fun scheduleInquire(token:String,serviceId: String,invoice_number:String,listner: OnResponseListener) {
         viewModelScope.launch {

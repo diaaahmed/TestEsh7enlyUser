@@ -3,17 +3,21 @@ package com.esh7enly.esh7enlyuser.fragment
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.annotation.RequiresApi
 import com.esh7enly.esh7enlyuser.BuildConfig
 import com.esh7enly.esh7enlyuser.R
+import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.databinding.FragmentSupportBinding
+import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.Language
 
 
-class SupportFragment : Fragment() {
+class SupportFragment : BaseFragment() {
 
     private val ui by lazy{
         FragmentSupportBinding.inflate(layoutInflater)
@@ -27,8 +31,18 @@ class SupportFragment : Fragment() {
         return ui.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     { super.onViewCreated(view, savedInstanceState)
+
+        Language.setLanguageNew(requireActivity(), Constants.LANG)
+
+        ui.btnSendMsg.text = resources.getString(R.string.send_message)
+        ui.supportToolbar.title = resources.getString(R.string.support)
+        ui.chatWhatsText.text = resources.getString(R.string.chatting)
+        ui.callUsText.text = resources.getString(R.string.call_us)
+        ui.emailMsg.hint = resources.getString(R.string.enter_message)
+        ui.sendEmailText.text = resources.getString(R.string.send_email)
 
         ui.callUs.setOnClickListener { callSupport() }
 

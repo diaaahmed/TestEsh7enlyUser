@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.esh7enly.data.url.Urls
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.*
+import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
@@ -12,14 +13,18 @@ import com.esh7enly.domain.entity.forgetpasswordresponse.ForgetPasswordResponse
 import com.esh7enly.domain.entity.imageadsresponse.ImageAdResponse
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.entity.otpresponse.NewOtpResponse
+import com.esh7enly.domain.entity.parametersNew.ParametersResponse
 import com.esh7enly.domain.entity.pointsresponse.PointsResponse
+import com.esh7enly.domain.entity.providersNew.ProviderResponse
 import com.esh7enly.domain.entity.registerresponse.RegisterResponse
 import com.esh7enly.domain.entity.replacepointsresponse.ReplacePointsResponse
 import com.esh7enly.domain.entity.scedulelistresponse.ScheduleListResponse
 import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireResponse
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
+import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.esh7enly.domain.entity.startsessionresponse.StartSessionResponse
 import com.esh7enly.domain.entity.totalamountxpayresponse.GetTotalAmountXPayResponse
+import com.esh7enly.domain.entity.userservices.Provider
 import com.esh7enly.domain.entity.userservices.UserServicesResponse
 import com.esh7enly.domain.entity.userwallet.UserWalletResponse
 import com.esh7enly.domain.entity.verifyotp.VerifyOtpResponse
@@ -37,7 +42,6 @@ import retrofit2.http.Query
 
 interface ApiService
 {
-
     @POST(Urls.SERVICES)
     suspend fun getServicesFromRemoteUser(@Header("Authorization") token: String): UserServicesResponse
 
@@ -61,12 +65,12 @@ interface ApiService
         @Header("Authorization") token: String?,
         @Field("service_id") service_id: String,
         @Field("invoice_number") invoice_number:String
-    ):Response<ScheduleInquireResponse>
+    ): Response<ScheduleInquireResponse>
 
     @POST(Urls.SCHEDULE_LIST)
     suspend fun getScheduleList(
         @Header("Authorization") token: String?,
-    ):Response<ScheduleListResponse>
+    ): Response<ScheduleListResponse>
 
     @FormUrlEncoded
     @POST(Urls.SCHEDULE_INVOICE)
@@ -131,7 +135,7 @@ interface ApiService
     suspend fun chargeBalanceWithPaytabs(
         @Header("Authorization") token: String?,
         @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
-    ):Response<ChargeBalanceResponse>
+    ): Response<ChargeBalanceResponse>
 
     @FormUrlEncoded
     @POST(Urls.UPDATE_PASSWORD)
@@ -139,7 +143,33 @@ interface ApiService
         @Header("Authorization") token: String?,
         @Field("currant_password") currentPassword:String,
         @Field("new_password") newPassword:String
-    ):Response<ChargeBalanceResponse>
+    ): Response<ChargeBalanceResponse>
+
+    @FormUrlEncoded
+    @POST(Urls.PROVIDERS)
+    suspend fun getProviders(
+        @Header("Authorization") token: String?,
+        @Field("id") id:String
+    ):Response<ProviderResponse>
+
+    @FormUrlEncoded
+    @POST(Urls.SERVICES_NEW)
+    suspend fun getServices(
+        @Header("Authorization") token: String?,
+        @Field("id") id:String
+    ):Response<ServiceResponse>
+
+    @FormUrlEncoded
+    @POST(Urls.PARAMETERS)
+    suspend fun getParameters(
+        @Header("Authorization") token: String?,
+        @Field("id") id:String
+    ):Response<ParametersResponse>
+
+    @POST(Urls.CATEGORIES)
+    suspend fun getCategories(
+        @Header("Authorization") token: String?
+    ):Response<CategoriesResponse>
 
     @FormUrlEncoded
     @POST(Urls.UPDATE_PROFILE)
@@ -148,19 +178,19 @@ interface ApiService
         @Field("mobile") mobile:String,
         @Field("name") name:String,
         @Field("email") email:String
-    ):Response<ChargeBalanceResponse>
+    ): Response<ChargeBalanceResponse>
 
     @POST(Urls.GET_DEPOSITS)
     suspend fun getDeposits(
         @Header("Authorization") token: String?,
         @Query("page") page:Int
-    ):Response<DepositResponse>
+    ): Response<DepositResponse>
 
     @FormUrlEncoded
     @POST(Urls.FORGET_PASSWORD)
     suspend fun forgetPassword(
         @Field("mobile") mobile: String?,
-    ):Response<ForgetPasswordOTPResponse>
+    ): Response<ForgetPasswordOTPResponse>
 
     @FormUrlEncoded
     @POST(Urls.NEW_PASSWORD)
@@ -169,7 +199,7 @@ interface ApiService
         @Field("password") password: String?,
         @Field("password_confirmation") password_confirmation: String?,
         @Field("otp") otp: String?,
-    ):Response<ForgetPasswordResponse>
+    ): Response<ForgetPasswordResponse>
 
     @FormUrlEncoded
     @POST(Urls.START_SESSION)
@@ -179,7 +209,7 @@ interface ApiService
         @Header("Authorization") token: String?,
         @Field("amount") amount: String,
         @Field("ip") ip: String
-    ):Response<StartSessionResponse>
+    ): Response<StartSessionResponse>
 
     @FormUrlEncoded
     @POST(Urls.TOTAL_XPAY)
@@ -188,7 +218,7 @@ interface ApiService
         @Field("amount") amount: String,
         @Field("payment_method_type") payment_method_type:String,
         @Field("transaction_type") transaction_type :String,
-    ):Response<GetTotalAmountXPayResponse>
+    ): Response<GetTotalAmountXPayResponse>
 
     @POST(Urls.PAYMENT)
     suspend fun pay(
@@ -223,6 +253,5 @@ interface ApiService
         @Field("transaction_id") transaction_id: String,
         @Field("imei") imei: String
     ): Response<JsonElement>
-
 
 }

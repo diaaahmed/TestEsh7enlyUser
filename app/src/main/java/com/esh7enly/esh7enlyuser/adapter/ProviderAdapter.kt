@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.esh7enly.domain.entity.providersNew.ProviderData
 import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.click.ProviderClick
 import com.esh7enly.esh7enlyuser.databinding.ProviderLayoutBinding
@@ -14,7 +15,7 @@ import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.Utils
 
 class ProviderAdapter (val click: ProviderClick) :
-    ListAdapter<Provider, ProviderAdapter.ViewHolder>(ProviderDiffCallback()) {
+    ListAdapter<ProviderData, ProviderAdapter.ViewHolder>(ProviderDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemBinding = ProviderLayoutBinding.inflate(
@@ -31,7 +32,7 @@ class ProviderAdapter (val click: ProviderClick) :
     inner class ViewHolder(private val itemBinding: ProviderLayoutBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         @SuppressLint("CheckResult")
 
-        fun bind(provider: Provider) = with(itemBinding)
+        fun bind(provider: ProviderData) = with(itemBinding)
         {
             Utils.displayImageOriginalFromCache(root.context,categoryIcon,provider.logo,
             NetworkUtils.isConnectedWifi(root.context))
@@ -51,18 +52,18 @@ class ProviderAdapter (val click: ProviderClick) :
         }
     }
 
-    class ProviderDiffCallback : DiffUtil.ItemCallback<Provider>()
+    class ProviderDiffCallback : DiffUtil.ItemCallback<ProviderData>()
     {
         override fun areItemsTheSame(
-            oldItem: Provider,
-            newItem: Provider
+            oldItem: ProviderData,
+            newItem: ProviderData
         ): Boolean {
             return oldItem.name_en == newItem.name_en
         }
 
         override fun areContentsTheSame(
-            oldItem: Provider,
-            newItem: Provider
+            oldItem: ProviderData,
+            newItem: ProviderData
         ): Boolean {
             return oldItem == newItem
         }

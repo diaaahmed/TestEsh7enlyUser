@@ -55,7 +55,15 @@
     <string name="required_amount">أدخل المبلغ المطلوب</string>
 
     <string name="forget_password">نسيت الباسورد؟</string>
-    <string name="no_account">ليس لديك حساب؟ سجل الأن</string>
+<!--    <string name="no_account">ليس لديك حساب؟ سجل الأن</string>-->
+
+    <string name="no_account">ليس لديك حساب؟ <font color='#bc3827'>سجل الآن</font></string>
+    <string name="have_account"> لديك حساب؟ <font color='#bc3827'>سجل الدخول</font></string>
+
+<!--    <string name="have_account">لديك حساب، سجل الدخول</string>-->
+
+
+
     <string name="register">تسجيل حساب جديد</string>
     <string name="slogan">الأسهل والأسرع</string>
     <string name="add_balance">أضف رصيد</string>
@@ -167,7 +175,7 @@
     <string name="error_message__blank_last_name">يرجى كتابة الإسم الأخير</string>
 
     <string name="your_password">الباسورد الخاص بك</string>
-    <string name="have_account">لديك حساب، سجل الدخول</string>
+<!--    <string name="have_account">لديك حساب، سجل الدخول</string>-->
     <string name="error_message__blank_phone"> يرجى إدخال رقم الهاتف. </string>
     <string name="error_message__wrong_phone">برجاء إدخال رقم الهاتف بشكل صحيح</string>
     <string name="error_message__blank_password"> يرجى إدخال كلمة المرور. </string>
@@ -218,5 +226,7 @@
 
     <string name="total_amount">المبلغ الكلى:</string>
     <string name="vodafone_cash">فودافون كاش</string>
+    <string name="email_is_not_valid">البريد الإلكترونى غير صحيح</string>
+    <string name="password_is_not_valid_please_use_aa1">الرقم السرى غير مقبول، يرجى استحدام حروف ورموز وارقام</string>
 
 </resources>

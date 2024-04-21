@@ -3,6 +3,7 @@ package com.esh7enly.esh7enlyuser.util
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.domain.entity.userservices.Category
 import com.esh7enly.esh7enlyuser.activity.*
 
@@ -104,7 +105,7 @@ class NavigateToActivity
             activity.finish()
         }
 
-        fun navigateToProviderActivity(activity:Activity,category:Category)
+        fun navigateToProviderActivity(activity:Activity,category:CategoryData)
         {
             val providerActivity = Intent(activity, ProviderActivity::class.java)
             providerActivity.putExtra(Constants.CATEGORY_ID, category.id)

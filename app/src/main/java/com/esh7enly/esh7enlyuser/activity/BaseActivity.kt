@@ -1,9 +1,11 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
+import android.os.Build
+
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.data.sharedhelper.SharedHelper
@@ -11,6 +13,7 @@ import com.esh7enly.domain.entity.PaymentEntity
 import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.TotalAmountEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel
+import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.domain.entity.userservices.Service
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -41,27 +44,33 @@ abstract class BaseActivity : AppCompatActivity()
     var connectivity: Connectivity? = null
         @Inject set
 
-     open val pDialog by lazy { ProgressDialog(this, R.style.MyAlertDialogStyle) }
+//     open val pDialog by lazy { ProgressDialog(this, R.style.MyAlertDialogStyle) }
+
+    val pDialog by lazy{
+        com.esh7enly.esh7enlyuser.util.ProgressDialog.createProgressDialog(this)
+    }
 
     private val dialog by lazy {
         AppDialogMsg(this, false)
     }
 
+
     private var bulkNumber = 0
     private var isBulk = false
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onStart()
     {
         super.onStart()
 
-        pDialog.setMessage(
-            Utils.getSpannableString(
-                this,
-                resources.getString(R.string.message__please_wait)
-            )
-        )
-
-        pDialog.setCancelable(false)
+//        pDialog.setMessage(
+//            Utils.getSpannableString(
+//                this,
+//                resources.getString(R.string.message__please_wait)
+//            )
+//        )
+//
+//        pDialog.setCancelable(false)
     }
 
     open fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel) {
@@ -72,6 +81,7 @@ abstract class BaseActivity : AppCompatActivity()
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
                 {
                     pDialog.cancel()
+                   // pDialog.cancel()
 
                     val data: TotalAmountEntity.DataEntity = obj as TotalAmountEntity.DataEntity
 
@@ -86,6 +96,7 @@ abstract class BaseActivity : AppCompatActivity()
                         resources.getString(R.string.app__ok),resources.getString(R.string.app__cancel)
                     ) { quantity ->
                         dialog.cancel()
+
                         bulkNumber = Integer.parseInt(quantity)
 
                         isBulk = bulkNumber > 1
@@ -104,6 +115,7 @@ abstract class BaseActivity : AppCompatActivity()
                 override fun onFailed(code: Int, msg: String?)
                 {
                     pDialog.cancel()
+                   // pDialog.cancel()
 
                     dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok)
                     ) {
@@ -124,16 +136,17 @@ abstract class BaseActivity : AppCompatActivity()
     open lateinit var dataPay: PaymentEntity.DataEntity
 
     private fun pay(paymentPojoModel: PaymentPojoModel, isBulk: Boolean) {
-        pDialog.setMessage(
-            Utils.getSpannableString(
-                this,
-                resources.getString(R.string.message__please_wait)
-            )
-        )
-
-        pDialog.setCancelable(false)
+//        pDialog.setMessage(
+//            Utils.getSpannableString(
+//                this,
+//                resources.getString(R.string.message__please_wait)
+//            )
+//        )
+//
+//        pDialog.setCancelable(false)
 
         pDialog.show()
+       // pDialog.show()
 
         serviceViewModel.pay(sharedHelper?.getUserToken().toString(),
             paymentPojoModel, object : OnResponseListener {
@@ -168,6 +181,7 @@ abstract class BaseActivity : AppCompatActivity()
                 }
 
                 override fun onFailed(code: Int, msg: String?) {
+                   // pDialog.cancel()
                     pDialog.cancel()
 
                     dialog.showErrorDialogWithAction(
@@ -197,6 +211,7 @@ abstract class BaseActivity : AppCompatActivity()
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
                 {
+                    //pDialog.cancel()
                     pDialog.cancel()
 
                     val builder = AlertDialog.Builder(this@BaseActivity)
@@ -211,16 +226,17 @@ abstract class BaseActivity : AppCompatActivity()
                             val calendar = Calendar.getInstance()
                             val day = calendar.get(Calendar.DATE).toString()
 
-                            pDialog.setMessage(
-                                Utils.getSpannableString(
-                                    this@BaseActivity,
-                                    resources.getString(R.string.message__please_wait)
-                                )
-                            )
-
-                            pDialog.setCancelable(false)
+//                            pDialog.setMessage(
+//                                Utils.getSpannableString(
+//                                    this@BaseActivity,
+//                                    resources.getString(R.string.message__please_wait)
+//                                )
+//                            )
+//
+//                            pDialog.setCancelable(false)
 
                             pDialog.show()
+                           // pDialog.show()
 
                             lifecycleScope.launch {
                                 scheduleInvoice(result,day,paymentPojoModel)
@@ -253,6 +269,7 @@ abstract class BaseActivity : AppCompatActivity()
                 override fun onFailed(code: Int, msg: String?)
                 {
                     pDialog.cancel()
+                   // pDialog.cancel()
 
                     if (isBulk) {
                         // Move to print with bulk
@@ -306,6 +323,7 @@ abstract class BaseActivity : AppCompatActivity()
                     obj: Any?
                 ) {
                     pDialog.cancel()
+                   // pDialog.cancel()
                     dialog.showSuccessDialog(msg,resources.getString(R.string.app__ok))
                     {
                         dialog.cancel()
@@ -345,8 +363,8 @@ abstract class BaseActivity : AppCompatActivity()
 
                 override fun onFailed(code: Int, msg: String?)
                 {
+                  //  pDialog.cancel()
                     pDialog.cancel()
-
                     dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok)
                     ) {
                         dialog.cancel()
@@ -388,7 +406,7 @@ abstract class BaseActivity : AppCompatActivity()
     }
 
 
-     fun navigateToParametersActivity(service: Service)
+     fun navigateToParametersActivity(service: ServiceData)
      {
          val providerName =
          if(Constants.LANG == Constants.AR)

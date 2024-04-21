@@ -7,153 +7,160 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="@color/background_color"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".activity.AccountSettingActivity">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:background="@drawable/gradiant_color_normal"
-            android:id="@+id/app_bar"
-            android:padding="@dimen/_5sdp"
-            app:elevation="@dimen/_20sdp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:background="@color/background_color"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            tools:context=".activity.AccountSettingActivity">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                app:title="@string/account_setting"
-                app:navigationIcon="@drawable/ic_back"
-                app:titleTextColor="@color/white"
-                android:id="@+id/setting_toolbar"
+            <LinearLayout
+                android:background="@drawable/gradiant_color_normal"
+                android:id="@+id/app_bar"
+                android:padding="@dimen/_5sdp"
+                app:elevation="@dimen/_20sdp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"/>
+                android:layout_height="wrap_content">
 
-        </LinearLayout>
+                <com.google.android.material.appbar.MaterialToolbar
+                    app:title="@string/account_setting"
+                    app:navigationIcon="@drawable/ic_back"
+                    app:titleTextColor="@color/white"
+                    android:id="@+id/setting_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"/>
 
-        <com.google.android.material.card.MaterialCardView
-            app:strokeWidth="0.5dp"
-            app:strokeColor="@color/colorPrimary"
-            app:cardElevation="@dimen/_5sdp"
-            app:layout_constraintTop_toBottomOf="@id/app_bar"
-            app:cardBackgroundColor="@color/white"
-            android:id="@+id/change_password"
-            android:layout_marginTop="@dimen/_50sdp"
-            android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </LinearLayout>
 
-            <TextView
-                app:fontFamily="@font/readexrromedium"
-                android:gravity="center_vertical"
-                android:drawablePadding="@dimen/_8sdp"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/change_password"
+            <com.google.android.material.card.MaterialCardView
+                app:strokeWidth="0.5dp"
+                app:strokeColor="@color/colorPrimary"
+                app:cardElevation="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@id/app_bar"
+                app:cardBackgroundColor="@color/white"
+                android:id="@+id/change_password"
+                android:layout_marginTop="@dimen/_50sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:drawableStartCompat="@drawable/change_password" />
+                android:layout_height="wrap_content">
 
-        </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    app:fontFamily="@font/readexrromedium"
+                    android:gravity="center_vertical"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/change_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawableStartCompat="@drawable/change_password" />
 
-        <com.google.android.material.card.MaterialCardView
-            app:strokeWidth="0.5dp"
-            app:strokeColor="@color/colorPrimary"
-            app:cardElevation="@dimen/_5sdp"
-            app:layout_constraintTop_toBottomOf="@id/change_password"
-            app:cardBackgroundColor="@color/white"
-            android:id="@+id/change_name"
-            android:layout_marginTop="@dimen/_40sdp"
-            android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                app:fontFamily="@font/readexrromedium"
-                android:gravity="center_vertical"
-                android:drawablePadding="@dimen/_8sdp"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/change_user_data"
+            <com.google.android.material.card.MaterialCardView
+                app:strokeWidth="0.5dp"
+                app:strokeColor="@color/colorPrimary"
+                app:cardElevation="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@id/change_password"
+                app:cardBackgroundColor="@color/white"
+                android:id="@+id/change_name"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:drawableStartCompat="@drawable/change_user_name" />
+                android:layout_height="wrap_content">
 
-        </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    app:fontFamily="@font/readexrromedium"
+                    android:gravity="center_vertical"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/change_user_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawableStartCompat="@drawable/change_user_name" />
 
-        <com.google.android.material.card.MaterialCardView
-            app:strokeWidth="0.5dp"
-            app:strokeColor="@color/colorPrimary"
-            app:cardElevation="@dimen/_5sdp"
-            app:layout_constraintTop_toBottomOf="@id/change_name"
-            app:cardBackgroundColor="@color/white"
-            android:id="@+id/change_language"
-            android:layout_marginTop="@dimen/_40sdp"
-            android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                app:fontFamily="@font/readexrromedium"
-                android:gravity="center_vertical"
-                android:drawablePadding="@dimen/_8sdp"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/change_language"
+            <com.google.android.material.card.MaterialCardView
+                app:strokeWidth="0.5dp"
+                app:strokeColor="@color/colorPrimary"
+                app:cardElevation="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@id/change_name"
+                app:cardBackgroundColor="@color/white"
+                android:id="@+id/change_language"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:drawableStartCompat="@drawable/change_language" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    app:fontFamily="@font/readexrromedium"
+                    android:gravity="center_vertical"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/change_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawableStartCompat="@drawable/change_language" />
 
 
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            app:strokeWidth="0.5dp"
-            app:strokeColor="@color/colorPrimary"
-            app:cardElevation="@dimen/_5sdp"
-            app:layout_constraintTop_toBottomOf="@id/change_language"
-            app:cardBackgroundColor="@color/white"
-            android:id="@+id/my_bills"
-            android:layout_marginTop="@dimen/_40sdp"
-            android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                app:fontFamily="@font/readexrromedium"
-                android:gravity="center_vertical"
-                android:drawablePadding="@dimen/_8sdp"
-                android:padding="@dimen/_10sdp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/my_bills"
+            <com.google.android.material.card.MaterialCardView
+                app:strokeWidth="0.5dp"
+                app:strokeColor="@color/colorPrimary"
+                app:cardElevation="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@id/change_language"
+                app:cardBackgroundColor="@color/white"
+                android:id="@+id/my_bills"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:drawableStartCompat="@drawable/billsicon" />
+                android:layout_height="wrap_content">
 
-        </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    app:fontFamily="@font/readexrromedium"
+                    android:gravity="center_vertical"
+                    android:drawablePadding="@dimen/_8sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/my_bills"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:drawableStartCompat="@drawable/billsicon" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/schedule_list_layout"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginBottom="@dimen/_5sdp"
-            android:layout_marginHorizontal="@dimen/_15sdp"
-            android:id="@+id/scheduleRv"
-            app:layout_constraintTop_toBottomOf="@id/my_bills"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            </com.google.android.material.card.MaterialCardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/schedule_list_layout"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:id="@+id/scheduleRv"
+                app:layout_constraintTop_toBottomOf="@id/my_bills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 </layout>

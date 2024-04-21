@@ -17,12 +17,13 @@ import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.PaymentEntity.DataEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel.Params
+import com.esh7enly.domain.entity.parametersNew.ParametersData
 import com.esh7enly.domain.entity.userservices.Image
-import com.esh7enly.domain.entity.userservices.Parameter
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityParametersBinding
@@ -43,16 +44,15 @@ import javax.inject.Inject
 private const val TAG = "ParametersActivity"
 
 @AndroidEntryPoint
-open class ParametersActivity : BaseActivity()
-{
-    private val ui by lazy{
+open class ParametersActivity : BaseActivity() {
+    private val ui by lazy {
         ActivityParametersBinding.inflate(layoutInflater)
     }
 
-    private var nfcAdapter:NfcAdapter?= null
-    private var manager:NfcManager?= null
+    private var nfcAdapter: NfcAdapter? = null
+    private var manager: NfcManager? = null
 
-    lateinit var itemImageSlider:ItemImageSlider
+    lateinit var itemImageSlider: ItemImageSlider
 
     private var internalId: String? = null
 
@@ -61,42 +61,46 @@ open class ParametersActivity : BaseActivity()
 
     private var amount = ""
 
-    private val lang by lazy{
+    private val lang by lazy {
         Constants.LANG
     }
 
     var dynamicLayout: DynamicLayout? = null
-    @Inject set
+        @Inject set
 
 
     private val image = arrayListOf<Image>()
-    private var parametersList:List<Parameter> = emptyList()
+    private var parametersList: List<ParametersData> = emptyList()
 
     private var paramsArrayListToSend = arrayListOf<Params>()
 
-    private var serviceName:String? = null
+    private var serviceName: String? = null
 
     private val dialog by lazy {
-        AppDialogMsg(this,false)
+        AppDialogMsg(this, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        Language.setLanguageNew(this, Constants.LANG)
+
 
         manager = getSystemService(Context.NFC_SERVICE) as NfcManager
 
         nfcAdapter = manager!!.defaultAdapter
 
-        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
-        pDialog.setCancelable(false)
+//        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
+//        pDialog.setCancelable(false)
 
         ui.btnSubmit.setOnClickListener { pushSubmitBtn() }
 
         getIntentData()
 
-        serviceName = if(Constants.LANG == Constants.AR) Constants.SERVICE_NAME_AR else Constants.SERVICE_NAME_EN
+        serviceName =
+            if (Constants.LANG == Constants.AR) Constants.SERVICE_NAME_AR else Constants.SERVICE_NAME_EN
 
         initToolBar()
 
@@ -104,32 +108,27 @@ open class ParametersActivity : BaseActivity()
 
     }
 
-    private fun showData()
-    {
+    private fun showData() {
         ui.tvService.text = serviceName
         ui.tvProvider.text = serviceViewModel.providerName
 
-        if(serviceViewModel.image == null)
-        {
+        if (serviceViewModel.image == null) {
             ui.img.setImageResource(R.drawable.logo)
-        }
-        else
-        {
-            Utils.displayImageOriginalFromCache(this,ui.img,
-                serviceViewModel.image,NetworkUtils.isConnectedWifi(this))
+        } else {
+            Utils.displayImageOriginalFromCache(
+                this, ui.img,
+                serviceViewModel.image, NetworkUtils.isConnectedWifi(this)
+            )
         }
 
 
-        if(serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT)
-        {
+        if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
             ui.btnSubmit.text = resources.getString(R.string.inquiry)
-        }
-        else if(serviceViewModel.serviceType == Constants.PAYMENT)
-        {
+        } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
             ui.btnSubmit.text = resources.getString(R.string.pay)
         }
 
-        getParametersFromDB()
+        getParametersFromRemote()
 
         getImagesFromDB()
     }
@@ -137,22 +136,23 @@ open class ParametersActivity : BaseActivity()
     private fun getImagesFromDB() {
         serviceViewModel.getImagesFromDB(serviceViewModel.servicesId.toString())
             .observe(this@ParametersActivity)
-            {
-                    images->
-                if(images != null)
-                {
+            { images ->
+                if (images != null) {
                     //    val newImages= images.first()
 
                     image.addAll(images)
 
-                    if(images.isNotEmpty())
-                    {
+                    if (images.isNotEmpty()) {
                         ui.cardSlider.visibility = View.VISIBLE
-                        val adapterImageSlider = AdapterImageSlider(this@ParametersActivity,
-                            image)
+                        val adapterImageSlider = AdapterImageSlider(
+                            this@ParametersActivity,
+                            image
+                        )
 
-                        itemImageSlider = ItemImageSlider(this@ParametersActivity,ui.pager,
-                            ui.layoutDots, adapterImageSlider,image)
+                        itemImageSlider = ItemImageSlider(
+                            this@ParametersActivity, ui.pager,
+                            ui.layoutDots, adapterImageSlider, image
+                        )
 
                         itemImageSlider.initImageSlider()
                     }
@@ -161,27 +161,73 @@ open class ParametersActivity : BaseActivity()
             }
     }
 
-    private fun getParametersFromDB() {
-        serviceViewModel.getParametersFromDB(serviceViewModel.servicesId.toString())
-            .observe(this)
-            {
-                    parameters->
-                if(ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId) ||
-                    ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId) ||
-                    ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId))
-                {
-                    // Electricity or water card
-                    ui.lytDynamic.visibility = View.GONE
-                    ui.cardReading.visibility = View.VISIBLE
-                }
-                else
-                {
-                    ui.lytDynamic.visibility = View.VISIBLE
-                    ui.cardReading.visibility = View.GONE
+    private fun getParametersFromDB()
+    {
+        //        serviceViewModel.getParametersFromDB(serviceViewModel.servicesId.toString())
+//            .observe(this)
+//            {
+//                    parameters->
+//                if(ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId) ||
+//                    ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId) ||
+//                    ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId))
+//                {
+//                    // Electricity or water card
+//                    ui.lytDynamic.visibility = View.GONE
+//                    ui.cardReading.visibility = View.VISIBLE
+//                }
+//                else
+//                {
+//                    ui.lytDynamic.visibility = View.VISIBLE
+//                    ui.cardReading.visibility = View.GONE
+//
+//                    replaceData(parameters)
+//                }
+//            }
+    }
 
-                    replaceData(parameters)
+    private fun getParametersFromRemote() {
+        pDialog.show()
+
+        serviceViewModel.getParameters(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.servicesId.toString(), object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                    pDialog.cancel()
+                    val parameters = obj as List<ParametersData>
+
+                    if (ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId) ||
+                        ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId) ||
+                        ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId)
+                    ) {
+                        // Electricity or water card
+                        ui.lytDynamic.visibility = View.GONE
+                        ui.cardReading.visibility = View.VISIBLE
+                    } else {
+                        ui.lytDynamic.visibility = View.VISIBLE
+                        ui.cardReading.visibility = View.GONE
+
+                        replaceData(parameters)
+                    }
                 }
-            }
+
+                override fun onFailed(code: Int, msg: String?) {
+                    pDialog.cancel()
+
+                    Log.d("TAG", "diaa onFailed: $msg")
+
+                    dialog.showErrorDialogWithAction(
+                        msg, resources.getString(R.string.app__ok)
+                    ) {
+                        dialog.cancel()
+
+                        if (code.toString() == Constants.CODE_UNAUTH ||
+                            code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+                        ) {
+                            NavigateToActivity.navigateToMainActivity(this@ParametersActivity)
+                        }
+                    }.show()
+                }
+            })
+
     }
 
     private fun initToolBar() {
@@ -190,42 +236,31 @@ open class ParametersActivity : BaseActivity()
         ui.parametersToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    private fun pushSubmitBtn()
-    {
-        if(connectivity?.isConnected == true)
-        {
-            if(ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId))
-            {
+    private fun pushSubmitBtn() {
+        if (connectivity?.isConnected == true) {
+            if (ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId)) {
                 // Electricity card
                 initializeNFCCard(NFCConstants.CardType.ELECT)
                 Constants.nfcCard = NFCConstants.CardType.ELECT
-            }
-            else if(ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId))
-            {
+            } else if (ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId)) {
                 // Water card
                 initializeNFCCard(NFCConstants.CardType.WSC)
                 Constants.nfcCard = NFCConstants.CardType.WSC
 
-            }
-            else if(ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId))
-            {
+            } else if (ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId)) {
                 // Gas card
                 initializeNFCCard(NFCConstants.CardType.GAS)
                 Constants.nfcCard = NFCConstants.CardType.GAS
-            }
-            else
-            {
+            } else {
                 // Getting amount value if this service need it
-                if (serviceViewModel.acceptAmountinput == 1)
-                {
+                if (serviceViewModel.acceptAmountinput == 1) {
 
                     // find amount EdtTxt by id
                     val etAmount: EditText = ui.lytDynamic.findViewWithTag("amount")
                     // get Amount By User
                     amount = Utils.replaceArabicNumbers(etAmount.text.toString())
                 } else {
-                    if (serviceViewModel.priceType == 2)
-                    {
+                    if (serviceViewModel.priceType == 2) {
                         // get Specific Amount from DB
                         amount = serviceViewModel.priceValue.toString()
                     }
@@ -237,19 +272,18 @@ open class ParametersActivity : BaseActivity()
 
                 // collect Params data before Make inquiry
                 // use this boolean check to make dynamic inputs required Validations
-                if(getParamsData())
-                {
-                    if(serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT)
-                    {
+                if (getParamsData()) {
+                    if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
                         sendParametersToAPI()
-                    }
-                    else if(serviceViewModel.serviceType == Constants.PAYMENT)
-                    {
+                    } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
 
                         pDialog.show()
+                        //  pDialog.show()
 
-                        val totalAmountPojoModel = TotalAmountPojoModel(Constants.IMEI,
-                        serviceViewModel.servicesId,amount,paramsArrayListToSend)
+                        val totalAmountPojoModel = TotalAmountPojoModel(
+                            Constants.IMEI,
+                            serviceViewModel.servicesId, amount, paramsArrayListToSend
+                        )
                         lifecycleScope.launch(Dispatchers.IO)
                         {
                             getTotalAmount(totalAmountPojoModel)
@@ -258,12 +292,12 @@ open class ParametersActivity : BaseActivity()
                 }
 
             }
-        }
-        else
-        {
+        } else {
             // Show dialog
-            dialog.showWarningDialog(resources.getString(R.string.no_internet_error),
-            resources.getString(R.string.app__ok))
+            dialog.showWarningDialog(
+                resources.getString(R.string.no_internet_error),
+                resources.getString(R.string.app__ok)
+            )
             dialog.show()
         }
     }
@@ -275,21 +309,25 @@ open class ParametersActivity : BaseActivity()
             override fun onStartReadNFCCard() {
                 message("Start")
             }
+
             override fun onCardNotSupported() {
                 message("Not supported")
             }
-            override fun onDeviceNotSupportedNFC() { message("Nfc not supported") }
 
-            override fun onCardReadError(vararg exception: java.lang.Exception)
-            {
+            override fun onDeviceNotSupportedNFC() {
+                message("Nfc not supported")
+            }
+
+            override fun onCardReadError(vararg exception: java.lang.Exception) {
                 message("Read error")
             }
-            override fun onChargeExist()
-            {
+
+            override fun onChargeExist() {
                 message("Charge exist")
             }
-            override fun onSuccessReadNFCCard(data: NFCReadCallbackResponse)
-            {
+
+            override fun onSuccessReadNFCCard(data: NFCReadCallbackResponse) {
+
                 message("Success read")
 
                 paramsArrayListToSend.add(Params("ClientIdentifier", data.clientIdentifier))
@@ -304,34 +342,50 @@ open class ParametersActivity : BaseActivity()
                 paramsArrayListToSend.add(Params("ESCFBT02", data.escfbT02))
                 paramsArrayListToSend.add(Params("ESCFBT03", data.escfbT03))
 
-                when(cardType)
-                {
-                    NFCConstants.CardType.ELECT -> paramsArrayListToSend.add(Params("ElectrictyCompany", data.companyIdentifier))
-                    NFCConstants.CardType.WSC -> paramsArrayListToSend.add(Params("WaterCompany", data.companyIdentifier))
-                    NFCConstants.CardType.GAS -> paramsArrayListToSend.add(Params("GasCompany", data.companyIdentifier))
+                when (cardType) {
+                    NFCConstants.CardType.ELECT -> paramsArrayListToSend.add(
+                        Params(
+                            "ElectrictyCompany",
+                            data.companyIdentifier
+                        )
+                    )
+
+                    NFCConstants.CardType.WSC -> paramsArrayListToSend.add(
+                        Params(
+                            "WaterCompany",
+                            data.companyIdentifier
+                        )
+                    )
+
+                    NFCConstants.CardType.GAS -> paramsArrayListToSend.add(
+                        Params(
+                            "GasCompany",
+                            data.companyIdentifier
+                        )
+                    )
                 }
 
                 sendParametersToAPI()
             }
+
             override fun onUnifiedCardDetection(b: Boolean) {
                 message("Detection")
             }
         })
     }
 
-    private fun message(message:String) {
+    private fun message(message: String) {
         runOnUiThread {
-            Toast.makeText(this, message,Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel) {
         serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
             totalAmountPojoModel,
-            object : OnResponseListener
-            {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+            object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                    // pDialog.cancel()
                     pDialog.cancel()
 
                     val data = obj as TotalAmountEntity.DataEntity
@@ -359,7 +413,9 @@ open class ParametersActivity : BaseActivity()
                             amount,
                             totalAmount,
                             paidAmount
-                        ),resources.getString(R.string.app__ok),resources.getString(R.string.app__cancel)
+                        ),
+                        resources.getString(R.string.app__ok),
+                        resources.getString(R.string.app__cancel)
                     ) {
                         dialog.cancel()
 
@@ -377,15 +433,15 @@ open class ParametersActivity : BaseActivity()
                     }.show()
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
                     pDialog.cancel()
-                    dialog.showErrorDialogWithAction(msg,
+//                    pDialog.cancel()
+                    dialog.showErrorDialogWithAction(
+                        msg,
                         resources.getString(R.string.app__ok)
                     ) {
                         dialog.cancel()
-                        if (code.toString() == Constants.CODE_UNAUTH || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED)
-                        {
+                        if (code.toString() == Constants.CODE_UNAUTH || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
                             NavigateToActivity.navigateToMainActivity(this@ParametersActivity)
                         }
 
@@ -395,13 +451,14 @@ open class ParametersActivity : BaseActivity()
     }
 
     private fun pay(paymentPojoModel: PaymentPojoModel) {
+//        pDialog.show()
         pDialog.show()
 
-        serviceViewModel.pay(sharedHelper?.getUserToken().toString(),paymentPojoModel,
+
+        serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
             object : OnResponseListener {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
-                   //  pDialog.cancel()
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                    //  pDialog.cancel()
                     val data = obj as DataEntity
                     // Move to print activity
                     clearParamsData()
@@ -414,13 +471,15 @@ open class ParametersActivity : BaseActivity()
 //                    )
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
+//                    pDialog.cancel()
                     pDialog.cancel()
+
 
                     clearParamsData()
 
-                    dialog.showErrorDialogWithAction(msg,
+                    dialog.showErrorDialogWithAction(
+                        msg,
                         resources.getString(R.string.app__ok)
                     ) {
                         dialog.cancel()
@@ -434,31 +493,32 @@ open class ParametersActivity : BaseActivity()
 
     private fun scheduleInquire(result: DataEntity) {
         serviceViewModel.scheduleInquire(sharedHelper?.getUserToken().toString(),
-            result.service.id.toString(),result.clientNumber,
+            result.service.id.toString(), result.clientNumber,
             object : OnResponseListener {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+//                    pDialog.cancel()
                     pDialog.cancel()
+
 
                     val builder = AlertDialog.Builder(this@ParametersActivity)
                         .setMessage(resources.getString(R.string.add_to_reminder))
                         .setTitle(resources.getString(R.string.alert))
                         .setCancelable(false)
                         .setPositiveButton(resources.getString(R.string.add))
-                        {
-                                alertDialog, _ ->
+                        { alertDialog, _ ->
                             alertDialog.cancel()
 
                             val calendar = Calendar.getInstance()
                             val day = calendar.get(Calendar.DATE).toString()
 
+//                            pDialog.show()
                             pDialog.show()
 
-                            lifecycleScope.launch { scheduleInvoice(result,day) }
+
+                            lifecycleScope.launch { scheduleInvoice(result, day) }
                         }
                         .setNegativeButton(resources.getString(R.string.no_add))
-                        {
-                                alertDialog, _ ->
+                        { alertDialog, _ ->
                             alertDialog.cancel()
                             clearParamsData()
 
@@ -478,9 +538,10 @@ open class ParametersActivity : BaseActivity()
                     alertDialog.show()
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
+//                    pDialog.cancel()
                     pDialog.cancel()
+
                     clearParamsData()
 
                     ReceiptActivity.getIntent(
@@ -494,25 +555,26 @@ open class ParametersActivity : BaseActivity()
                         Toast.LENGTH_SHORT
                     ).show()
 
-                  //  finish()
+                    //  finish()
                 }
 
-            } )
+            })
     }
 
     private fun scheduleInvoice(result: DataEntity, day: String) {
         serviceViewModel.scheduleInvoice(sharedHelper?.getUserToken().toString(),
             result.service.id.toString(),
-            day,result.clientNumber,
-            object : OnResponseListener
-            {
+            day, result.clientNumber,
+            object : OnResponseListener {
                 override fun onSuccess(
                     code: Int,
                     msg: String?,
                     obj: Any?
                 ) {
+//                    pDialog.cancel()
                     pDialog.cancel()
-                    dialog.showSuccessDialog(msg,resources.getString(R.string.app__ok))
+
+                    dialog.showSuccessDialog(msg, resources.getString(R.string.app__ok))
                     {
                         dialog.cancel()
 
@@ -527,18 +589,19 @@ open class ParametersActivity : BaseActivity()
                             Toast.LENGTH_SHORT
                         ).show()
 
-                      //  finish()
+                        //  finish()
                     }
                     dialog.show()
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
+//                    pDialog.cancel()
                     pDialog.cancel()
 
                     clearParamsData()
 
-                    dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok)
+                    dialog.showErrorDialogWithAction(
+                        msg, resources.getString(R.string.app__ok)
                     ) {
                         dialog.cancel()
 
@@ -553,32 +616,36 @@ open class ParametersActivity : BaseActivity()
                             Toast.LENGTH_SHORT
                         ).show()
 
-                      //  finish()
+                        //  finish()
 
                     }.show()
                 }
 
-            } )
+            })
     }
 
     private fun sendParametersToAPI() {
-        val paymentPojoModel = PaymentPojoModel(Constants.IMEI,
-            "",serviceViewModel.servicesId,
-            amount,paramsArrayListToSend)
+        val paymentPojoModel = PaymentPojoModel(
+            Constants.IMEI,
+            "", serviceViewModel.servicesId,
+            amount, paramsArrayListToSend
+        )
 
         inquire(paymentPojoModel)
 
     }
 
     private fun inquire(paymentPojoModel: PaymentPojoModel) {
+//        pDialog.show()
         pDialog.show()
 
+
         serviceViewModel.inquire(sharedHelper?.getUserToken().toString(),
-            paymentPojoModel, object : OnResponseListener
-            {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+            paymentPojoModel, object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+//                    pDialog.cancel()
                     pDialog.cancel()
+
                     clearParamsData()
 
                     // Open inquire activity
@@ -587,34 +654,36 @@ open class ParametersActivity : BaseActivity()
                         serviceType = serviceViewModel.serviceType,
                         acceptCheckIntegrationProviderStatus = serviceViewModel.acceptCheckIntegrationProviderStatus,
                         image = serviceViewModel.image.toString(),
-                        acceptAmountChange =  serviceViewModel.acceptAmountChange,
+                        acceptAmountChange = serviceViewModel.acceptAmountChange,
                         nameAr = serviceViewModel.serviceName.toString(),
                         nameEn = serviceViewModel.serviceName.toString(),
                         serviceViewModel.providerName.toString(),
                         data = obj as DataEntity,
                         paymentPojoModel = paymentPojoModel,
                         serviceTypeCode = serviceViewModel.serviceTypeCode,
-                        activity =this@ParametersActivity,
+                        activity = this@ParametersActivity,
                         serviceAmountInput = serviceViewModel.acceptAmountChange
                     )
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
-                    showErrorDialog(msg,code)
+                override fun onFailed(code: Int, msg: String?) {
+                    showErrorDialog(msg, code)
                 }
             })
     }
 
-    private fun showErrorDialog(msg:String?,code:Int?) {
+    private fun showErrorDialog(msg: String?, code: Int?) {
+//        pDialog.cancel()
         pDialog.cancel()
-        dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok)
+
+        dialog.showErrorDialogWithAction(
+            msg, resources.getString(R.string.app__ok)
         ) {
             dialog.cancel()
 
             if (code.toString() == Constants.CODE_UNAUTH ||
-                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED)
-            {
+                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+            ) {
                 NavigateToActivity.navigateToMainActivity(this@ParametersActivity)
             }
         }.show()
@@ -631,19 +700,27 @@ open class ParametersActivity : BaseActivity()
         }
     }
 
-     private fun contactPicked(data: Intent) {
+    private fun contactPicked(data: Intent) {
         try {
-            val cursor = Objects.requireNonNull(data.data?.let { this.contentResolver.query(it,
-                null,null,null,null) })
+            val cursor = Objects.requireNonNull(data.data?.let {
+                this.contentResolver.query(
+                    it,
+                    null, null, null, null
+                )
+            })
             cursor?.moveToFirst()
             val phoneIndex = cursor?.getColumnIndex("data1")
             val phoneNo =
-                phoneIndex?.let { cursor?.getString(it)?.replace(" ",
-                    "")?.replace("+", "")?.trim { it <= ' ' } }
+                phoneIndex?.let {
+                    cursor?.getString(it)?.replace(
+                        " ",
+                        ""
+                    )?.replace("+", "")?.trim { it <= ' ' }
+                }
 
             // val result = data.getStringExtra(Constants.INTERNAL_ID)
             val editTextTag = internalId
-            val edtNumber: EditText =ui.lytDynamic.findViewWithTag(editTextTag)
+            val edtNumber: EditText = ui.lytDynamic.findViewWithTag(editTextTag)
             edtNumber.setText(
                 phoneNo?.replace("-", "")?.replace(" ", "")?.replace("(", "")?.replace(")", "")
             )
@@ -654,13 +731,12 @@ open class ParametersActivity : BaseActivity()
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun replaceData(parameters:List<Parameter>) {
+    private fun replaceData(parameters: List<ParametersData>) {
         ui.lytDynamic.removeAllViewsInLayout()
 
         this.parametersList = parameters
 
-        for(i in parametersList.indices)
-        {
+        for (i in parametersList.indices) {
             // Parameter details
             val internalId: String = this.parametersList[i].internal_id
             val type: Int = this.parametersList[i].type
@@ -669,27 +745,24 @@ open class ParametersActivity : BaseActivity()
             val isClientNum: Int = this.parametersList[i].is_client_number
             val display: String = this.parametersList[i].display.toString()
 
-            val paramName = if(Constants.LANG == Constants.AR) paramNameAr else paramNameEn
+            val paramName = if (Constants.LANG == Constants.AR) paramNameAr else paramNameEn
 
             val values = arrayListOf<SpinnerModel>()
 
-            for(ii in parametersList[i].type_values.indices)
-            {
+            for (ii in parametersList[i].type_values.indices) {
                 values.add(
-                    SpinnerModel(parametersList[i].type_values[ii].value,
+                    SpinnerModel(
+                        parametersList[i].type_values[ii].value,
                         parametersList[i].type_values[ii].name_ar,
                         parametersList[i].type_values[ii].name_en
-                ))
+                    )
+                )
             }
 
-            if(serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT)
-            {
-                if(display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_INQUIRY)
-                {
-                    when(type)
-                    {
-                        Constants.Number ->
-                        {
+            if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
+                if (display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_INQUIRY) {
+                    when (type) {
+                        Constants.Number -> {
                             // adding title
                             dynamicLayout!!.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -708,12 +781,11 @@ open class ParametersActivity : BaseActivity()
                             ) { }
 
                             val edtNumber: EditText =
-                               ui.lytDynamic.findViewWithTag(internalId)
+                                ui.lytDynamic.findViewWithTag(internalId)
                             edtNumber.setText("")
 
                             if (isClientNum == 1) {
-                                if (lang == Constants.AR)
-                                {
+                                if (lang == Constants.AR) {
                                     edtNumber.setCompoundDrawablesWithIntrinsicBounds(
                                         R.drawable.ic_profile,
                                         0,
@@ -778,8 +850,8 @@ open class ParametersActivity : BaseActivity()
                                 }
                             }
                         }
-                        Constants.Char ->
-                        {
+
+                        Constants.Char -> {
                             // adding title
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -800,10 +872,10 @@ open class ParametersActivity : BaseActivity()
                             val edtChar: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             edtChar.setText("")
-                           // println("edtChar.getId():-> " + edtChar.tag + " : " + internalId)
+                            // println("edtChar.getId():-> " + edtChar.tag + " : " + internalId)
                         }
-                        Constants.Date ->
-                        {
+
+                        Constants.Date -> {
                             // adding title
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -825,7 +897,7 @@ open class ParametersActivity : BaseActivity()
                             // get created dynamic editText by id
                             val etDateTime: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
-                            
+
                             etDateTime.setOnClickListener {
                                 TimeDialogs.openDateCalender(
                                     this@ParametersActivity,
@@ -833,8 +905,8 @@ open class ParametersActivity : BaseActivity()
                                 )
                             }
                         }
-                        Constants.textarea ->
-                        {
+
+                        Constants.textarea -> {
                             // adding title
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -858,48 +930,44 @@ open class ParametersActivity : BaseActivity()
                             val edtTxtArea: EditText = ui.lytDynamic.findViewWithTag(internalId)
                             edtTxtArea.setText("")
                         }
-                        Constants.Select ->
-                        {
+
+                        Constants.Select -> {
                             //add header item in spinner list
                             values.add(SpinnerModel("0", "أختر $paramNameAr", "Choose$paramNameAr"))
 
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
-                                "$paramName ")
+                                "$paramName "
+                            )
                             // adding view
                             dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 2)
 
-                            dynamicLayout?.addSpinners(ui.lytDynamic,internalId,0,"\u2022 "+
-                            paramName + " ",values
+                            dynamicLayout?.addSpinners(
+                                ui.lytDynamic, internalId, 0, "\u2022 " +
+                                        paramName + " ", values
                             ) { value -> paramsArrayListToSend.add(Params(internalId, value)) }
 
                             val spinner = ui.lytDynamic.findViewWithTag<Spinner>(internalId)
 
                         }
 
-                        Constants.Radio ->
-                        {
-                            dynamicLayout?.addTextViews(ui.lytDynamic,paramName)
+                        Constants.Radio -> {
+                            dynamicLayout?.addTextViews(ui.lytDynamic, paramName)
 
-                            dynamicLayout?.addViews(ui.lytDynamic,0,0,2)
+                            dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 2)
 
-                            dynamicLayout?.addRadioButtons(ui.lytDynamic,internalId,values)
+                            dynamicLayout?.addRadioButtons(ui.lytDynamic, internalId, values)
                         }
                     }
                 }
-            }
-
-            else if(serviceViewModel.serviceType == Constants.PAYMENT)
-            {
+            } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
                 Log.d(TAG, "diaa replace data type $type")
 
-                if(display == Constants.DISPLAY_FOR_ALL
-                    || display == Constants.DISPLAY_FOR_PAYMENT)
-                {
-                    when(type)
-                    {
-                        Constants.Number ->
-                        {
+                if (display == Constants.DISPLAY_FOR_ALL
+                    || display == Constants.DISPLAY_FOR_PAYMENT
+                ) {
+                    when (type) {
+                        Constants.Number -> {
                             // adding title
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -918,11 +986,10 @@ open class ParametersActivity : BaseActivity()
                             ) { }
 
                             val edtNumber: EditText =
-                               ui.lytDynamic.findViewWithTag(internalId)
+                                ui.lytDynamic.findViewWithTag(internalId)
                             edtNumber.setText("")
 
-                            if (isClientNum == 1)
-                            {
+                            if (isClientNum == 1) {
                                 if (lang.equals(Constants.AR)) {
                                     edtNumber.setCompoundDrawablesWithIntrinsicBounds(
                                         R.drawable.ic_profile,
@@ -943,17 +1010,23 @@ open class ParametersActivity : BaseActivity()
                                     val DRAWABLE_LEFT = 0
                                     val DRAWABLE_RIGHT = 2
                                     if (event.action == MotionEvent.ACTION_UP) {
-                                        if (lang.equals(Constants.AR))
-                                        {
+                                        if (lang.equals(Constants.AR)) {
                                             Log.d(TAG, "diaa replaceData if condition arabic: ")
                                             Log.d(TAG, "diaa replace data: event ${event.rawX}")
-                                            Log.d(TAG, "diaa replace data: event new ${(edtNumber.compoundDrawables[DRAWABLE_LEFT]
-                                                .bounds.width() *3)}")
+                                            Log.d(
+                                                TAG, "diaa replace data: event new ${
+                                                    (edtNumber.compoundDrawables[DRAWABLE_LEFT]
+                                                        .bounds.width() * 3)
+                                                }"
+                                            )
 
                                             if (event.rawX <= edtNumber.compoundDrawables[DRAWABLE_LEFT]
-                                                    .bounds.width() *3
+                                                    .bounds.width() * 3
                                             ) {
-                                                Log.d(TAG, "diaa replaceData if condition arabic event: ")
+                                                Log.d(
+                                                    TAG,
+                                                    "diaa replaceData if condition arabic event: "
+                                                )
                                                 // your action here
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                                     val result =
@@ -975,7 +1048,10 @@ open class ParametersActivity : BaseActivity()
 
                                             if (event.rawX >= edtNumber.right - edtNumber.compoundDrawables[DRAWABLE_RIGHT].bounds.width() * 2
                                             ) {
-                                                Log.d(TAG, "diaa replaceData if condition english event: ")
+                                                Log.d(
+                                                    TAG,
+                                                    "diaa replaceData if condition english event: "
+                                                )
 
                                                 // your action here
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1000,8 +1076,7 @@ open class ParametersActivity : BaseActivity()
                             }
                         }
 
-                        Constants.Char ->
-                        {
+                        Constants.Char -> {
                             // adding title
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -1024,8 +1099,7 @@ open class ParametersActivity : BaseActivity()
                             edtChar.setText("")
                         }
 
-                        Constants.Date ->
-                        {
+                        Constants.Date -> {
                             // adding title
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -1055,8 +1129,7 @@ open class ParametersActivity : BaseActivity()
                             }
                         }
 
-                        Constants.textarea ->
-                        {
+                        Constants.textarea -> {
                             // adding title
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -1079,8 +1152,7 @@ open class ParametersActivity : BaseActivity()
                             edtTxtArea.setText("")
                         }
 
-                        Constants.Select ->
-                        {
+                        Constants.Select -> {
                             //add header item in spinner list
                             values.add(SpinnerModel("0", "أختر $paramNameAr", "Choose$paramNameAr"))
 
@@ -1094,20 +1166,21 @@ open class ParametersActivity : BaseActivity()
                             dynamicLayout?.addSpinners(
                                 ui.lytDynamic, internalId, 0,
                                 "\u2022 $paramName ", values
-                            ) { value -> paramsArrayListToSend.add(
-                                Params(
-                                    internalId,
-                                    value
+                            ) { value ->
+                                paramsArrayListToSend.add(
+                                    Params(
+                                        internalId,
+                                        value
+                                    )
                                 )
-                            ) }
+                            }
 
                             val spinner: Spinner =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             //spinner.setSelection();
                         }
 
-                        Constants.Radio ->
-                        {
+                        Constants.Radio -> {
                             dynamicLayout?.addTextViews(
                                 ui.lytDynamic,  /*"\u2022 " +*/
                                 paramName
@@ -1129,8 +1202,7 @@ open class ParametersActivity : BaseActivity()
             dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 2)
         }
 
-        if(serviceViewModel.acceptAmountinput == 1)
-        {
+        if (serviceViewModel.acceptAmountinput == 1) {
             // adding title
             dynamicLayout?.addTextViews(
                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -1154,36 +1226,35 @@ open class ParametersActivity : BaseActivity()
             edtAmount.setText("")
         }
 
-            // adding view
-            dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 10)
+        // adding view
+        dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 10)
     }
 
     private fun getIntentData() {
-        try{
-            if(intent.extras != null)
-            {
-                serviceViewModel.servicesId = intent.getIntExtra(Constants.SERVICE_ID,0)
-                serviceViewModel.serviceType = intent.getIntExtra(Constants.SERVICE_TYPE,0)
+        try {
+            if (intent.extras != null) {
+                serviceViewModel.servicesId = intent.getIntExtra(Constants.SERVICE_ID, 0)
+                serviceViewModel.serviceType = intent.getIntExtra(Constants.SERVICE_TYPE, 0)
                 serviceViewModel.serviceName = intent.getStringExtra(Constants.SERVICE_NAME_AR)
                 serviceViewModel.serviceNameEN = intent.getStringExtra(Constants.SERVICE_NAME_EN)
                 serviceViewModel.providerName = intent.getStringExtra(Constants.PROVIDER_NAME)
-                serviceViewModel.priceType = intent.getIntExtra(Constants.PRICE_TYPE,0)
+                serviceViewModel.priceType = intent.getIntExtra(Constants.PRICE_TYPE, 0)
                 serviceViewModel.priceValue = intent.getStringExtra(Constants.PRICE_VALUE)
-                serviceViewModel.acceptAmountChange = intent.getIntExtra(Constants.ACCEPT_AMOUNT_CHANGE,0)
+                serviceViewModel.acceptAmountChange =
+                    intent.getIntExtra(Constants.ACCEPT_AMOUNT_CHANGE, 0)
                 serviceViewModel.image = intent.getStringExtra(Constants.IMAGE)
-                serviceViewModel.acceptAmountinput = intent.getIntExtra(Constants.ACCEPT_AMOUNT_INPUT,0)
+                serviceViewModel.acceptAmountinput =
+                    intent.getIntExtra(Constants.ACCEPT_AMOUNT_INPUT, 0)
 
             }
-        }
-        catch(e:Exception)
-        {
+        } catch (e: Exception) {
             Log.d(TAG, "getIntentData catch: ${e.message}")
         }
     }
 
     private fun startActivity(internalId: String) {
         val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        intent.putExtra(Constants.INTERNAL_ID,internalId)
+        intent.putExtra(Constants.INTERNAL_ID, internalId)
         this.internalId = internalId
         someActivityResultLauncher.launch(intent)
 //        startActivityForResult(
@@ -1204,21 +1275,19 @@ open class ParametersActivity : BaseActivity()
             var shouldBreak = false
             val values = ArrayList<SpinnerModel>()
 
-            for (ii in 0 until parametersList[i].type_values.size)
-            {
+            for (ii in 0 until parametersList[i].type_values.size) {
                 values.add(
-                    SpinnerModel(parametersList[i].type_values[ii].value,
+                    SpinnerModel(
+                        parametersList[i].type_values[ii].value,
                         parametersList[i].type_values[ii].name_ar,
-                    parametersList[i].type_values[ii].name_en)
+                        parametersList[i].type_values[ii].name_en
+                    )
                 )
             }
-            if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT)
-            {
+            if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
                 if (display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_INQUIRY) {
-                    when (type)
-                    {
-                        Constants.Number ->
-                        {
+                    when (type) {
+                        Constants.Number -> {
                             val etNumber: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             val valueNumber = Utils.replaceArabicNumbers(etNumber.text.toString())
@@ -1241,6 +1310,7 @@ open class ParametersActivity : BaseActivity()
                             }
                             paramsArrayListToSend.add(Params(internalId, valueNumber))
                         }
+
                         Constants.Char -> {
                             val etChar: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1251,6 +1321,7 @@ open class ParametersActivity : BaseActivity()
                             }
                             paramsArrayListToSend.add(Params(internalId, value))
                         }
+
                         Constants.Date -> {
                             val etDate: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1261,6 +1332,7 @@ open class ParametersActivity : BaseActivity()
                             }
                             paramsArrayListToSend.add(Params(internalId, etDateValue))
                         }
+
                         Constants.textarea -> {
                             val etTextArea: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1271,6 +1343,7 @@ open class ParametersActivity : BaseActivity()
                             }
                             paramsArrayListToSend.add(Params(internalId, valueTxtArea))
                         }
+
                         Constants.Select -> {
                             val spinner: Spinner =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1282,15 +1355,16 @@ open class ParametersActivity : BaseActivity()
                                 shouldBreak = true
                             }
                             var iii = 0
-                            while (iii < values.size)
-                            {
+                            while (iii < values.size) {
                                 if (spinnerSelectedName == values[iii].getaName() ||
-                                    spinnerSelectedName == values[iii].geteName()) {
+                                    spinnerSelectedName == values[iii].geteName()
+                                ) {
                                     paramsArrayListToSend.add(Params(internalId, values[iii].id))
                                 }
                                 iii++
                             }
                         }
+
                         Constants.Radio -> {
                             val radioGroup: RadioGroup =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1300,8 +1374,7 @@ open class ParametersActivity : BaseActivity()
                             val radioButton =
                                 radioGroup.findViewById<View>(selectedId) as RadioButton
                             if (required == 1) {
-                                if (!radioButton.isChecked)
-                                {
+                                if (!radioButton.isChecked) {
                                     showMessage(internalId + getString(R.string.required))
                                     shouldBreak = true
                                 } else {
@@ -1309,7 +1382,8 @@ open class ParametersActivity : BaseActivity()
                                     var iii = 0
                                     while (iii < values.size) {
                                         if (radiovalue == values[iii].getaName() ||
-                                            radiovalue == values[iii].geteName()) {
+                                            radiovalue == values[iii].geteName()
+                                        ) {
                                             paramsArrayListToSend.add(
                                                 Params(
                                                     internalId,
@@ -1322,6 +1396,7 @@ open class ParametersActivity : BaseActivity()
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -1351,6 +1426,7 @@ open class ParametersActivity : BaseActivity()
                             }
                             paramsArrayListToSend.add(Params(internalId, valueNumber))
                         }
+
                         Constants.Char -> {
                             val etChar: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1361,6 +1437,7 @@ open class ParametersActivity : BaseActivity()
                             }
                             paramsArrayListToSend.add(Params(internalId, value))
                         }
+
                         Constants.Date -> {
                             val etDate: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1371,6 +1448,7 @@ open class ParametersActivity : BaseActivity()
                             }
                             paramsArrayListToSend.add(Params(internalId, etDateValue))
                         }
+
                         Constants.textarea -> {
                             val etTextArea: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1386,6 +1464,7 @@ open class ParametersActivity : BaseActivity()
                                 )
                             )
                         }
+
                         Constants.Select -> {
                             val spinner: Spinner =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1409,6 +1488,7 @@ open class ParametersActivity : BaseActivity()
                                 iii++
                             }
                         }
+
                         Constants.Radio -> {
                             val radioGroup: RadioGroup =
                                 ui.lytDynamic.findViewWithTag(internalId)
@@ -1438,6 +1518,7 @@ open class ParametersActivity : BaseActivity()
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -1487,31 +1568,37 @@ open class ParametersActivity : BaseActivity()
                                 ui.lytDynamic.findViewWithTag(internalId)
                             etNumber.setText("")
                         }
+
                         Constants.Char -> {
                             val etChar: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             etChar.setText("")
                         }
+
                         Constants.Date -> {
                             val etDate: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             etDate.setText("")
                         }
+
                         Constants.textarea -> {
                             val etTextArea: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             etTextArea.setText("")
                         }
+
                         Constants.Select -> {
                             val spinner: Spinner =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             spinner.setSelection(0)
                         }
+
                         Constants.Radio -> {
                             val radioGroup: RadioGroup =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             radioGroup.clearCheck()
                         }
+
                         else -> {}
                     }
                 }
@@ -1523,31 +1610,37 @@ open class ParametersActivity : BaseActivity()
                                 ui.lytDynamic.findViewWithTag(internalId)
                             etNumber.setText("")
                         }
+
                         Constants.Char -> {
                             val etChar: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             etChar.setText("")
                         }
+
                         Constants.Date -> {
                             val etDate: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             etDate.setText("")
                         }
+
                         Constants.textarea -> {
                             val etTextArea: EditText =
-                              ui.lytDynamic.findViewWithTag(internalId)
+                                ui.lytDynamic.findViewWithTag(internalId)
                             etTextArea.setText("")
                         }
+
                         Constants.Select -> {
                             val spinner: Spinner =
-                               ui.lytDynamic.findViewWithTag(internalId)
+                                ui.lytDynamic.findViewWithTag(internalId)
                             spinner.setSelection(0)
                         }
+
                         Constants.Radio -> {
                             val radioGroup: RadioGroup =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             radioGroup.clearCheck()
                         }
+
                         else -> {}
                     }
                 }
@@ -1557,8 +1650,7 @@ open class ParametersActivity : BaseActivity()
 
     //endregion
     private fun showMessage(message: String?) {
-        if (message != null)
-        {
+        if (message != null) {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, getString(R.string.some_error), Toast.LENGTH_SHORT).show()

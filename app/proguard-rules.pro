@@ -35,6 +35,10 @@
     @retrofit2.http.* <methods>;
 }
 
+-keepclassmembers,allowobfuscation class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+  }
+
 # Ignore annotation used for build tooling.
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 
@@ -95,3 +99,9 @@
 
 # Paytabs
 -keep public class com.payment.paymentsdk.**{*;}
+
+# Fawry
+-keep class com.fawry.** {*;}
+
+-keep class com.google.android.material.bottomnavigation.** { *; }
+

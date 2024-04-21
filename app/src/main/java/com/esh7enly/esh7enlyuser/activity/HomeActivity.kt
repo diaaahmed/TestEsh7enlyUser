@@ -3,17 +3,18 @@ package com.esh7enly.esh7enlyuser.activity
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.databinding.ActivityHomeBinding
+import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.Language
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
     private val ui by lazy {
         ActivityHomeBinding.inflate(layoutInflater)
     }
@@ -23,6 +24,8 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
+        Language.setLanguageNew(this, Constants.LANG)
 
         setContentView(ui.root)
 
@@ -35,5 +38,4 @@ class HomeActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(ui.bottomNav, navController)
 
     }
-
 }

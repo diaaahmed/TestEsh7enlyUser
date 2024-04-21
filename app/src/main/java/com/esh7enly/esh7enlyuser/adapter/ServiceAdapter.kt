@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.click.ServiceClick
 import com.esh7enly.esh7enlyuser.databinding.ServiceLayoutBinding
@@ -13,7 +14,8 @@ import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.Utils
 
-class ServiceAdapter (val click: ServiceClick) : ListAdapter<Service, ServiceAdapter.ViewHolder>(ServiceDiffCallback()) {
+class ServiceAdapter (val click: ServiceClick) :
+    ListAdapter<ServiceData, ServiceAdapter.ViewHolder>(ServiceDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemBinding = ServiceLayoutBinding.inflate(
@@ -30,7 +32,7 @@ class ServiceAdapter (val click: ServiceClick) : ListAdapter<Service, ServiceAda
     inner class ViewHolder(private val itemBinding: ServiceLayoutBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         @SuppressLint("CheckResult")
 
-        fun bind(service: Service) = with(itemBinding)
+        fun bind(service: ServiceData) = with(itemBinding)
         {
             Utils.displayImageOriginalFromCache(root.context,categoryIcon,service.icon,
                 NetworkUtils.isConnectedWifi(root.context))
@@ -52,18 +54,18 @@ class ServiceAdapter (val click: ServiceClick) : ListAdapter<Service, ServiceAda
         }
     }
 
-    class ServiceDiffCallback : DiffUtil.ItemCallback<Service>()
+    class ServiceDiffCallback : DiffUtil.ItemCallback<ServiceData>()
     {
         override fun areItemsTheSame(
-            oldItem: Service,
-            newItem: Service
+            oldItem: ServiceData,
+            newItem: ServiceData
         ): Boolean {
             return oldItem.name_en == newItem.name_en
         }
 
         override fun areContentsTheSame(
-            oldItem: Service,
-            newItem: Service
+            oldItem: ServiceData,
+            newItem: ServiceData
         ): Boolean {
             return oldItem == newItem
         }

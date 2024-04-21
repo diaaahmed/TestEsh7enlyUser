@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +16,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -97,7 +97,7 @@ class InquireActivity : AppCompatActivity() {
     private var editedAmount = ""
 
     private val pDialog by lazy {
-        ProgressDialog(this, R.style.MyAlertDialogStyle)
+        ProgressDialog.createProgressDialog(this)
     }
     private var parametersList: List<Parameter> = emptyList()
 
@@ -124,20 +124,17 @@ class InquireActivity : AppCompatActivity() {
         ActivityInquireBinding.inflate(layoutInflater)
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
+        Language.setLanguageNew(this, Constants.LANG)
+
+
         initToolBar()
 
-        pDialog.setMessage(
-            Utils.getSpannableString(
-                this,
-                resources.getString(R.string.message__please_wait)
-            )
-        )
-        pDialog.setCancelable(false)
 
         // getIntentData()
 

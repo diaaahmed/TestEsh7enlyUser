@@ -46,10 +46,11 @@
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:maxLines="2"
             app:autoSizeTextType="uniform"
-            app:autoSizeMaxTextSize="@dimen/_16ssp"
+            app:autoSizeMaxTextSize="@dimen/_14ssp"
             app:autoSizeStepGranularity="@dimen/_1ssp"
-            app:autoSizeMinTextSize="@dimen/_14ssp"
+            app:autoSizeMinTextSize="@dimen/_11ssp"
             app:fontFamily="@font/readexproextralight"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -58,8 +59,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="@dimen/_5sdp"
-            tools:text="فواتير الموبايل"
-            android:textAlignment="center"
+            tools:text="Financial Transactions Transactions Transactions"
+            android:gravity="center_horizontal"
             android:textColor="@color/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

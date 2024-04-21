@@ -1,12 +1,13 @@
 package com.esh7enly.esh7enlyuser.activity
 
-import android.app.ProgressDialog
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.core.widget.NestedScrollView
 import com.esh7enly.data.sharedhelper.SharedHelper
 
@@ -17,8 +18,10 @@ import com.esh7enly.esh7enlyuser.click.TransactionClick
 import com.esh7enly.esh7enlyuser.databinding.ActivityTransactionsBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.NetworkResult
+import com.esh7enly.esh7enlyuser.util.ProgressDialog
 import com.esh7enly.esh7enlyuser.util.Utils
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +41,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
     private var page = 1
 
     private val pDialog by lazy{
-        ProgressDialog(this,R.style.MyAlertDialogStyle)
+        ProgressDialog.createProgressDialog(this)
     }
 
     private val newTransactionAdapter by lazy{
@@ -47,13 +50,15 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
 
     private val transactionsViewModel: TransactionsViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
-        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
-        pDialog.setCancelable(false)
+        Language.setLanguageNew(this, Constants.LANG)
+
+        ui.transactionsToolbar.title = resources.getString(R.string.transactions)
 
         initRecyclerView()
 
@@ -101,6 +106,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private fun initRecyclerView() {
         ui.transactionsRv.setHasFixedSize(true)
 
@@ -109,6 +115,8 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
         { v, _, scrollY, _, _ ->
             if(scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight)
             {
+                Language.setLanguageNew(this, Constants.LANG)
+
                 page++
                 transactionsViewModel.getTransactions(sharedHelper?.getUserToken().toString(),page)
             }

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                app:title="@string/transactions"
+                tools:title="@string/transactions"
                 app:navigationIcon="@drawable/ic_back"
                 app:titleTextColor="@color/white"
                 android:id="@+id/transactions_toolbar"

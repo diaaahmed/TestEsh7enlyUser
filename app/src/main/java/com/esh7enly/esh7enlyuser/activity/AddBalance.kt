@@ -1,10 +1,12 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +23,7 @@ import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.GatewayMethod
 import com.esh7enly.esh7enlyuser.util.GatewayTransactionType
 import com.esh7enly.esh7enlyuser.util.IToolbarTitle
+import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.PaymentStatus
@@ -61,9 +64,20 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
     private val xPayViewModel: XPayViewModel by viewModels()
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        Language.setLanguageNew(this, Constants.LANG)
+
+        ui.fillPrice.hint = resources.getString(R.string.required_amount)
+        ui.fillPhoneNumber.hint = resources.getString(R.string.enter_phone_number)
+        ui.bankWay.text = resources.getString(R.string.bank_card)
+        ui.digitalWalletWay.text = resources.getString(R.string.vodafone_cash)
+        ui.btnPay.text = resources.getString(R.string.pay)
+
+
         initToolBar()
 
         ui.xPayViewModel = xPayViewModel
@@ -117,6 +131,8 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                         )
                         {
                             dialog.cancel()
+
+//                            pDialog.show()
                             pDialog.show()
 
                             getTotalAmount(GatewayTransactionType.visa.toString())
@@ -126,6 +142,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                     }
 
                     PayWays.CASH.toString() -> {
+//                        pDialog.show()
                         pDialog.show()
 
                         getTotalWithCash()
@@ -157,7 +174,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 totalAmountPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        // pDialog.dismiss()
 
                         val paymentPojoModel =
                             PaymentPojoModel(
@@ -179,14 +195,18 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         }
     }
 
-    private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
+    private fun payWithCash(paymentPojoModel: PaymentPojoModel)
+    {
+//        pDialog.show()
         pDialog.show()
 
         lifecycleScope.launch {
             serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        pDialog.dismiss()
+//                        pDialog.dismiss()
+                        pDialog.cancel()
+
 
                         dialog.showSuccessDialog(
                             resources.getString(R.string.balance_added),
@@ -207,7 +227,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 })
         }
     }
-
 
     private fun paytabsClick(
         transactionType: String, totalAmount: String, drawable: Drawable?
@@ -251,8 +270,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         val currency = "EGP"
         val merchantCountryCode = "EG"
         val amount: Double = value.toDouble()
-//        val locale =
-//            if (Constants.LANG == "ar") PaymentSdkLanguageCode.AR else PaymentSdkLanguageCode.EN
 
         val locale = PaymentSdkLanguageCode.AR
 
@@ -306,7 +323,10 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 payment_method_type = GatewayMethod.paytabs.toString(),
                 transaction_type = transactionType,
                 ui.amountValue.text.toString(), object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
+                    {
+//                        pDialog.cancel()
+
                         pDialog.cancel()
 
                         val data = obj as Data
@@ -345,6 +365,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                         ) {
                             dialog.cancel()
 
+//                            pDialog.show()
                             pDialog.show()
 
                             startSessionForPay(data.amount.toString(), transactionType)
@@ -354,7 +375,9 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                     }
 
                     override fun onFailed(code: Int, msg: String?) {
+//                        pDialog.cancel()
                         pDialog.cancel()
+
                         dialog.showErrorDialogWithAction(
                             msg,
                             resources.getString(R.string.app__ok)
@@ -411,6 +434,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
     }
 
     private fun showFailedPay(msg: String?, code: Int) {
+//        pDialog.cancel()
         pDialog.cancel()
 
         dialog.showErrorDialogWithAction(
@@ -431,6 +455,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         Log.d(TAG, "diaa responseCode: error code ${error.code}")
 
 
+//        pDialog.cancel()
         pDialog.cancel()
 
         val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
@@ -450,6 +475,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
         Log.d(TAG, "diaa responseCode: cancel")
 
+//        pDialog.cancel()
         pDialog.cancel()
 
         val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
@@ -523,6 +549,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 chargeBalanceRequest,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+//                        pDialog.cancel()
                         pDialog.cancel()
 
                         dialog.showSuccessDialog(

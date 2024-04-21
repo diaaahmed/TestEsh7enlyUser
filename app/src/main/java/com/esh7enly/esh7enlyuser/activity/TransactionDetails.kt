@@ -12,6 +12,7 @@ import com.esh7enly.domain.entity.TransactionDetailsEntity
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.databinding.ActivityTransactionDetailsBinding
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.Screenshot
 import com.esh7enly.esh7enlyuser.util.Utils
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +39,22 @@ class TransactionDetails : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        Language.setLanguageNew(this, Constants.LANG)
+
+        ui.serviceText.text = resources.getString(R.string.trans_details_service_title)
+        ui.comissionText.text = resources.getString(R.string.trans_details_commission_title)
+        ui.messageErrorText.text = resources.getString(R.string.trans_details_message_error_title)
+        ui.tvProviderName.text = resources.getString(R.string.trans_details_provider_title)
+        ui.createdAtText.text = resources.getString(R.string.trans_details_created_at_title)
+        ui.amountText.text = resources.getString(R.string.trans_details_amount_title_new)
+        ui.serialText.text = resources.getString(R.string.trans_details_serial_title)
+        ui.clientNumberText.text = resources.getString(R.string.trans_details_client_number_title)
+        ui.balanceAfterText.text = resources.getString(R.string.trans_details_balance_after_titlea)
+        ui.balanceBeforeText.text = resources.getString(R.string.trans_details_balance_before_titlea)
+        ui.totalAmountText.text = resources.getString(R.string.trans_details_total_amount_title_new)
+        ui.transactionNumberText.text = resources.getString(R.string.trans_details_transaction_number_title)
+
 
         view = window.decorView.rootView
 
@@ -105,7 +122,8 @@ class TransactionDetails : BaseActivity() {
         }
 
         // Show prepaid card details
-        if (transaction?.data?.service?.type == Constants.PREPAID_CARD) {
+        if (transaction?.data?.service?.type == Constants.PREPAID_CARD)
+        {
             if (transaction.data?.description != null && transaction.data?.description != "") {
                 val lines =
                     transaction.data?.description?.split("\n")

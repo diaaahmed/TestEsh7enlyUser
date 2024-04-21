@@ -229,6 +229,7 @@ public class AppDialogMsg {
         okButton = dialog.findViewById(R.id.dialogOkButton);
         cancelButton = dialog.findViewById(R.id.dialogCancelButton);
         edtAmount = dialog.findViewById(R.id.edt_amount);
+        edtAmount.setEnabled(false);
         edtAmount.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         titleTextView.setText(title);

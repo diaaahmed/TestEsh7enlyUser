@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.esh7enly.domain.entity.userservices.Category
+import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.esh7enlyuser.click.CategoryClick
 import com.esh7enly.esh7enlyuser.databinding.ItemLayoutBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.Utils
 
-class CategoryAdapterNew(var listCategory:List<Category>,val click: CategoryClick
+class CategoryAdapterNew(var listCategory:List<CategoryData>,val click: CategoryClick
 ): RecyclerView.Adapter<CategoryAdapterNew.CategoryViewHolderNew>()
 {
 
@@ -19,7 +19,7 @@ class CategoryAdapterNew(var listCategory:List<Category>,val click: CategoryClic
         :RecyclerView.ViewHolder(binding.root)
     {
         @SuppressLint("SetTextI18n")
-        fun bind(category: List<Category>, position: Int) = with(binding)
+        fun bind(category: List<CategoryData>, position: Int) = with(binding)
         {
 
             Utils.displayImageOriginalFromCache(root.context,binding.categoryIcon,category[position].icon

@@ -25,7 +25,6 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                app:title="@string/presents"
                 app:titleTextColor="@color/white"
                 android:id="@+id/presents_toolbar"
                 android:layout_width="match_parent"
@@ -72,7 +71,7 @@
                     android:layout_marginStart="@dimen/_15sdp"
                     android:layout_marginEnd="@dimen/_15sdp"
                     android:textColor="@android:color/white"
-                    android:text="@string/replace_points"
+                    tools:text="@string/replace_points"
                     android:textAllCaps="false"
                     android:textSize="@dimen/_14ssp"
                     android:padding="@dimen/_10sdp"

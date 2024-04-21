@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 
 import android.view.View
 import android.widget.Toast
@@ -77,7 +78,6 @@ class ReceiptActivity : AppCompatActivity()
         ui.chatWhats.setOnClickListener {
             shareImage() }
 
-
         initData()
 
     }
@@ -85,8 +85,11 @@ class ReceiptActivity : AppCompatActivity()
     @SuppressLint("SetTextI18n")
     private fun initData() {
         // Show prepaid card details
+
         if(SERVICE_TYPE == Constants.PREPAID_CARD)
         {
+            Log.d(TAG, "diaa data: here first")
+
             if(DATA_ENTITY?.description != null && DATA_ENTITY?.description != "")
             {
                 val lines = DATA_ENTITY?.description!!.split("\n") as ArrayList<String>
@@ -95,11 +98,14 @@ class ReceiptActivity : AppCompatActivity()
                 {
                     if(oneLine.contains("PIN"))
                     {
+                        Log.d(TAG, "diaa data: here pin")
                         ui.lytPin.visibility = View.VISIBLE
                         ui.lytSerial.visibility = View.VISIBLE
                     }
                     else
                     {
+                        Log.d(TAG, "diaa data: here no pin")
+
                         val stringBuilder = StringBuilder()
 
                         for(i in lines.indices)
@@ -129,14 +135,20 @@ class ReceiptActivity : AppCompatActivity()
         {
             val lines = DATA_ENTITY!!.description.split("\n")
 
+            Log.d(TAG, "diaa data: here second")
+
+
             for(oneline in lines)
             {
                 if(oneline.contains("Serial"))
                 {
+                    Log.d(TAG, "diaa data: here Serial")
                     ui.tvSerial.setText(oneline.trim().lowercase().replace("serial:",""))
                 }
                 else if(oneline.contains("PIN"))
                 {
+                    Log.d(TAG, "diaa data: here PIN")
+
                     ui.tvPin.setText(oneline.trim().lowercase().replace("pin:",""))
                 }
             }

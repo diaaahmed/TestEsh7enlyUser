@@ -62,9 +62,9 @@ object ChooseLanguage
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
      fun setLanguage(language: String?, context: Activity,sharedHelper: SharedHelper)
     {
+      //   LocaleHelper.setLocale(context,language)
         val locale = Locale(language)
         val dm = context.resources.displayMetrics
-        // val conf = resources.configuration
         val conf = context.resources.configuration
         conf.setLocale(locale)
         //       conf.locale = locale

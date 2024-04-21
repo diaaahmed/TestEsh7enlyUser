@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_60sdp"
         android:gravity="center"
-        android:text="@string/phone_number_msg"
+        tools:text="@string/phone_number_msg"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/_22ssp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
         android:layout_marginStart="@dimen/_32sdp"
         android:layout_marginTop="@dimen/_50sdp"
         android:layout_marginEnd="@dimen/_32sdp"
-        android:hint="@string/enter_phone_number"
+        tools:hint="@string/enter_phone_number"
         app:boxCornerRadiusBottomEnd="@dimen/_5sdp"
         app:boxCornerRadiusBottomStart="@dimen/_5sdp"
         app:boxCornerRadiusTopEnd="@dimen/_5sdp"
@@ -62,7 +62,7 @@
         android:layout_marginEnd="@dimen/_32sdp"
         android:backgroundTint="@color/colorPrimary"
         android:padding="15sp"
-        android:text="@string/send_otp"
+        tools:text="@string/send_otp"
         android:textColor="@color/white"
         app:cornerRadius="10dp" />
 

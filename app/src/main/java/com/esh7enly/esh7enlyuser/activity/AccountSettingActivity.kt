@@ -7,14 +7,14 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.scedulelistresponse.Data
-import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.adapter.ScheduleListAdapter
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityAccountSettingBinding
 import com.esh7enly.esh7enlyuser.util.ChooseLanguage
+import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.IToolbarTitle
+import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.util.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,10 +30,13 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
+
+       Language.setLanguageNew(this, Constants.LANG)
+
         setContentView(ui.root)
 
-        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
-        pDialog.setCancelable(false)
+//        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
+//        pDialog.setCancelable(false)
 
         initToolBar()
 
@@ -59,6 +62,7 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
     }
 
     private fun getScheduleList() {
+//        pDialog.show()
         pDialog.show()
 
         lifecycleScope.launch {
@@ -66,7 +70,9 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?)
                     {
+//                        pDialog.cancel()
                         pDialog.cancel()
+
                         ui.scheduleRv.visibility = View.VISIBLE
 
                         val data = obj as List<Data>

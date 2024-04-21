@@ -45,7 +45,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/category_icon"
                     android:gravity="center"
-                    android:fontFamily="@font/readexproextralight"
+                    app:fontFamily="@font/readexproextralight"
                     android:id="@+id/tv_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

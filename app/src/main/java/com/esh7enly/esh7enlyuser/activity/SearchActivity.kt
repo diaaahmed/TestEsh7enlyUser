@@ -1,9 +1,12 @@
 package com.esh7enly.esh7enlyuser.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.TotalAmountPojoModel
+import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.adapter.ServiceAdapter
@@ -12,6 +15,7 @@ import com.esh7enly.esh7enlyuser.databinding.ActivitySearchBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.IToolbarTitle
+import com.esh7enly.esh7enlyuser.util.Language
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,10 +34,14 @@ class SearchActivity : BaseActivity(),ServiceClick,IToolbarTitle
     private val adapter by lazy { ServiceAdapter(this) }
 
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        Language.setLanguageNew(this, Constants.LANG)
+
 
         initToolBar()
 
@@ -41,24 +49,24 @@ class SearchActivity : BaseActivity(),ServiceClick,IToolbarTitle
 
         val serviceSearch = intent.getStringExtra(Constants.SERVICE_NAME)
 
-        lifecycleScope.launch {
-            serviceViewModel.searchService(serviceSearch!!)
-                .observe(this@SearchActivity)
-                {
-                    if(it.isEmpty())
-                    {
-                        ui.animationView.visibility = View.VISIBLE
-                        ui.searchRv.visibility = View.GONE
-                    }
-                    else
-                    {
-                        ui.animationView.visibility = View.GONE
-                        ui.searchRv.visibility = View.VISIBLE
-                        adapter.submitList(it)
-                        ui.searchRv.adapter = adapter
-                    }
-                }
-        }
+//        lifecycleScope.launch {
+//            serviceViewModel.searchService(serviceSearch!!)
+//                .observe(this@SearchActivity)
+//                {
+//                    if(it.isEmpty())
+//                    {
+//                        ui.animationView.visibility = View.VISIBLE
+//                        ui.searchRv.visibility = View.GONE
+//                    }
+//                    else
+//                    {
+//                        ui.animationView.visibility = View.GONE
+//                        ui.searchRv.visibility = View.VISIBLE
+//                        adapter.submitList(it)
+//                        ui.searchRv.adapter = adapter
+//                    }
+//                }
+//        }
 
     }
 
@@ -67,7 +75,7 @@ class SearchActivity : BaseActivity(),ServiceClick,IToolbarTitle
         ui.resultsToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    override fun click(service: Service)
+    override fun click(service: ServiceData)
     {
         serviceViewModel.serviceType = service.type
 

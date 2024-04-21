@@ -1,13 +1,17 @@
 package com.esh7enly.esh7enlyuser.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 
 import com.esh7enly.domain.entity.TotalAmountPojoModel
+import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.adapter.ServiceAdapter
+import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.click.ServiceClick
 import com.esh7enly.esh7enlyuser.databinding.ActivityServiceBinding
 import com.esh7enly.esh7enlyuser.util.*
@@ -31,49 +35,87 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
         AppDialogMsg(this, false)
     }
 
-    private var provider_id = 0
+
+    private var providerID = 0
     lateinit var providerId: String
     lateinit var providerName: String
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        Language.setLanguageNew(this, Constants.LANG)
 
         initToolBar()
 
         ui.serviceRv.setHasFixedSize(true)
 
-        provider_id = intent.getIntExtra(Constants.PROVIDER_ID, 0)
+        providerID = intent.getIntExtra(Constants.PROVIDER_ID, 0)
         providerName = intent.getStringExtra(Constants.PROVIDER_NAME).toString()
-        providerId = provider_id.toString()
+        providerId = providerID.toString()
 
         getServices()
     }
 
-    override fun initToolBar()
-    {
+    override fun initToolBar() {
         ui.serviceToolbar.title = intent.getStringExtra(Constants.PROVIDER_NAME) ?: ""
 
         ui.serviceToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
     private fun getServices() {
-        serviceViewModel.getServicesFromDB(providerId).observe(this)
-        { services ->
-            adapter.submitList(services)
-            ui.serviceRv.adapter = adapter
-        }
+
+        pDialog.show()
+
+        serviceViewModel.getServices(sharedHelper?.getUserToken().toString(),
+            providerId, object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?)
+                {
+                    pDialog.cancel()
+
+                    val services = obj as List<ServiceData>
+
+                    adapter.submitList(services)
+
+                    ui.serviceRv.adapter = adapter
+                }
+
+                override fun onFailed(code: Int, msg: String?)
+                {
+                    pDialog.cancel()
+
+
+                    dialog.showErrorDialogWithAction(
+                        msg, resources.getString(R.string.app__ok)
+                    ) {
+                        dialog.cancel()
+
+                        if (code.toString() == Constants.CODE_UNAUTH ||
+                            code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+                        ) {
+                            NavigateToActivity.navigateToMainActivity(this@ServiceActivity)
+                        }
+                    }.show()
+                }
+            })
+
+
+//        serviceViewModel.getServicesFromDB(providerId).observe(this)
+//        { services ->
+//            adapter.submitList(services)
+//            ui.serviceRv.adapter = adapter
+//        }
+
     }
 
 
-    override fun click(service: Service)
-    {
+    override fun click(service: ServiceData) {
         serviceViewModel.serviceType = service.type
 
         Log.d(TAG, "diaa test type: ${service.type}")
 
-        if (service.type == Constants.PREPAID_CARD)
-        {
+        if (service.type == Constants.PREPAID_CARD) {
             if (connectivity?.isConnected == true) {
                 pDialog.show()
 
@@ -92,8 +134,7 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
                 dialog.show()
             }
 
-        } else
-        {
+        } else {
             navigateToParametersActivity(service)
         }
     }

@@ -25,7 +25,7 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 app:navigationIcon="@drawable/ic_back"
-                app:title="@string/change_user_data"
+                tools:title="@string/change_user_data"
                 app:titleTextColor="@color/white"
                 android:id="@+id/update_profile_toolbar"
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             style="@style/ChangePasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_new_mobile"
+            tools:hint="@string/enter_new_mobile"
             app:hintTextColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
             style="@style/ChangePasswordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_new_email"
+            tools:hint="@string/enter_new_email"
             app:hintTextColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +84,7 @@
             android:layout_width="@dimen/_120sdp"
             android:layout_height="wrap_content"
             app:hintTextColor="@color/colorPrimary"
-            android:hint="@string/first_name">
+            tools:hint="@string/first_name">
 
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
@@ -102,7 +102,7 @@
             style="@style/NewEditText"
             android:layout_width="@dimen/_120sdp"
             android:layout_height="wrap_content"
-            android:hint="@string/last_name"
+            tools:hint="@string/last_name"
             app:hintTextColor="@color/colorPrimary"
             app:layout_constraintStart_toEndOf="@+id/fill_first_name"
             >
@@ -119,7 +119,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_update_data"
             android:padding="@dimen/_10sdp"
-            android:text="@string/update_data"
+            tools:text="@string/update_data"
             android:textStyle="bold"
             app:cornerRadius="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_40sdp"

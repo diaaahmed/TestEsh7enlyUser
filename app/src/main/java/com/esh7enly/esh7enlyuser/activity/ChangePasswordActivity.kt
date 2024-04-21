@@ -1,10 +1,11 @@
 package com.esh7enly.esh7enlyuser.activity
 
-import android.app.ProgressDialog
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -12,8 +13,9 @@ import com.esh7enly.esh7enlyuser.databinding.ActivityChangePasswordBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.IToolbarTitle
+import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.util.ProgressDialog
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -35,15 +37,25 @@ class ChangePasswordActivity : AppCompatActivity(),IToolbarTitle
     private val userViewModel: UserViewModel by viewModels()
 
     private val pDialog by lazy{
-        ProgressDialog(this,R.style.MyAlertDialogStyle)
+        ProgressDialog.createProgressDialog(this)
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
-        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
-        pDialog.setCancelable(false)
+        Language.setLanguageNew(this, Constants.LANG)
+
+        ui.fillOldPassword.hint = resources.getString(R.string.enter_old_password)
+        ui.fillNewPassword.hint = resources.getString(R.string.enter_new_password)
+        ui.userPasswordInstructions.text = resources.getString(R.string.password_instructions)
+        ui.fillConfirmPassword.hint = resources.getString(R.string.confirm_new_password)
+        ui.btnChangePassword.text = resources.getString(R.string.change_password)
+
+
+//        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
+//        pDialog.setCancelable(false)
 
         initToolBar()
 

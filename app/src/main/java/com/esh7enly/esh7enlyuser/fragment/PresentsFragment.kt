@@ -1,10 +1,12 @@
 package com.esh7enly.esh7enlyuser.fragment
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.activity.BaseFragment
@@ -12,7 +14,6 @@ import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.FragmentPresentsBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.util.Utils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -30,13 +31,18 @@ class PresentsFragment : BaseFragment() {
         return ui.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
 
-        pDialog.setMessage(Utils.getSpannableString(requireActivity(),resources.getString(R.string.message__please_wait)))
-        pDialog.setCancelable(false)
+        ui.presentsToolbar.title = resources.getString(R.string.presents)
+        ui.btnReplacePoints.text = resources.getString(R.string.replace_points)
+
+
+//        pDialog.setMessage(Utils.getSpannableString(requireActivity(),resources.getString(R.string.message__please_wait)))
+//        pDialog.setCancelable(false)
 
         if(connectivity?.isConnected == true)
         {
