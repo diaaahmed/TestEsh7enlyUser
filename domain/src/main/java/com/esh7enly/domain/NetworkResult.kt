@@ -1,4 +1,4 @@
-package com.esh7enly.esh7enlyuser.util
+package com.esh7enly.domain
 
 sealed class NetworkResult<T>(
     val data: T? = null,

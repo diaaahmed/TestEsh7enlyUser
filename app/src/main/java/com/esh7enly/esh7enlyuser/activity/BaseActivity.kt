@@ -1,11 +1,9 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.app.AlertDialog
-import android.os.Build
 
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.data.sharedhelper.SharedHelper
@@ -13,8 +11,8 @@ import com.esh7enly.domain.entity.PaymentEntity
 import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.TotalAmountEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel
+import com.esh7enly.domain.entity.searchresponse.SearchData
 import com.esh7enly.domain.entity.servicesNew.ServiceData
-import com.esh7enly.domain.entity.userservices.Service
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
@@ -34,9 +32,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 abstract class BaseActivity : AppCompatActivity()
 {
-     val serviceViewModel: ServiceViewModel by viewModels()
-     val transactionsViewModel: TransactionsViewModel by viewModels()
-     val userViewModel: UserViewModel by viewModels()
+    val serviceViewModel: ServiceViewModel by viewModels()
+
+    val transactionsViewModel: TransactionsViewModel by viewModels()
+
+    val userViewModel: UserViewModel by viewModels()
 
     var sharedHelper: SharedHelper? = null
         @Inject set
@@ -44,9 +44,7 @@ abstract class BaseActivity : AppCompatActivity()
     var connectivity: Connectivity? = null
         @Inject set
 
-//     open val pDialog by lazy { ProgressDialog(this, R.style.MyAlertDialogStyle) }
-
-    val pDialog by lazy{
+    val pDialog by lazy {
         com.esh7enly.esh7enlyuser.util.ProgressDialog.createProgressDialog(this)
     }
 
@@ -54,46 +52,59 @@ abstract class BaseActivity : AppCompatActivity()
         AppDialogMsg(this, false)
     }
 
-
     private var bulkNumber = 0
+
     private var isBulk = false
-
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    override fun onStart()
-    {
-        super.onStart()
-
-//        pDialog.setMessage(
-//            Utils.getSpannableString(
-//                this,
-//                resources.getString(R.string.message__please_wait)
-//            )
-//        )
-//
-//        pDialog.setCancelable(false)
-    }
 
     open fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel) {
 
         serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
-            totalAmountPojoModel, object : OnResponseListener
-            {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+            totalAmountPojoModel, object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                    val confirmation: String
+                    val amount:String
+                    val totalAmount: String
+                    val ok: String
+                    val cancel: String
+                    val egp: String
+                    val quantity: String
+
+                    if (Constants.LANG == Constants.AR)
+                    {
+                        confirmation = "تأكيد"
+                        amount = "المبلغ : "
+                        totalAmount = "المبلغ الإجمالي : "
+                        ok = "موافق"
+                        cancel = "إلغاء"
+                        egp = "ج.م"
+                        quantity = "الكمية"
+
+                    } else {
+                        confirmation = "Confirmation"
+                        amount = "Amount : "
+                        totalAmount = "Total Amount : "
+                        ok = "OK"
+                        cancel = "Cancel"
+                        egp = "EGP"
+                        quantity = "quantity"
+                    }
+
                     pDialog.cancel()
-                   // pDialog.cancel()
 
                     val data: TotalAmountEntity.DataEntity = obj as TotalAmountEntity.DataEntity
 
                     val paidAmount = ""
 
-                    dialog.showSuccessDialogWithActionAndBulkCards(resources.getString(R.string.confirmation_title),
-                        " • "+resources.getString(R.string.dialog_amount) +
-                                " "+Utils.format(data.amount) + resources.getString(R.string.egp)+ " \n " +
-                                "• " +resources.getString(R.string.dialog_total_amount) + " " +
-                                Utils.format(data.totalAmount) + resources.getString(R.string.egp)+
+                    dialog.showSuccessDialogWithActionAndBulkCards(
+                        confirmation,
+                        " • " + amount +
+                                " " + Utils.format(data.amount) + egp + " \n " +
+                                "• " + totalAmount + " " +
+                                Utils.format(data.totalAmount) + egp +
                                 paidAmount,
-                        resources.getString(R.string.app__ok),resources.getString(R.string.app__cancel)
+                        ok,
+                        cancel,
+                        quantity
                     ) { quantity ->
                         dialog.cancel()
 
@@ -106,23 +117,22 @@ abstract class BaseActivity : AppCompatActivity()
                             totalAmountPojoModel.serviceId, totalAmountPojoModel.amount
                         )
 
-                        pay(paymentPojoModel,isBulk)
+                        pay(paymentPojoModel)
 
                     }.show()
 
 
                 }
-                override fun onFailed(code: Int, msg: String?)
-                {
-                    pDialog.cancel()
-                   // pDialog.cancel()
 
-                    dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok)
+                override fun onFailed(code: Int, msg: String?) {
+                    pDialog.cancel()
+
+                    dialog.showErrorDialogWithAction(
+                        msg, resources.getString(R.string.app__ok)
                     ) {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW)
-                        {
+                        if (code == Constants.CODE_UNAUTH_NEW) {
                             lifecycleScope.launch(Dispatchers.Main)
                             {
                                 NavigateToActivity.navigateToMainActivity(this@BaseActivity)
@@ -135,18 +145,9 @@ abstract class BaseActivity : AppCompatActivity()
 
     open lateinit var dataPay: PaymentEntity.DataEntity
 
-    private fun pay(paymentPojoModel: PaymentPojoModel, isBulk: Boolean) {
-//        pDialog.setMessage(
-//            Utils.getSpannableString(
-//                this,
-//                resources.getString(R.string.message__please_wait)
-//            )
-//        )
-//
-//        pDialog.setCancelable(false)
+    private fun pay(paymentPojoModel: PaymentPojoModel) {
 
         pDialog.show()
-       // pDialog.show()
 
         serviceViewModel.pay(sharedHelper?.getUserToken().toString(),
             paymentPojoModel, object : OnResponseListener {
@@ -155,33 +156,15 @@ abstract class BaseActivity : AppCompatActivity()
                     msg: String?,
                     obj: Any?
                 ) {
-                   //  pDialog.cancel()
-                     dataPay = obj as PaymentEntity.DataEntity
+                    dataPay = obj as PaymentEntity.DataEntity
 
-                   lifecycleScope.launch {
-                       scheduleInquire(dataPay,paymentPojoModel)
-                   }
+                    lifecycleScope.launch {
+                        scheduleInquire(dataPay, paymentPojoModel)
+                    }
 
-//                    if (isBulk) {
-//                        // Move to print with bulk
-//                        ReceiptActivity.getIntent(
-//                            this@BaseActivity,
-//                            isBulk, bulkNumber, dataPay, paymentPojoModel,
-//                            serviceViewModel.serviceType
-//                        )
-//                    } else {
-//                        // move to print without bulk
-//                        ReceiptActivity.getIntent(
-//                            this@BaseActivity,
-//                            dataPay, serviceViewModel.serviceType
-//                        )
-//                    }
-
-                   // finish()
                 }
 
                 override fun onFailed(code: Int, msg: String?) {
-                   // pDialog.cancel()
                     pDialog.cancel()
 
                     dialog.showErrorDialogWithAction(
@@ -201,16 +184,15 @@ abstract class BaseActivity : AppCompatActivity()
             })
     }
 
-    open fun scheduleInquire(result: PaymentEntity.DataEntity,paymentPojoModel: PaymentPojoModel) {
+    open fun scheduleInquire(result: PaymentEntity.DataEntity, paymentPojoModel: PaymentPojoModel) {
         Log.d("TAG", "diaa scheduleInquire:start ")
 
-        val clientNumber = result.clientNumber?: "clientNumber"
+        val clientNumber = result.clientNumber ?: "clientNumber"
 
         serviceViewModel.scheduleInquire(sharedHelper?.getUserToken().toString(),
-            result.service.id.toString(),clientNumber,
+            result.service.id.toString(), clientNumber,
             object : OnResponseListener {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     //pDialog.cancel()
                     pDialog.cancel()
 
@@ -219,32 +201,20 @@ abstract class BaseActivity : AppCompatActivity()
                         .setTitle(resources.getString(R.string.alert))
                         .setCancelable(false)
                         .setPositiveButton(resources.getString(R.string.add))
-                        {
-                                alertDialog, _ ->
+                        { alertDialog, _ ->
                             alertDialog.cancel()
 
                             val calendar = Calendar.getInstance()
                             val day = calendar.get(Calendar.DATE).toString()
 
-//                            pDialog.setMessage(
-//                                Utils.getSpannableString(
-//                                    this@BaseActivity,
-//                                    resources.getString(R.string.message__please_wait)
-//                                )
-//                            )
-//
-//                            pDialog.setCancelable(false)
-
                             pDialog.show()
-                           // pDialog.show()
 
                             lifecycleScope.launch {
-                                scheduleInvoice(result,day,paymentPojoModel)
+                                scheduleInvoice(result, day, paymentPojoModel)
                             }
                         }
                         .setNegativeButton(resources.getString(R.string.no_add))
-                        {
-                                alertDialog, _ ->
+                        { alertDialog, _ ->
                             alertDialog.cancel()
                             if (isBulk) {
                                 // Move to print with bulk
@@ -266,10 +236,9 @@ abstract class BaseActivity : AppCompatActivity()
                     alertDialog.show()
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
                     pDialog.cancel()
-                   // pDialog.cancel()
+                    // pDialog.cancel()
 
                     if (isBulk) {
                         // Move to print with bulk
@@ -285,46 +254,31 @@ abstract class BaseActivity : AppCompatActivity()
                             dataPay, serviceViewModel.serviceType
                         )
                     }
-
-                  //  finish()
-
-//                    pDialog.cancel()
-//                    ReceiptActivity.getIntent(
-//                        this@BaseActivity,
-//                        result, serviceViewModel.serviceType
-//                    )
-//
-//                    Toast.makeText(
-//                        this@BaseActivity,
-//                        "Success",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//
-//                    finish()
                 }
 
-            } )
+            })
     }
 
-    open fun scheduleInvoice(result: PaymentEntity.DataEntity, day: String,paymentPojoModel: PaymentPojoModel) {
+    open fun scheduleInvoice(
+        result: PaymentEntity.DataEntity,
+        day: String,
+        paymentPojoModel: PaymentPojoModel
+    ) {
         Log.d("TAG", "diaa scheduleInvoice:start ")
 
-        val clientNumber = result.clientNumber?: "clientNumber"
-
+        val clientNumber = result.clientNumber ?: "clientNumber"
 
         serviceViewModel.scheduleInvoice(sharedHelper?.getUserToken().toString(),
             result.service.id.toString(),
-            day,clientNumber,
-            object : OnResponseListener
-            {
+            day, clientNumber,
+            object : OnResponseListener {
                 override fun onSuccess(
                     code: Int,
                     msg: String?,
                     obj: Any?
                 ) {
                     pDialog.cancel()
-                   // pDialog.cancel()
-                    dialog.showSuccessDialog(msg,resources.getString(R.string.app__ok))
+                    dialog.showSuccessDialog(msg, resources.getString(R.string.app__ok))
                     {
                         dialog.cancel()
 
@@ -342,45 +296,18 @@ abstract class BaseActivity : AppCompatActivity()
                                 dataPay, serviceViewModel.serviceType
                             )
                         }
-
-                      //  finish()
-
-//                        ReceiptActivity.getIntent(
-//                            this@BaseActivity,
-//                            result, serviceViewModel.serviceType
-//                        )
-//
-//                        Toast.makeText(
-//                            this@BaseActivity,
-//                            "Success",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//
-//                        finish()
                     }
                     dialog.show()
                 }
 
                 override fun onFailed(code: Int, msg: String?)
                 {
-                  //  pDialog.cancel()
                     pDialog.cancel()
-                    dialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok)
+
+                    dialog.showErrorDialogWithAction(
+                        msg, resources.getString(R.string.app__ok)
                     ) {
                         dialog.cancel()
-//
-//                        ReceiptActivity.getIntent(
-//                            this@BaseActivity,
-//                            result, serviceViewModel.serviceType
-//                        )
-//
-//                        Toast.makeText(
-//                            this@BaseActivity,
-//                            "Success",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//
-//                        finish()
 
                         if (isBulk) {
                             // Move to print with bulk
@@ -397,33 +324,64 @@ abstract class BaseActivity : AppCompatActivity()
                             )
                         }
 
-                       // finish()
-
                     }.show()
                 }
 
-            } )
+            })
     }
 
 
-     fun navigateToParametersActivity(service: ServiceData)
-     {
-         val providerName =
-         if(Constants.LANG == Constants.AR)
-         {
-             service.name_ar
-         }
-         else
-         {
-             service.name_en
-         }
+    fun navigateToParametersActivity(service: ServiceData) {
+        val providerName =
+            if (Constants.LANG == Constants.AR) {
+                service.name_ar
+            } else {
+                service.name_en
+            }
 
-        Log.d("TAG", "diaa service from navigate: english  ${service.name_en} arabic ${service.name_ar}")
+        Log.d(
+            "TAG",
+            "diaa service from navigate: english  ${service.name_en} arabic ${service.name_ar}"
+        )
         NavigateToActivity.navigateToParametersActivity(
-            this,service.type,providerName,
-            service.id,service.name_ar,service.name_en,service.accept_amount_input,service.price_type,
-            service.accept_check_integration_provider_status,service.price_value,service.accept_change_paid_amount,
-            service.icon,service.type_code
+            this,
+            service.type,
+            providerName,
+            service.id,
+            service.name_ar,
+            service.name_en,
+            service.accept_amount_input,
+            service.price_type,
+            service.accept_check_integration_provider_status,
+            service.price_value,
+            service.accept_change_paid_amount,
+            service.icon,
+            service.type_code
+        )
+    }
+
+    fun navigateToParametersActivity(service: SearchData) {
+        val providerName =
+            if (Constants.LANG == Constants.AR) {
+                service.name_ar
+            } else {
+                service.name_en
+            }
+
+        NavigateToActivity.navigateToParametersActivity(
+            this,
+            service.type,
+            providerName,
+            service.id,
+            service.name_ar,
+            service.name_en,
+            service.accept_amount_input,
+            service.price_type,
+            service.accept_check_integration_provider_status,
+            service.price_value,
+            service.accept_change_paid_amount,
+            service.icon,
+            service.type_code
         )
     }
 }

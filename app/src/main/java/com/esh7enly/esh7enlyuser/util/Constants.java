@@ -12,27 +12,18 @@ public class Constants {
 
     // region user
 
-    public static final String STORE_NAME = "store_name";
-
-    public static final String IS_LOGIN = "isLogin";
     public static final int EXCEPTION_CODE = 400;
     public static final String USER_ID = "user_id";
     public static  String BILLING_ACCOUNT_CARD = "billing_account_card";
-    public static final String USER_NAME = "user_name";
+    public static  int VODAFONE_CASH_ID = 3968;
 
     public static final String USER_PHONE = "user_phone";
     public static  String USER_KEY = "USER_KEY";
     public static final String USER_PASSWORD = "user_password";
-    public static final String USER_TOKEN = "user_token";
-    public static final String USER_EMAIL = "user_email";
     public static  String IMEI = "imei";
 
     //endregion
 
-    //region Language
-
-
-    //endregion
 
     //region ids
 
@@ -81,6 +72,8 @@ public class Constants {
     public static final String DISPLAY_FOR_INQUIRY = "2";
     public static final String DISPLAY_FOR_PAYMENT = "3";
     public static  int START_SESSION_ID = 0;
+    public static  String HASH_GENERATED = "";
+    public static  String HASH_ID = "";
 
     // endregion
 
@@ -100,12 +93,10 @@ public class Constants {
     //region Settings
 
     public static final String AR = "ar";
-    public static final String EN = "en";
+    public static final String BILLING_ACCOUNT = "billing_account";
 
 
     //endregion
-
-    public static final String IS_REMEMBER_ME = "is_remember_me";
 
     public static  String LANG = "lang";
     public static  String FORGET_PASSWORD = "FORGET_PASSWORD";
@@ -119,10 +110,6 @@ public class Constants {
 
     //region Wallet
     public static final String TRASACTION_ID = "transaction_id";
-
-    //endregion
-
-    //region Merchant
 
     //endregion
 

@@ -3,14 +3,17 @@ package com.esh7enly.esh7enlyuser.di
 import com.esh7enly.data.local.DatabaseRoom
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.data.remote.NotificationService
+import com.esh7enly.data.repo.ServiceRepoImplNewTest
 import com.esh7enly.data.repo.ServicesRepoImpl
 import com.esh7enly.data.repo.TransactionsRepo
 import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.data.repo.XPayRepo
+import com.esh7enly.domain.repo.ServicesRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -21,6 +24,12 @@ object RepoModule
                     notificationService: NotificationService,
     databaseRoom: DatabaseRoom):ServicesRepoImpl{
         return ServicesRepoImpl(apiService,notificationService,databaseRoom)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNewServicesRepo(apiService: ApiService):ServicesRepo{
+        return ServiceRepoImplNewTest(apiService)
     }
 
 

@@ -9,10 +9,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,24 +18,16 @@ import androidx.annotation.NonNull;
 import com.esh7enly.esh7enlyuser.R;
 
 
-/**
- *
- */
-
 public class AppDialogMsg {
 
-    public TextView msgTextView, titleTextView, descriptionTextView, tvProgressPercent;
+    public TextView msgTextView, titleTextView, tvProgressPercent,tv_title_qty;
     public TextView tvCreatedAt, tvActionTime, tvComment, tvDesc;
     public LinearLayout lytDesc, lytActionComment;
     private ProgressBar progressBar;
-    public Button okButton, cancelButton, halfButton;
-    private ImageView imageView;
+    public Button okButton, cancelButton;
     private Dialog dialog;
     private View view;
     private boolean cancelable;
-    public RatingBar ratingBar;
-    public float newRating;
-    private boolean attached = false;
     private EditText edtAmount;
     private String amount;
 
@@ -150,8 +140,7 @@ public class AppDialogMsg {
     // Success Dialog with On click event
     public Dialog showSuccessDialogWithAction(String title, String message,
                                               String okTitle, String cancelTitle,
-                                              final CallBack callBack)
-    {
+                                              final CallBack callBack) {
         this.dialog.setContentView(R.layout.dialog_message);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
@@ -178,6 +167,7 @@ public class AppDialogMsg {
         }
         return dialog;
     }
+
     // Success Dialog with On click event
     public Dialog showSuccessDialogWithAction(String title, String message,
                                               String okTitle, String cancelTitle,
@@ -219,11 +209,12 @@ public class AppDialogMsg {
     // Success Dialog with On click event
     public Dialog showSuccessDialogWithActionAndBulkCards(String title, String message,
                                                           String okTitle, String cancelTitle,
+                                                          String quantity,
                                                           final CallBackAmount callBack) {
-
         this.dialog.setContentView(R.layout.dialog_bulk);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
+        tv_title_qty = dialog.findViewById(R.id.tv_title_qty);
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
         okButton = dialog.findViewById(R.id.dialogOkButton);
@@ -233,6 +224,7 @@ public class AppDialogMsg {
         edtAmount.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         titleTextView.setText(title);
+        tv_title_qty.setText(quantity);
         msgTextView.setText(message);
         edtAmount.setText("1");
         okButton.setText(okTitle);
@@ -435,7 +427,7 @@ public class AppDialogMsg {
 
         tvProgressPercent = dialog.findViewById(R.id.tv_progress_percent);
         progressBar = dialog.findViewById(R.id.progress_bar);
-       // hide percent until download start
+        // hide percent until download start
         tvProgressPercent.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
 
@@ -450,7 +442,7 @@ public class AppDialogMsg {
 
         msgTextView.setTextColor(dialog.getContext().getResources().getColor(R.color.blue_800));
         msgTextView.setOnClickListener(view -> {
-            callBack.onDownload(tvProgressPercent,progressBar);
+            callBack.onDownload(tvProgressPercent, progressBar);
             // show percent when download start
             tvProgressPercent.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
@@ -469,10 +461,11 @@ public class AppDialogMsg {
 
     /**
      * Recharge Dialog
+     *
      * @param callBack
      * @return
      */
-    public Dialog showVisaDialog(String error , final VisaCallBack callBack) {
+    public Dialog showVisaDialog(String error, final VisaCallBack callBack) {
 
         this.dialog.setContentView(R.layout.dialog_payment_method);
         //imageView = dialog.findViewById(R.id.dialogIconImageView);
@@ -495,11 +488,11 @@ public class AppDialogMsg {
 
             tvCreditCard.setOnClickListener(view -> {
 
-                 amount = edtAmount.getText().toString();
+                amount = edtAmount.getText().toString();
 
-                if (!amount.isEmpty()){
-                    callBack.onClick("1" , amount);
-                } else  {
+                if (!amount.isEmpty()) {
+                    callBack.onClick("1", amount);
+                } else {
                     edtAmount.setError(error);
                 }
             });
@@ -508,9 +501,9 @@ public class AppDialogMsg {
 
                 amount = edtAmount.getText().toString();
 
-                if (!amount.isEmpty()){
+                if (!amount.isEmpty()) {
                     callBack.onClick("2", amount);
-                } else  {
+                } else {
                     edtAmount.setError(error);
                 }
             });
@@ -521,7 +514,7 @@ public class AppDialogMsg {
     }
 
     public void showDialogWrongTransaction(String title, String message, String okTitle, String cancelTitle,
-                                     String amount, final CallBackAmount callBack) {
+                                           String amount, final CallBackAmount callBack) {
 
         this.dialog.setContentView(R.layout.dialog_wrong_transaction);
         view = dialog.findViewById(R.id.dialogTitleView);
@@ -575,7 +568,7 @@ public class AppDialogMsg {
         tvComment.setText(action_comment);
         tvActionTime.setText(action_date_time);
 
-        if (action_comment.isEmpty()){
+        if (action_comment.isEmpty()) {
             lytActionComment.setVisibility(View.GONE);
         }
 
@@ -600,6 +593,7 @@ public class AppDialogMsg {
     public interface CallBack2 {
 
         void onOkClick();
+
         void onCancelClick();
 
     }
@@ -618,8 +612,7 @@ public class AppDialogMsg {
 
     }
 
-    public interface CallBackAmount
-    {
+    public interface CallBackAmount {
         void onClick(String str);
 
     }

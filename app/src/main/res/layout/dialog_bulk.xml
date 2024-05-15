@@ -70,7 +70,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:lineSpacingExtra="8sp"
-                android:text="@string/quantity"
+                tools:text="@string/quantity"
                 android:textAlignment="textStart"
                 android:textColor="@color/grey_600"
                 app:layout_constraintEnd_toEndOf="parent"

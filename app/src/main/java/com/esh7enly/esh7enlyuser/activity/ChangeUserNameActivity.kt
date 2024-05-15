@@ -3,7 +3,6 @@ package com.esh7enly.esh7enlyuser.activity
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Patterns
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import com.esh7enly.data.sharedhelper.SharedHelper
@@ -16,14 +15,12 @@ import com.esh7enly.esh7enlyuser.util.IToolbarTitle
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.ProgressDialog
-import com.esh7enly.esh7enlyuser.util.Utils
-import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
+import com.esh7enly.esh7enlyuser.viewModel.UpdateProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle
-{
+class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle {
 
     private val ui by lazy {
         ActivityChangeUserNameBinding.inflate(layoutInflater)
@@ -36,7 +33,7 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle
         AppDialogMsg(this, false)
     }
 
-    private val userViewModel: UserViewModel by viewModels()
+    private val updateProfileViewModel: UpdateProfileViewModel by viewModels()
 
     private val pDialog by lazy {
         ProgressDialog.createProgressDialog(this)
@@ -46,6 +43,9 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        ui.lifecycleOwner = this
+        ui.updateProfileViewModel = updateProfileViewModel
 
         Language.setLanguageNew(this, Constants.LANG)
 
@@ -58,68 +58,60 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle
 
         initToolBar()
 
-//        pDialog.setMessage(
-//            Utils.getSpannableString(
-//                this,
-//                resources.getString(R.string.message__please_wait)
-//            )
-//        )
-//        pDialog.setCancelable(false)
-
         ui.btnUpdateData.setOnClickListener { changeData() }
 
     }
 
-    private fun changeData()
-    {
-        val newMobile = ui.newMobile.text.toString()
-        val firstName = ui.userFirstName.text.toString()
-        val lastName = ui.userLastName.text.toString()
-        val newEmail = ui.newEmail.text.toString()
-
-        val fullName = "$firstName $lastName"
-
-        if (newMobile.isBlank() && firstName.isBlank() && lastName.isBlank() &&newEmail.isBlank())
-        {
-           return
-
-        } else if (newEmail.isNotEmpty()) {
-            if (!isValidEmailId(newEmail)) {
-                showDialogInvalidEmail()
-            } else {
-                sendUpdateData(fullName, newMobile, newEmail)
-            }
-        } else {
-            sendUpdateData(fullName, newMobile, newEmail)
-        }
+    private fun changeData() {
+        sendUpdateData()
     }
 
-    private fun showDialogInvalidEmail() {
-        dialog.showWarningDialog(
-            resources.getString(R.string.email_not_valid),
-            resources.getString(R.string.app__ok)
-        )
-        dialog.show()
-    }
-
-    private fun sendUpdateData(newName: String, newMobile: String, newEmail: String) {
+    private fun sendUpdateData() {
         pDialog.show()
 
-        userViewModel.updateProfile(sharedHelper?.getUserToken().toString(),
-            newName, newMobile, newEmail, object : OnResponseListener {
+        updateProfileViewModel.updateProfile(sharedHelper?.getUserToken().toString(),
+            object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     showSuccessDialog(msg)
                 }
 
                 override fun onFailed(code: Int, msg: String?) {
+                    when (code) {
+                        1 -> {
+                            showDialogInvalidEmail()
+                        }
 
-                    showErrorDialog(msg, code)
+                        2 -> {
+                            pDialog.dismiss()
+                        }
+
+                        else -> {
+                            showErrorDialog(msg, code)
+
+                        }
+                    }
                 }
             })
     }
 
+    private fun showDialogInvalidEmail() {
+
+        pDialog.cancel()
+
+        dialog.showWarningDialogWithAction(
+            resources.getString(R.string.email_not_valid),
+            resources.getString(R.string.app__ok)
+        )
+        {
+            dialog.cancel()
+        }.show()
+
+
+    }
+
     private fun showSuccessDialog(msg: String?) {
         pDialog.cancel()
+
         dialog.showSuccessDialog(msg, resources.getString(R.string.app__ok))
         {
             dialog.cancel()
@@ -132,6 +124,7 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle
 
     private fun showErrorDialog(msg: String?, code: Int?) {
         pDialog.cancel()
+
         dialog.showErrorDialogWithAction(msg, resources.getString(R.string.app__ok))
         {
             dialog.cancel()
@@ -144,9 +137,6 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle
 
         }.show()
     }
-
-    private fun isValidEmailId(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
-
 
     override fun initToolBar() {
         ui.updateProfileToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }

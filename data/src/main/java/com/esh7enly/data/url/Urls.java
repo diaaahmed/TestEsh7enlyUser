@@ -6,12 +6,13 @@ public class Urls {
     public static final String UPDATE_PASSWORD = "misc/change-password";
 
     public static final String PROVIDERS = "service/providers";
+    public static final String SERVICE_SEARCH = "service/search";
     public static final String SERVICES_NEW = "service/services";
     public static final String PARAMETERS = "service/parameters";
     public static final String CATEGORIES = "service/categories";
 
     public static final String UPDATE_PROFILE = "misc/update-profile";
-    public static final String GET_DEPOSITS = "payment-method/list";
+    public static final String GET_DEPOSITS = "payment-method/list-wallet";
     public static final String FORGET_PASSWORD = "auth/send-forget-password-otp";
     public static final String NEW_PASSWORD = "auth/forget-password";
 
@@ -39,10 +40,10 @@ public class Urls {
     public static final String PAYMENT = "service/payment";
 
     public static final String TOTAL_AMOUNT = "service/total-amount";
-    public static final String CHARGE_BALANCE = "payment-method/pay-amount";
-    public static final String START_SESSION = "payment-method/start-session";
+    public static final String CHARGE_BALANCE = "payment-method/pay-amount-wallet";
+    public static final String START_SESSION = "payment-method/start-session-wallet";
 
-    public static final String TOTAL_XPAY = "payment-method/get-amount";
+    public static final String TOTAL_XPAY = "payment-method/get-amount-wallet";
 
 
    public static final String CANCEL_SERVICE = "service/cancel";

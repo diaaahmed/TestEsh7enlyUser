@@ -21,6 +21,7 @@ import com.esh7enly.esh7enlyuser.util.IToolbarTitle
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
+import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -57,6 +58,8 @@ class ProviderActivity : AppCompatActivity(),ProviderClick,IToolbarTitle
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
+      //   checkApiReview()
+
         Language.setLanguageNew(this, Constants.LANG)
 
         initToolBar()
@@ -66,6 +69,17 @@ class ProviderActivity : AppCompatActivity(),ProviderClick,IToolbarTitle
         categoryID = intent.getIntExtra(Constants.CATEGORY_ID,0)
 
         getData()
+    }
+
+    private fun checkApiReview()
+    {
+        val reviewManager = ReviewManagerFactory.create(this)
+        reviewManager.requestReviewFlow().addOnCompleteListener {
+            if(it.isSuccessful)
+            {
+                reviewManager.launchReviewFlow(this,it.result)
+            }
+        }
     }
 
     override fun initToolBar()
@@ -79,7 +93,7 @@ class ProviderActivity : AppCompatActivity(),ProviderClick,IToolbarTitle
     {
         pDialog.show()
 
-        serviceViewModel.getProviders(sharedHelper?.getUserToken().toString(),categoryID.toString(),
+        serviceViewModel.getProvidersNew(sharedHelper?.getUserToken().toString(),categoryID.toString(),
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
                 {
@@ -112,9 +126,11 @@ class ProviderActivity : AppCompatActivity(),ProviderClick,IToolbarTitle
                     }.show()
                 }
             })
+    }
 
-
-//        serviceViewModel.getProvidersFromDB(categoryID).observe(this)
+    private fun getProvidersDB()
+    {
+        //        serviceViewModel.getProvidersFromDB(categoryID).observe(this)
 //        {
 //            providers->
 //            providerAdapter.submitList(providers)

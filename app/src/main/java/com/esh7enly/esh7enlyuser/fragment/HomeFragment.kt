@@ -2,6 +2,7 @@ package com.esh7enly.esh7enlyuser.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -19,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.domain.entity.imageadsresponse.Data
 import com.esh7enly.esh7enlyuser.R
@@ -33,10 +35,15 @@ import com.esh7enly.esh7enlyuser.databinding.FragmentHomeBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 private const val TAG = "HomeFragment"
@@ -44,7 +51,7 @@ private const val TAG = "HomeFragment"
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(), CategoryClick {
 
-    var categories:List<CategoryData> ?= null
+    var categories: List<CategoryData>? = null
 
 
     private var imageAdsAdapter: ImageAdsAdapter? = null
@@ -54,6 +61,9 @@ class HomeFragment : BaseFragment(), CategoryClick {
     }
 
     lateinit var categoriesAdapter: CategoryAdapterNew
+
+    lateinit var appUpdateManager: AppUpdateManager
+    private val updateType = AppUpdateType.IMMEDIATE
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,6 +80,9 @@ class HomeFragment : BaseFragment(), CategoryClick {
 
         Language.setLanguageNew(requireActivity(), Constants.LANG)
 
+        appUpdateManager = AppUpdateManagerFactory.create(requireContext())
+
+        checkForAppUpdate()
 
         Log.d(TAG, "diaa onViewCreated: ")
 
@@ -94,6 +107,65 @@ class HomeFragment : BaseFragment(), CategoryClick {
 
     }
 
+    private fun checkForAppUpdate() {
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+
+            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+            val isUpdateAllowed = when (updateType) {
+                AppUpdateType.IMMEDIATE -> {
+
+                    info.isImmediateUpdateAllowed
+                }
+
+                AppUpdateType.FLEXIBLE -> {
+                    info.isFlexibleUpdateAllowed
+                }
+
+                else -> {
+                    false
+                }
+            }
+
+            if(isUpdateAvailable && isUpdateAllowed)
+            {
+                appUpdateManager.startUpdateFlowForResult(
+                    info,
+                    updateType,
+                    requireActivity(),
+                    123
+                )
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == 123)
+        {
+            if(resultCode != RESULT_OK)
+            {
+                Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(updateType == AppUpdateType.IMMEDIATE)
+        {
+            appUpdateManager.appUpdateInfo.addOnSuccessListener {info->
+                if(info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS)
+                {
+                    appUpdateManager.startUpdateFlowForResult(
+                        info,
+                        updateType,
+                        requireActivity(),
+                        123
+                    )
+                }
+            }
+        }
+    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -106,14 +178,15 @@ class HomeFragment : BaseFragment(), CategoryClick {
 
     private fun askNotificationPermission() {
         // This is only necessary for API level >= 33 (TIRAMISU)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-        {
-            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.POST_NOTIFICATIONS) ==
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) ==
                 PackageManager.PERMISSION_GRANTED
             ) {
                 // FCM SDK (and your app) can post notifications.
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS))
-            {
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 
             } else {
@@ -133,8 +206,7 @@ class HomeFragment : BaseFragment(), CategoryClick {
     private fun serviceSearch() {
         val serviceSearch = ui.searchWord.text.toString()
 
-        if (serviceSearch.isBlank())
-        {
+        if (serviceSearch.isBlank()) {
             ui.searchWord.error = resources.getString(R.string.required)
         } else {
 
@@ -213,10 +285,19 @@ class HomeFragment : BaseFragment(), CategoryClick {
 
 
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
-    private fun getData()
-    {
+    private fun getData() {
         getDataFromServer()
-//        lifecycleScope.launch(Dispatchers.IO)
+
+        if (connectivity?.isConnected == true) {
+            checkCancelTransactions()
+            addDynamicAdds()
+
+        }
+        addFixedAds()
+    }
+
+    private fun getDataOld() {
+        //        lifecycleScope.launch(Dispatchers.IO)
 //        {
 //
 //            getDataFromServer()
@@ -240,22 +321,14 @@ class HomeFragment : BaseFragment(), CategoryClick {
 ////               getDataFromDB()
 ////            }
 //        }
-
-        if(connectivity?.isConnected == true)
-        {
-            checkCancelTransactions()
-            addDynamicAdds()
-
-        }
-        addFixedAds()
     }
 
     private fun addDynamicAdds() {
+
         serviceViewModel.getImageAds(sharedHelper?.getUserToken().toString(),
             object : OnResponseListener {
                 @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     val data = obj as Data
 
                     imageAdsAdapter = ImageAdsAdapter(data.data)
@@ -279,15 +352,13 @@ class HomeFragment : BaseFragment(), CategoryClick {
                     ui.adsViewPager.adapter = imageAdsAdapter
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
                     Log.d(TAG, "diaa getImageAds Error: $msg")
                 }
             })
     }
 
-    private fun addFixedAds()
-    {
+    private fun addFixedAds() {
         val appAds =
             mutableListOf(R.drawable.forsa, R.drawable.adone, R.drawable.adtwo, R.drawable.adthree)
 
@@ -311,46 +382,94 @@ class HomeFragment : BaseFragment(), CategoryClick {
 //
 //    }
 
-    private fun getDataFromServer()
-    {
+    private fun getDataFromServer() {
         Log.d(TAG, "diaa getDataFromServer: ")
 
 //        lifecycleScope.launch(Dispatchers.IO) {
 
-            ui.shimmerViewContainer.startShimmerAnimation()
+        ui.shimmerViewContainer.startShimmerAnimation()
 
-            serviceViewModel.getCategories(sharedHelper?.getUserToken().toString(),
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
-                         categories = obj as List<CategoryData>
+//       lifecycleScope.launch {
+//           serviceViewModel.getCategoriesNewFlow(sharedHelper?.getUserToken().toString())
+//
+//           serviceViewModel.categoriesResponse.collect{
+//               response->
+//               when(response)
+//               {
+//                   is NetworkResult.Error -> {
+//                       dialog.showErrorDialogWithAction(
+//                           response.message, resources.getString(R.string.app__ok)
+//                       ) {
+//                           dialog.cancel()
+//
+//                       }.show()
+//                   }
+//                   is NetworkResult.Loading -> {
+//
+//                   }
+//                   is NetworkResult.Success -> {
+//                       ui.shimmerViewContainer.stopShimmerAnimation()
+//                       ui.shimmerViewContainer.visibility = View.GONE
+//                       ui.servicesRv.visibility = View.VISIBLE
+//
+//                       categories = response.data?.data
+//
+//                       val other = CategoryData(
+//                           name_ar = "خدمات أخرى",
+//                           name_en = "Other Service",
+//                           id = 0
+//                       )
+//
+//                       val filteredCategory = listOf(categories!![0], categories!![1], other)
+//
+//                       replaceData(filteredCategory)
+//
+//                   }
+//                   null -> {
+//
+//                   }
+//               }
+//           }
+//       }
 
-                        val other = CategoryData(
-                            name_ar = "خدمات أخرى",
-                            name_en = "Other Service",
-                            id = 0
-                        )
+        serviceViewModel.getCategoriesNew(sharedHelper?.getUserToken().toString(),
+            object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                    categories = obj as List<CategoryData>
 
-                        val filteredCategory = listOf(categories!![0],categories!![1],other)
+                    val other = CategoryData(
+                        name_ar = "خدمات أخرى",
+                        name_en = "Other Service",
+                        id = 0
+                    )
 
-                        replaceData(filteredCategory)
+                    val filteredCategory = listOf(categories!![0], categories!![1], other)
 
-//                        lifecycleScope.launch(Dispatchers.IO) {
-//                            // val filteredCategory = serviceViewModel.getFilteredList()
-//                            val filteredCategory = serviceViewModel.getFilteredList()
-//                            replaceData(filteredCategory)
-//                        }
+                    replaceData(filteredCategory)
 
-                        ui.shimmerViewContainer.stopShimmerAnimation()
-                        ui.shimmerViewContainer.visibility = View.GONE
-                        ui.servicesRv.visibility = View.VISIBLE
-                    }
+                    ui.shimmerViewContainer.stopShimmerAnimation()
+                    ui.shimmerViewContainer.visibility = View.GONE
+                    ui.servicesRv.visibility = View.VISIBLE
+                }
 
-                    override fun onFailed(code: Int, msg: String?)
-                    {
-                        Log.d(TAG, "onFailed: ")
-                    }
-                })
+                override fun onFailed(code: Int, msg: String?) {
+                    Log.d(TAG, "onFailed: ")
+
+                    dialog.showErrorDialogWithAction(
+                        msg, resources.getString(R.string.app__ok)
+                    ) {
+                        dialog.cancel()
+
+                        if (code.toString() == Constants.CODE_UNAUTH ||
+                            code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+                        ) {
+                            NavigateToActivity.navigateToMainActivity(requireActivity())
+                        }
+                    }.show()
+                }
+            })
+
+
         //}
 
 //        serviceViewModel.getService(sharedHelper?.getUserToken().toString())
@@ -387,19 +506,16 @@ class HomeFragment : BaseFragment(), CategoryClick {
     }
 
 
-    private fun replaceData(category: List<CategoryData>)
-    {
+    private fun replaceData(category: List<CategoryData>) {
         lifecycleScope.launch(Dispatchers.Main)
         {
-            categoriesAdapter = CategoryAdapterNew(category,this@HomeFragment)
+            categoriesAdapter = CategoryAdapterNew(category, this@HomeFragment)
             ui.servicesRv.adapter = categoriesAdapter
         }
     }
 
-    override fun click(category: CategoryData)
-    {
-        if (category.id == 0)
-        {
+    override fun click(category: CategoryData) {
+        if (category.id == 0) {
 
             replaceData(categories!!)
 
@@ -411,10 +527,8 @@ class HomeFragment : BaseFragment(), CategoryClick {
 //
 //                }
 //            }
-        }
-        else
-        {
-            NavigateToActivity.navigateToProviderActivity(requireActivity(),category)
+        } else {
+            NavigateToActivity.navigateToProviderActivity(requireActivity(), category)
         }
     }
 }

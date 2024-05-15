@@ -5,9 +5,10 @@
 
     <data>
 
-<!--        <variable-->
-<!--            name="loginViewModel"-->
-<!--            type="com.esh7enly.esh7enlyuser.viewModel.UserViewModel" />-->
+        <variable
+            name="loginViewModel"
+            type="com.esh7enly.esh7enlyuser.viewModel.UserViewModel" />
+
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -56,6 +57,7 @@
 
                 <!--this is the actual edit text which takes the input-->
                 <com.google.android.material.textfield.TextInputEditText
+                    android:text="@={loginViewModel.userPhoneNumber}"
                     android:id="@+id/phone_number"
                     android:inputType="number"
                     android:layout_width="match_parent"
@@ -85,6 +87,7 @@
                 <!--this is the actual edit text which takes the input-->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
+                    android:text="@={loginViewModel.userPassword}"
                     android:inputType="textPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

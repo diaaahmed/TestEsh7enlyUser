@@ -17,12 +17,16 @@ android {
         applicationId "com.esh7enly.esh7enlyuser"
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
-        versionCode 11
-        versionName "1.10"
+
+        versionCode 17
+        versionName "1.16"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
         buildConfigField("String", "IMAGE_URL", IMAGE_URL)
         buildConfigField("String", "BASE_URL", BASE_URL)
+        buildConfigField("String", "SECRET_KEY", SECRET_KEY)
+        buildConfigField("String", "SECRET_WORD", SECRET_WORD)
         buildConfigField("String", "BASE_URL_NOTIFICATION", BASE_URL_NOTIFICATION)
         buildConfigField("String", "PRIVACY_POLICY", PRIVACY_POLICY)
         buildConfigField("String", "SERVER_KEY_PRODUCTION", SERVER_KEY_PRODUCTION)
@@ -35,6 +39,8 @@ android {
         buildConfigField("String", "XPAY_API_KEY_PRODUCTION", XPAY_API_KEY_PRODUCTION)
         buildConfigField("String", "XPAY_COMMUNITY_ID_PRODUCTION", XPAY_COMMUNITY_ID_PRODUCTION)
         buildConfigField("String", "XPAY_API_PAYMENT_ID_PRODUCTION", XPAY_API_PAYMENT_ID_PRODUCTION)
+
+
         signingConfig signingConfigs.debug
 
         kapt{
@@ -48,7 +54,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            debuggable false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -76,7 +83,6 @@ dependencies {
     implementation libs.material
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
-   // implementation 'com.google.firebase:firebase-messaging-ktx:23.1.2'
     implementation 'com.google.firebase:firebase-messaging'
     implementation("com.google.firebase:firebase-crashlytics")
     implementation 'com.google.firebase:firebase-dynamic-links'
@@ -89,7 +95,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
-    // navigation component
+    // Navigation component
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
@@ -113,7 +119,7 @@ dependencies {
     // Logging interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-   //    Chucker
+    // Chucker
     debugImplementation libs.chucker
     releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
 
@@ -134,20 +140,19 @@ dependencies {
     implementation libs.roomktx
     implementation libs.roomrxjava
 
-    // sdp library
+    // Sdp library
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
     implementation 'com.intuit.ssp:ssp-android:1.1.0'
 
     // Leak canary
     // debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
-    // splash screen api
+    // Splash screen api
     implementation 'androidx.core:core-splashscreen:1.0.1'
 
 
     // NFC fawry
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-    // implementation files('libs/FawryNFC_1.0.0_29052023.aar')
     implementation files('libs/FawryNFC_1.4.0_27082023_release.aar')
 
     // Lottie
@@ -158,10 +163,21 @@ dependencies {
     // Splash screen api
     implementation "androidx.core:core-splashscreen:1.0.1"
 
-    // paytabs
+    // Paytabs
     implementation ('com.paytabs:payment-sdk:6.3.2')
             {
                 exclude group: "com.paytabs", module: "scan-card"
             }
+
+    // In app update
+    implementation 'com.google.android.play:app-update:2.1.0'
+
+    implementation 'com.google.android.play:app-update-ktx:2.1.0'
+
+    // Google play api review
+    implementation 'com.google.android.play:review:2.0.1'
+
+    // For Kotlin users also add the Kotlin extensions library for Play In-App Review:
+    implementation 'com.google.android.play:review-ktx:2.0.1'
 
 }

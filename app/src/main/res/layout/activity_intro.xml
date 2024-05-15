@@ -21,7 +21,6 @@
              />
 
 
-
 <!--        <androidx.viewpager2.widget.ViewPager2-->
 <!--            android:id="@+id/viewPager"-->
 <!--            app:layout_constraintTop_toTopOf="parent"-->

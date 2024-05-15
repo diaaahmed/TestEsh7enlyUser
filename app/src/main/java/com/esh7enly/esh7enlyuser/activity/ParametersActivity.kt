@@ -109,17 +109,30 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun showData() {
+
         ui.tvService.text = serviceName
         ui.tvProvider.text = serviceViewModel.providerName
 
-        if (serviceViewModel.image == null) {
-            ui.img.setImageResource(R.drawable.logo)
-        } else {
+        serviceViewModel.image?.let {
             Utils.displayImageOriginalFromCache(
                 this, ui.img,
-                serviceViewModel.image, NetworkUtils.isConnectedWifi(this)
+                it, NetworkUtils.isConnectedWifi(this)
             )
+
+        } ?: run{
+            ui.img.setImageResource(R.drawable.logo)
+
         }
+
+
+//        if (serviceViewModel.image == null) {
+//            ui.img.setImageResource(R.drawable.logo)
+//        } else {
+//            Utils.displayImageOriginalFromCache(
+//                this, ui.img,
+//                serviceViewModel.image, NetworkUtils.isConnectedWifi(this)
+//            )
+//        }
 
 
         if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
@@ -130,10 +143,11 @@ open class ParametersActivity : BaseActivity() {
 
         getParametersFromRemote()
 
-        getImagesFromDB()
+      //  getImagesFromDB()
     }
 
     private fun getImagesFromDB() {
+
         serviceViewModel.getImagesFromDB(serviceViewModel.servicesId.toString())
             .observe(this@ParametersActivity)
             { images ->
@@ -186,9 +200,10 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun getParametersFromRemote() {
+
         pDialog.show()
 
-        serviceViewModel.getParameters(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.getParametersNew(sharedHelper?.getUserToken().toString(),
             serviceViewModel.servicesId.toString(), object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     pDialog.cancel()

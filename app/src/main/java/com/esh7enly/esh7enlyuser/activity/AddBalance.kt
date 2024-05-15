@@ -43,6 +43,7 @@ import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionType
 import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.security.MessageDigest
 import kotlin.random.Random
 
 private const val TAG = "AddBalance"
@@ -132,7 +133,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                         {
                             dialog.cancel()
 
-//                            pDialog.show()
                             pDialog.show()
 
                             getTotalAmount(GatewayTransactionType.visa.toString())
@@ -142,7 +142,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                     }
 
                     PayWays.CASH.toString() -> {
-//                        pDialog.show()
                         pDialog.show()
 
                         getTotalWithCash()
@@ -163,11 +162,15 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         lifecycleScope.launch {
 
             val params =
-                TotalAmountPojoModel.Params("billing_account", ui.phoneNumber.text.toString())
+                TotalAmountPojoModel.Params(
+                    Constants.BILLING_ACCOUNT,
+                    ui.phoneNumber.text.toString()
+                )
 
             val totalAmountPojoModel = TotalAmountPojoModel(
                 Constants.IMEI,
-                3968, ui.amountValue.text.toString(), mutableListOf(params)
+                Constants.VODAFONE_CASH_ID,
+                ui.amountValue.text.toString(), mutableListOf(params)
             )
 
             serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
@@ -179,7 +182,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                             PaymentPojoModel(
                                 Constants.IMEI,
                                 "",
-                                3968,
+                                Constants.VODAFONE_CASH_ID,
                                 ui.amountValue.text.toString(),
                                 mutableListOf(params)
                             )
@@ -195,18 +198,14 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         }
     }
 
-    private fun payWithCash(paymentPojoModel: PaymentPojoModel)
-    {
-//        pDialog.show()
+    private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
         pDialog.show()
 
         lifecycleScope.launch {
             serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-//                        pDialog.dismiss()
                         pDialog.cancel()
-
 
                         dialog.showSuccessDialog(
                             resources.getString(R.string.balance_added),
@@ -245,7 +244,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 transactionTypeFinal = GatewayTransactionType.visa.toString()
 
                 PaymentSdkActivity.startCardPayment(this, configData, this)
-
             }
 
             GatewayTransactionType.wallet.toString() -> {
@@ -256,6 +254,14 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
         }
     }
+
+
+//    fun String.md5(): String {
+//        val md = MessageDigest.getInstance("MD5")
+//        val digest = md.digest(this.toByteArray())
+//        return digest.toHe()
+//    }
+
 
     private fun generatePaytabsConfigurationDetails(
         orderNum: String,
@@ -323,10 +329,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 payment_method_type = GatewayMethod.paytabs.toString(),
                 transaction_type = transactionType,
                 ui.amountValue.text.toString(), object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
-//                        pDialog.cancel()
-
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
 
                         val data = obj as Data
@@ -365,17 +368,18 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                         ) {
                             dialog.cancel()
 
-//                            pDialog.show()
                             pDialog.show()
 
-                            startSessionForPay(data.amount.toString(), transactionType)
+                            startSessionForPay(
+                                ui.amountValue.text.toString(),
+                                data.amount.toString(), transactionType
+                            )
 
                         }.show()
 
                     }
 
                     override fun onFailed(code: Int, msg: String?) {
-//                        pDialog.cancel()
                         pDialog.cancel()
 
                         dialog.showErrorDialogWithAction(
@@ -393,9 +397,10 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         }
     }
 
-    private fun startSessionForPay(totalAmount: String, transactionType: String) {
+    private fun startSessionForPay(amount: String, totalAmount: String, transactionType: String) {
         lifecycleScope.launch {
             xPayViewModel.startSessionForPay(
+                finalAmount = amount,
                 payment_method_type = GatewayMethod.paytabs.toString(),
                 transaction_type = transactionType,
                 sharedHelper?.getUserToken()
@@ -434,7 +439,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
     }
 
     private fun showFailedPay(msg: String?, code: Int) {
-//        pDialog.cancel()
         pDialog.cancel()
 
         dialog.showErrorDialogWithAction(
@@ -455,7 +459,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         Log.d(TAG, "diaa responseCode: error code ${error.code}")
 
 
-//        pDialog.cancel()
         pDialog.cancel()
 
         val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
@@ -465,7 +468,9 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
             errorCode = error.code.toString(),
             errorMsg = error.msg,
             payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal
+            transaction_type = transactionTypeFinal,
+            hash_generated = Constants.HASH_GENERATED,
+            hash_id = Constants.HASH_ID
         )
 
         requestChargeFailed(chargeBalanceRequest, error.msg.toString())
@@ -475,7 +480,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
         Log.d(TAG, "diaa responseCode: cancel")
 
-//        pDialog.cancel()
         pDialog.cancel()
 
         val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
@@ -485,7 +489,9 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
             errorCode = "400",
             errorMsg = "Payment cancelled",
             payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal
+            transaction_type = transactionTypeFinal,
+            hash_generated = Constants.HASH_GENERATED,
+            hash_id = Constants.HASH_ID
         )
 
         requestChargeFailed(chargeBalanceRequest, "Payment cancelled")
@@ -516,7 +522,9 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
             responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
             transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
             payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal
+            transaction_type = transactionTypeFinal,
+            hash_generated = Constants.HASH_GENERATED,
+            hash_id = Constants.HASH_ID
         )
 
         chargeBalanceRequest = if (paymentSdkTransactionDetails.isSuccess == true) {
@@ -549,7 +557,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 chargeBalanceRequest,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-//                        pDialog.cancel()
                         pDialog.cancel()
 
                         dialog.showSuccessDialog(

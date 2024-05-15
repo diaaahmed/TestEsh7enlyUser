@@ -30,4 +30,6 @@ data class ChargeBalanceRequestPaytabs(
     var total_amount_piasters: String?= null,
     var payment_method_type:String?= null,
     var transaction_type:String?= null,
+    var hash_generated:String?= null,
+    var hash_id:String?= null
 )

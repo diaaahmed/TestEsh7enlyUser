@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="updateProfileViewModel"
+            type="com.esh7enly.esh7enlyuser.viewModel.UpdateProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,6 +51,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/new_mobile"
                 android:inputType="text"
+                android:text="@={updateProfileViewModel.updatedMobile}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary" />
@@ -69,7 +73,8 @@
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/new_email"
-                android:inputType="text"
+                android:inputType="textEmailAddress"
+                android:text="@={updateProfileViewModel.updatedEmail}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary" />
@@ -89,6 +94,7 @@
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/user_first_name"
+                android:text="@={updateProfileViewModel.updatedFirstName}"
                 android:textColor="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -110,6 +116,7 @@
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/user_last_name"
+                android:text="@={updateProfileViewModel.updatedLastName}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary" />

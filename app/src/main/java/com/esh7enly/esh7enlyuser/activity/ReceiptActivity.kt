@@ -165,9 +165,7 @@ class ReceiptActivity : AppCompatActivity()
         ui.tvBalanceBefore.text = Utils.format(DATA_ENTITY?.balanceBefore) + resources.getString(R.string.egp)
         ui.tvBalanceAfter.text = Utils.format(DATA_ENTITY?.balanceAfter) + resources.getString(R.string.egp)
 
-        val type = DATA_ENTITY?.type?.toInt()
-
-        when(type)
+        when(DATA_ENTITY?.type?.toInt())
         {
             Constants.DONE ->
             {
@@ -207,7 +205,7 @@ class ReceiptActivity : AppCompatActivity()
             }
             catch (e: Exception)
             {
-                Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error with share ${e.message}", Toast.LENGTH_SHORT).show()
             }
         } else {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
@@ -227,7 +225,7 @@ class ReceiptActivity : AppCompatActivity()
                 }
                 catch (e: Exception)
                 {
-                    Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error with share ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

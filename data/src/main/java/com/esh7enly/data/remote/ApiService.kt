@@ -21,10 +21,10 @@ import com.esh7enly.domain.entity.replacepointsresponse.ReplacePointsResponse
 import com.esh7enly.domain.entity.scedulelistresponse.ScheduleListResponse
 import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireResponse
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
+import com.esh7enly.domain.entity.searchresponse.SearchResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.esh7enly.domain.entity.startsessionresponse.StartSessionResponse
 import com.esh7enly.domain.entity.totalamountxpayresponse.GetTotalAmountXPayResponse
-import com.esh7enly.domain.entity.userservices.Provider
 import com.esh7enly.domain.entity.userservices.UserServicesResponse
 import com.esh7enly.domain.entity.userwallet.UserWalletResponse
 import com.esh7enly.domain.entity.verifyotp.VerifyOtpResponse
@@ -151,6 +151,14 @@ interface ApiService
         @Header("Authorization") token: String?,
         @Field("id") id:String
     ):Response<ProviderResponse>
+
+    @FormUrlEncoded
+    @POST(Urls.SERVICE_SEARCH)
+    suspend fun serviceSearch(
+        @Header("Authorization") token: String?,
+        @Field("name") serviceName:String,
+        @Field("page") page: Int
+    ):Response<SearchResponse>
 
     @FormUrlEncoded
     @POST(Urls.SERVICES_NEW)

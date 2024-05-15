@@ -49,6 +49,10 @@ class MainActivity : BaseActivity()
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
+        ui.lifecycleOwner = this
+        ui.loginViewModel = userViewModel
+
+
        // validateToken()
 
         val appLanguage = sharedHelper?.getAppLanguage()
@@ -68,19 +72,7 @@ class MainActivity : BaseActivity()
 
         setUpRemember()
 
-//        ui.lifecycleOwner = this
-//        ui.loginViewModel = userViewModel
-
-        ui.phoneNumber.setText(sharedHelper?.getUserName())
-
-//        pDialog.setMessage(
-//            Utils.getSpannableString(
-//                this,
-//                resources.getString(R.string.message__please_wait)
-//            )
-//        )
-//        pDialog.setCancelable(false)
-
+      //  ui.phoneNumber.setText(sharedHelper?.getUserName())
 
         ui.forgetPassword.setOnClickListener {
             val forgetPasswordIntent = Intent(this, PhoneActivity::class.java)
@@ -127,6 +119,7 @@ class MainActivity : BaseActivity()
 
     }
 
+
     private fun validateToken()
     {
         userViewModel.token = sharedHelper?.getUserToken().toString()
@@ -153,8 +146,8 @@ class MainActivity : BaseActivity()
     @RequiresApi(Build.VERSION_CODES.O)
     private fun login()
     {
-        if (connectivity?.isConnected == true) {
-
+        if (connectivity?.isConnected == true)
+        {
             val phoneNumber = ui.phoneNumber.text.toString().trim()
 
             val password = ui.password.text.toString().trim()
@@ -184,9 +177,7 @@ class MainActivity : BaseActivity()
             else {
                 pDialog.show()
 
-               // pDialog.show()
-
-                getUserTokenFromFirebase(phoneNumber,password)
+                getUserTokenFromFirebase()
             }
         } else {
             alertDialog.showErrorDialogWithAction(
@@ -198,23 +189,23 @@ class MainActivity : BaseActivity()
         }
     }
 
-    private fun getUserTokenFromFirebase(phoneNumber: String, password: String)
+    private fun getUserTokenFromFirebase()
     {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (task.isSuccessful)
             {
                 val token = task.result
 
-                userLogin(phoneNumber,password,token)
+                userLogin(token)
             }
         }
     }
 
 
-    private fun userLogin(phoneNumber:String,password: String,token:String)
+    private fun userLogin(token:String)
     {
         try{
-            userViewModel.userLogin(phoneNumber, password, token).observe(this)
+            userViewModel.userLogin(token).observe(this)
             { response ->
                 if (response.isSuccessful)
                 {
@@ -226,7 +217,7 @@ class MainActivity : BaseActivity()
                         showDialogWithAction(response.body!!.message!!)
 
                     } else {
-                        successLoginNavigateToHome(response,password)
+                        successLoginNavigateToHome(response)
 
                     }
                 } else {
@@ -245,13 +236,11 @@ class MainActivity : BaseActivity()
     }
 
     private fun successLoginNavigateToHome(
-        response: ApiResponse<LoginResponse>,
-        password:String)
+        response: ApiResponse<LoginResponse>)
     {
         sharedHelper?.setStoreName(response.body?.data!!.name)
         sharedHelper?.setUserToken(response.body?.data!!.token)
-        val userEmail = response.body?.data!!.email
-        sharedHelper?.setUserEmail(userEmail)
+        sharedHelper?.setUserEmail(response.body?.data!!.email)
         sharedHelper?.isRememberUser(true)
 
         Constants.SERVICE_UPDATE_NUMBER =
@@ -262,7 +251,7 @@ class MainActivity : BaseActivity()
 
         if (ui.checkBox.isChecked) {
             sharedHelper?.setRememberPassword(true)
-            saveUserPassword(password)
+            saveUserPassword()
         } else {
             sharedHelper?.setRememberPassword(false)
             removeUserPassword()
@@ -349,8 +338,9 @@ class MainActivity : BaseActivity()
         }
     }
 
-    private fun saveUserPassword(password: String) {
-        sharedHelper?.setUserPassword(password)
+    private fun saveUserPassword()
+    {
+        userViewModel.saveUserPassword()
     }
 
     private fun removeUserPassword() {

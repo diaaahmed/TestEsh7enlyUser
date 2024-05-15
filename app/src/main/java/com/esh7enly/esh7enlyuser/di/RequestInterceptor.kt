@@ -18,5 +18,6 @@ class RequestInterceptor: Interceptor
         val requestBuilder: Request.Builder = originalRequest.newBuilder().url(url)
         val request: Request = requestBuilder.build()
         return chain.proceed(request)
+
     }
 }

@@ -23,7 +23,6 @@ import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class SignupActivity : AppCompatActivity()
 {
@@ -32,6 +31,7 @@ class SignupActivity : AppCompatActivity()
     }
 
     private val userViewModel: UserViewModel by viewModels()
+   // private val createAccountViewModel: CreateAccountViewModel by viewModels()
 
 
     private val alertDialog by lazy {
@@ -50,12 +50,14 @@ class SignupActivity : AppCompatActivity()
     var sharedHelper: SharedHelper? = null
         @Inject set
 
-
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        //ui.lifecycleOwner = this
+       // ui.userViewModel = createAccountViewModel
 
         Language.setLanguageNew(this, Constants.LANG)
 
@@ -71,12 +73,10 @@ class SignupActivity : AppCompatActivity()
 
         getIntentData()
 
-
         ui.haveAccount.setOnClickListener {
             startActivity(Intent(this@SignupActivity,MainActivity::class.java))
             finish()
         }
-
 
         ui.btnSignup.setOnClickListener {
             pDialog.show()
@@ -88,8 +88,7 @@ class SignupActivity : AppCompatActivity()
         userViewModel.phoneNumber = intent.getStringExtra(Constants.USER_PHONE)
     }
 
-    private fun createAccount()
-    {
+    private fun createAccount() {
         val firstName = ui.userFirstName.text.toString().trim()
         val lastName = ui.userLastName.text.toString().trim()
         val password = ui.userPassword.text.toString().trim()
@@ -142,8 +141,37 @@ class SignupActivity : AppCompatActivity()
             else
             {
                 val fullName = "$firstName $lastName"
+
+//                createAccountViewModel.registerNewAccount(
+//                    userViewModel.phoneNumber.toString(),
+//                    object : OnResponseListener {
+//                        override fun onSuccess(code: Int, msg: String?, obj: Any?)
+//                        {
+//                            alertDialog.showSuccessDialog(msg, resources.getString(R.string.app__ok))
+//                            {
+//                                startActivity(Intent(this@SignupActivity,
+//                                    MainActivity::class.java))
+//
+//                                finish()
+//                            }
+//                            alertDialog.show()
+//                        }
+//
+//                        override fun onFailed(code: Int, msg: String?)
+//                        {
+//                            alertDialog.showWarningDialog(msg,
+//                                resources.getString(R.string.app__ok))
+//                            alertDialog.show()
+//                        }
+//                    })
+
+
                 // create account with api
-                userViewModel.registerNewAccount(RegisterModel(fullName,userViewModel.phoneNumber!!,password,email),
+                userViewModel.registerNewAccount(
+                    RegisterModel(
+                        fullName,
+                        userViewModel.phoneNumber!!,
+                        password,email),
                     object : OnResponseListener {
                         override fun onSuccess(code: Int, msg: String?, obj: Any?)
                         {
@@ -176,7 +204,6 @@ class SignupActivity : AppCompatActivity()
     }
 
     private fun isValidEmailId(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
-
 
     override fun onDestroy() {
         super.onDestroy()

@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.UserRepo
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
-import com.esh7enly.esh7enlyuser.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

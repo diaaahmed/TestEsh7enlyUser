@@ -19,7 +19,6 @@ import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireRespon
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.esh7enly.domain.entity.userservices.Category
-import com.esh7enly.domain.entity.userservices.Provider
 import com.esh7enly.domain.entity.userservices.UserServicesResponse
 import com.google.gson.JsonElement
 import kotlinx.coroutines.Dispatchers
@@ -118,6 +117,5 @@ class ServicesRepoImpl(
 
     suspend fun sendNotification(notificationModel: NotificationModel): Response<ResponseBody> =
         notificationService.sendNotification(notificationModel)
-
 
 }

@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.entity.*
+import com.esh7enly.domain.entity.parametersNew.ParametersData
 import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.DynamicOnClickListener
@@ -99,7 +100,7 @@ class InquireActivity : AppCompatActivity() {
     private val pDialog by lazy {
         ProgressDialog.createProgressDialog(this)
     }
-    private var parametersList: List<Parameter> = emptyList()
+    private var parametersList: List<ParametersData> = emptyList()
 
     var dynamicLayout: DynamicLayout? = null
         @Inject set
@@ -135,7 +136,6 @@ class InquireActivity : AppCompatActivity() {
 
         initToolBar()
 
-
         // getIntentData()
 
         ui.btnSubmit.text = resources.getString(R.string.pay)
@@ -143,13 +143,15 @@ class InquireActivity : AppCompatActivity() {
         ui.btnSubmit.setOnClickListener { submitBtn() }
 
         ui.tvAmount.text = Utils.format(DATA_ENTITY?.amount) + resources.getString(R.string.egp)
+
         ui.tvPaidAmou.text =
             Utils.format(DATA_ENTITY?.paidAmount) + resources.getString(R.string.egp)
         ui.tvTotalAmou.text =
             Utils.format(DATA_ENTITY?.totalAmount) + resources.getString(R.string.egp)
         ui.tvFee.text = Utils.format(DATA_ENTITY?.serviceCharge) + resources.getString(R.string.egp)
         ui.tvProvider.text = PROVIDER_NAME
-        ui.tvService.text = "$NAME_EN $NAME_AR"
+      //  ui.tvService.text = "$NAME_EN $NAME_AR"
+        ui.tvService.text = " $NAME_AR"
 
         if (DATA_ENTITY?.description != null && DATA_ENTITY?.description != "") {
             ui.lytInformation.visibility = View.VISIBLE
@@ -193,11 +195,52 @@ class InquireActivity : AppCompatActivity() {
             ui.tvParams.text = stringBuilder.toString()
         }
 
-        serviceViewModel.getParametersFromDB(SERVICE_ID.toString())
-            .observe(this)
-            { parameters ->
-                replaceData(parameters)
-            }
+        getParametersRemotely()
+    }
+
+    private fun getParametersDB()
+    {
+        //        serviceViewModel.getParametersFromDB(SERVICE_ID.toString())
+//            .observe(this)
+//            { parameters ->
+//                replaceData(parameters)
+//            }
+    }
+
+    private fun getParametersRemotely()
+    {
+        pDialog.show()
+
+        serviceViewModel.getParametersNew(sharedHelper?.getUserToken().toString(),
+            SERVICE_ID.toString(),
+            object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?)
+                {
+                    pDialog.cancel()
+                    val parameters = obj as List<ParametersData>
+
+                    replaceData(parameters)
+                }
+
+                override fun onFailed(code: Int, msg: String?)
+                {
+                    pDialog.cancel()
+
+                    Log.d("TAG", "diaa onFailed: $msg")
+
+                    dialog.showErrorDialogWithAction(
+                        msg, resources.getString(R.string.app__ok)
+                    ) {
+                        dialog.cancel()
+
+                        if (code.toString() == Constants.CODE_UNAUTH ||
+                            code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+                        ) {
+                            NavigateToActivity.navigateToMainActivity(this@InquireActivity)
+                        }
+                    }.show()
+                }
+            })
     }
 
     private fun initToolBar()
@@ -208,7 +251,7 @@ class InquireActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun replaceData(parameters: List<Parameter>) {
+    private fun replaceData(parameters: List<ParametersData>) {
         val cardParameters = arrayListOf<String>()
 
         cardParameters.add("ClientIdentifier")
@@ -677,7 +720,8 @@ class InquireActivity : AppCompatActivity() {
         }
     }
 
-    private fun pay(paymentPojoModel: PaymentPojoModel) {
+    private fun pay(paymentPojoModel: PaymentPojoModel)
+    {
         pDialog.show()
 
         lifecycleScope.launch(Dispatchers.IO)
@@ -757,8 +801,7 @@ class InquireActivity : AppCompatActivity() {
     }
 
 
-    private fun scheduleInquire(result: PaymentEntity.DataEntity)
-    {
+    private fun scheduleInquire(result: PaymentEntity.DataEntity) {
         serviceViewModel.scheduleInquire(sharedHelper?.getUserToken().toString(),
             result.service.id.toString(),result.clientNumber,
             object : OnResponseListener {
@@ -811,8 +854,7 @@ class InquireActivity : AppCompatActivity() {
             } )
     }
 
-    private fun scheduleInvoice(result: PaymentEntity.DataEntity, day: String)
-    {
+    private fun scheduleInvoice(result: PaymentEntity.DataEntity, day: String) {
         serviceViewModel.scheduleInvoice(sharedHelper?.getUserToken().toString(),
             result.service.id.toString(),
             day,result.clientNumber,
@@ -863,6 +905,7 @@ class InquireActivity : AppCompatActivity() {
         val data = result.description.split("\n")
 
         val cardData = data[0].split(":")[1].trim()
+
         val cardMetaData = data[1].split(":")[1].trim()
 
         Log.d(TAG, "diaa write on card description: ${result.description}")
@@ -969,8 +1012,7 @@ class InquireActivity : AppCompatActivity() {
             })
     }
 
-    private fun message(message: String)
-    {
+    private fun message(message: String) {
         runOnUiThread {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show()
         }
@@ -1201,6 +1243,7 @@ class InquireActivity : AppCompatActivity() {
                         object : OnResponseListener {
                             override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                                 val data = obj as TotalAmountEntity.DataEntity
+
                                 val amount = java.lang.String.format(
                                     " • %s %s %s",
                                     getString(R.string.dialog_amount),
@@ -1273,4 +1316,5 @@ class InquireActivity : AppCompatActivity() {
             })
         dialog.show()
     }
+
 }

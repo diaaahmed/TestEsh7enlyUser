@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.TransactionDetailsEntity
@@ -72,7 +73,14 @@ class TransactionDetails : BaseActivity() {
     private fun shareImage() {
         // Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
         val screenShootPath = Screenshot.takeScreenshot(this, view)
-        Screenshot.share(this, screenShootPath)
+        try{
+            Screenshot.share(this, screenShootPath)
+
+        }
+        catch (e: Exception)
+        {
+            Toast.makeText(this, "Error with share ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
 

@@ -89,7 +89,6 @@ public class Screenshot {
         activity.startActivity(intent);
        // startActivity(Intent.createChooser(share,"Share content"));
 
-
     }
 
 }

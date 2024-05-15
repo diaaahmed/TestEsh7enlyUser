@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.widget.NestedScrollView
 import com.esh7enly.data.sharedhelper.SharedHelper
+import com.esh7enly.domain.NetworkResult
 
 import com.esh7enly.domain.entity.TransactionEntity
 import com.esh7enly.esh7enlyuser.R
@@ -20,9 +21,7 @@ import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.util.NetworkResult
 import com.esh7enly.esh7enlyuser.util.ProgressDialog
-import com.esh7enly.esh7enlyuser.util.Utils
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -67,8 +66,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
         getTransactions()
     }
 
-    private fun getTransactions()
-    {
+    private fun getTransactions() {
         transactionsViewModel.getTransactions(sharedHelper?.getUserToken().toString(),page)
 
         transactionsViewModel.responseTransactions.observe(this)
@@ -92,6 +90,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
             }
         }
     }
+
     private val alertDialog by lazy {
         AppDialogMsg(this, false)
     }
@@ -125,12 +124,12 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
 
 
 
-    override fun click(transactionEntity: TransactionEntity) {
+    override fun click(transactionEntity: TransactionEntity)
+    {
         val transactionDetails = Intent(this,TransactionDetails::class.java)
         transactionDetails.putExtra(Constants.TRASACTION_ID,transactionEntity.id.toString())
         transactionDetails.putExtra(Constants.SERVICE_TYPE,transactionEntity.type)
         Log.d(TAG, "diaa transaction type: ${transactionEntity.type}")
         startActivity(transactionDetails)
     }
-
 }

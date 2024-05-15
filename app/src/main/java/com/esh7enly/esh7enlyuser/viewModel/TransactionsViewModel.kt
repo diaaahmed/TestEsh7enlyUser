@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.TransactionsRepo
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.TransactionApiResponse
 import com.esh7enly.domain.entity.TransactionDetailsEntity
-import com.esh7enly.esh7enlyuser.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,9 @@ class TransactionsViewModel @Inject constructor(
     private val transactionsRepo: TransactionsRepo
 ): ViewModel()
 {
-    private var _responseTransactions: MutableLiveData<NetworkResult<TransactionApiResponse>> = MutableLiveData()
+    private var _responseTransactions: MutableLiveData<NetworkResult<TransactionApiResponse>>
+    = MutableLiveData()
+
     var responseTransactions: LiveData<NetworkResult<TransactionApiResponse>> = _responseTransactions
 
     private val _transactions: MutableStateFlow<TransactionApiResponse.TransactionDataEntity?> = MutableStateFlow(null)

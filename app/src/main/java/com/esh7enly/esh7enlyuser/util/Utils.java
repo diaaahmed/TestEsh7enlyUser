@@ -37,6 +37,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -63,12 +65,6 @@ public class Utils {
 
     }
 
-    /**
-     * checkVersion of App
-     *
-     * @param last_version
-     * @return
-     */
     public static Boolean checkVersion(String last_version)
     {
         String versionName = BuildConfig.VERSION_NAME;

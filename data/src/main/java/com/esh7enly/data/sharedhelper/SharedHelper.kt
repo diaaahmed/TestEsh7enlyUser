@@ -69,7 +69,7 @@ class SharedHelper (var context:Context)
         sharedPref.edit().putString(Constants.USER_NAME,userPhone).apply()
 
     }
-    fun getUserToken():String? = "Bearer "+decrypt(sharedPref.getString(Constants.USER_TOKEN,""))
+    fun getUserToken():String = "Bearer "+decrypt(sharedPref.getString(Constants.USER_TOKEN,""))
 
     fun isRememberPassword():Boolean = sharedPref.getBoolean(Constants.IS_REMEMBER_ME,false)
 
@@ -79,7 +79,7 @@ class SharedHelper (var context:Context)
     }
 
 
-    fun getUserPassword(): String? = decrypt(sharedPref.getString(Constants.USER_PASSWORD,""))
+    fun getUserPassword(): String = decrypt(sharedPref.getString(Constants.USER_PASSWORD,""))
 
     fun setStoreName(storeName: String)
     {
@@ -95,7 +95,7 @@ class SharedHelper (var context:Context)
         return Base64.encodeToString(input.toByteArray(), 0)
     }
 
-    private fun decrypt(input: String?): String? {
+    private fun decrypt(input: String?): String {
         return String(Base64.decode(input, 0))
     }
 }

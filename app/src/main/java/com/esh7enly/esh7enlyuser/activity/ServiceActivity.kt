@@ -37,7 +37,7 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
 
     private var providerID = 0
-    lateinit var providerId: String
+  //  lateinit var providerId: String
     lateinit var providerName: String
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -53,7 +53,7 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
         providerID = intent.getIntExtra(Constants.PROVIDER_ID, 0)
         providerName = intent.getStringExtra(Constants.PROVIDER_NAME).toString()
-        providerId = providerID.toString()
+     //   providerId = providerID.toString()
 
         getServices()
     }
@@ -68,8 +68,8 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
         pDialog.show()
 
-        serviceViewModel.getServices(sharedHelper?.getUserToken().toString(),
-            providerId, object : OnResponseListener {
+        serviceViewModel.getServicesNew(sharedHelper?.getUserToken().toString(),
+            providerID.toString(), object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
                 {
                     pDialog.cancel()
@@ -84,7 +84,6 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
                 override fun onFailed(code: Int, msg: String?)
                 {
                     pDialog.cancel()
-
 
                     dialog.showErrorDialogWithAction(
                         msg, resources.getString(R.string.app__ok)
@@ -101,16 +100,18 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
             })
 
 
-//        serviceViewModel.getServicesFromDB(providerId).observe(this)
+    }
+
+    private fun getServicesDB() {
+        //        serviceViewModel.getServicesFromDB(providerId).observe(this)
 //        { services ->
 //            adapter.submitList(services)
 //            ui.serviceRv.adapter = adapter
 //        }
-
     }
 
-
     override fun click(service: ServiceData) {
+
         serviceViewModel.serviceType = service.type
 
         Log.d(TAG, "diaa test type: ${service.type}")

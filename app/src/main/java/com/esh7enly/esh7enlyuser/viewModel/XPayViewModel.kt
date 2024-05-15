@@ -1,17 +1,21 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.XPayRepo
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
+import com.esh7enly.esh7enlyuser.BuildConfig
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.PayWays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.math.BigInteger
+import java.security.MessageDigest
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,13 +42,14 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
 
 
     suspend fun startSessionForPay(
+        finalAmount:String,
         payment_method_type:String,
         transaction_type:String,
-        token: String,
-        amount: String,
+        token: String, amount: String,
         ip: String,
         listner: OnResponseListener
-    ) {
+    )
+    {
         viewModelScope.launch {
             val startSessionResponse = xPayRepo.startSessionForPay(
                 payment_method_type,transaction_type,token, amount, ip)
@@ -61,6 +66,17 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
                 } else {
 
                     Constants.START_SESSION_ID = startSessionResponse.body()!!.data.id
+                    val sEncrypted = BuildConfig.SECRET_KEY
+                    Log.d("TAG", "diaa has_id first: ${startSessionResponse.body()!!.data.hash_id}")
+                    val normalId = startSessionResponse.body()!!.data.id
+                    val word = BuildConfig.SECRET_WORD
+
+                    val testNewAgain = normalId.toString()+word+finalAmount+sEncrypted+startSessionResponse.body()!!.data.hash_id
+                    Log.d("TAG", "diaa has_id final form: $testNewAgain")
+                    val dsdas = newmd5(testNewAgain)
+                    Constants.HASH_GENERATED = dsdas
+                    Constants.HASH_ID = startSessionResponse.body()!!.data.hash_id
+                    Log.d("TAG", "diaa has_id after converted : $dsdas")
 
                     listner.onSuccess(
                         startSessionResponse.body()!!.code,
@@ -77,6 +93,10 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
             }
         }
 
+    }
+    fun newmd5(input:String): String {
+        val md = MessageDigest.getInstance("MD5")
+        return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
 
     var amountNumber = MutableStateFlow("")
