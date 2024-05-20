@@ -63,7 +63,8 @@ class OTPActivity : AppCompatActivity()
 
         ui.btnVerifyOtp.setOnClickListener {
 
-            if (connectivity?.isConnected == true) {
+            if (connectivity?.isConnected == true)
+            {
                 val otp1 = ui.otp1.text.toString().trim()
                 val otp2 = ui.otp2.text.toString().trim()
                 val otp3 = ui.otp3.text.toString().trim()

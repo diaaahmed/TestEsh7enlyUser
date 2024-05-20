@@ -23,12 +23,9 @@ import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.PaymentEntity.DataEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel.Params
 import com.esh7enly.domain.entity.parametersNew.ParametersData
-import com.esh7enly.domain.entity.userservices.Image
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityParametersBinding
-import com.esh7enly.esh7enlyuser.imageslider.AdapterImageSlider
-import com.esh7enly.esh7enlyuser.imageslider.ItemImageSlider
 import com.esh7enly.esh7enlyuser.util.*
 import com.fawry.nfc.NFC.Main.NFCFawry
 import com.fawry.nfc.NFC.Shared.NFCConstants
@@ -50,14 +47,12 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private var nfcAdapter: NfcAdapter? = null
-    private var manager: NfcManager? = null
 
-    lateinit var itemImageSlider: ItemImageSlider
+    private var manager: NfcManager? = null
 
     private var internalId: String? = null
 
     private val PICK_CONTACT_REQUESTCODE = 100
-
 
     private var amount = ""
 
@@ -68,8 +63,6 @@ open class ParametersActivity : BaseActivity() {
     var dynamicLayout: DynamicLayout? = null
         @Inject set
 
-
-    private val image = arrayListOf<Image>()
     private var parametersList: List<ParametersData> = emptyList()
 
     private var paramsArrayListToSend = arrayListOf<Params>()
@@ -87,13 +80,9 @@ open class ParametersActivity : BaseActivity() {
 
         Language.setLanguageNew(this, Constants.LANG)
 
-
         manager = getSystemService(Context.NFC_SERVICE) as NfcManager
 
         nfcAdapter = manager!!.defaultAdapter
-
-//        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
-//        pDialog.setCancelable(false)
 
         ui.btnSubmit.setOnClickListener { pushSubmitBtn() }
 
@@ -119,21 +108,9 @@ open class ParametersActivity : BaseActivity() {
                 it, NetworkUtils.isConnectedWifi(this)
             )
 
-        } ?: run{
+        } ?: run {
             ui.img.setImageResource(R.drawable.logo)
-
         }
-
-
-//        if (serviceViewModel.image == null) {
-//            ui.img.setImageResource(R.drawable.logo)
-//        } else {
-//            Utils.displayImageOriginalFromCache(
-//                this, ui.img,
-//                serviceViewModel.image, NetworkUtils.isConnectedWifi(this)
-//            )
-//        }
-
 
         if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
             ui.btnSubmit.text = resources.getString(R.string.inquiry)
@@ -143,60 +120,7 @@ open class ParametersActivity : BaseActivity() {
 
         getParametersFromRemote()
 
-      //  getImagesFromDB()
-    }
-
-    private fun getImagesFromDB() {
-
-        serviceViewModel.getImagesFromDB(serviceViewModel.servicesId.toString())
-            .observe(this@ParametersActivity)
-            { images ->
-                if (images != null) {
-                    //    val newImages= images.first()
-
-                    image.addAll(images)
-
-                    if (images.isNotEmpty()) {
-                        ui.cardSlider.visibility = View.VISIBLE
-                        val adapterImageSlider = AdapterImageSlider(
-                            this@ParametersActivity,
-                            image
-                        )
-
-                        itemImageSlider = ItemImageSlider(
-                            this@ParametersActivity, ui.pager,
-                            ui.layoutDots, adapterImageSlider, image
-                        )
-
-                        itemImageSlider.initImageSlider()
-                    }
-                }
-
-            }
-    }
-
-    private fun getParametersFromDB()
-    {
-        //        serviceViewModel.getParametersFromDB(serviceViewModel.servicesId.toString())
-//            .observe(this)
-//            {
-//                    parameters->
-//                if(ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId) ||
-//                    ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId) ||
-//                    ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId))
-//                {
-//                    // Electricity or water card
-//                    ui.lytDynamic.visibility = View.GONE
-//                    ui.cardReading.visibility = View.VISIBLE
-//                }
-//                else
-//                {
-//                    ui.lytDynamic.visibility = View.VISIBLE
-//                    ui.cardReading.visibility = View.GONE
-//
-//                    replaceData(parameters)
-//                }
-//            }
+        //  getImagesFromDB()
     }
 
     private fun getParametersFromRemote() {
@@ -466,9 +390,7 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun pay(paymentPojoModel: PaymentPojoModel) {
-//        pDialog.show()
         pDialog.show()
-
 
         serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
             object : OnResponseListener {
@@ -511,9 +433,7 @@ open class ParametersActivity : BaseActivity() {
             result.service.id.toString(), result.clientNumber,
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-//                    pDialog.cancel()
                     pDialog.cancel()
-
 
                     val builder = AlertDialog.Builder(this@ParametersActivity)
                         .setMessage(resources.getString(R.string.add_to_reminder))
@@ -651,14 +571,11 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun inquire(paymentPojoModel: PaymentPojoModel) {
-//        pDialog.show()
         pDialog.show()
-
 
         serviceViewModel.inquire(sharedHelper?.getUserToken().toString(),
             paymentPojoModel, object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-//                    pDialog.cancel()
                     pDialog.cancel()
 
                     clearParamsData()
@@ -688,7 +605,6 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun showErrorDialog(msg: String?, code: Int?) {
-//        pDialog.cancel()
         pDialog.cancel()
 
         dialog.showErrorDialogWithAction(
@@ -703,7 +619,6 @@ open class ParametersActivity : BaseActivity() {
             }
         }.show()
     }
-
 
     var someActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()

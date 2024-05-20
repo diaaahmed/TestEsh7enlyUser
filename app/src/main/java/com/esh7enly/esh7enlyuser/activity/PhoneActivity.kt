@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class PhoneActivity : BaseActivity()
 {
-    private val ui by lazy{
+    private val ui by lazy {
         ActivityPhoneBinding.inflate(layoutInflater)
     }
 
@@ -38,82 +38,101 @@ class PhoneActivity : BaseActivity()
 
         Language.setLanguageNew(this, Constants.LANG)
 
-
         ui.btnSendOTP.setOnClickListener{
 
-            if(connectivity?.isConnected == true)
+            sendOtpClicked()
+        }
+    }
+
+    private fun sendOtpClicked()
+    {
+        if(connectivity?.isConnected == true)
+        {
+            pDialog.show()
+
+            val userPhoneNumber = ui.userPhoneNumber.text.toString().trim()
+
+            val otp = Intent(this, OTPActivity::class.java)
+
+            otp.putExtra(Constants.USER_ID,userPhoneNumber)
+
+            if(
+                userPhoneNumber.isEmpty() ||
+                userPhoneNumber.length < 11 ||
+                userPhoneNumber.length > 11)
             {
-                pDialog.show()
-
-                val userPhoneNumber = ui.userPhoneNumber.text.toString().trim()
-
-                val otp = Intent(this, OTPActivity::class.java)
-
-                otp.putExtra(Constants.USER_ID,userPhoneNumber)
-
-                if(userPhoneNumber.isEmpty() || userPhoneNumber.length < 11 || userPhoneNumber.length > 11)
-                {
-                    pDialog.cancel()
-                    alertDialog.showWarningDialog(resources.getString(R.string.error_message__blank_phone_number),
-                        resources.getString(R.string.app__ok))
-                    alertDialog.show()
-                }
-                else
-                {
-                    pDialog.cancel()
-
-                    val forgetPassword = intent.getStringExtra(Constants.FORGET_PASSWORD)
-
-                    if(forgetPassword != null)
-                    {
-                        userViewModel.forgetPasswordSendOTP(userPhoneNumber,
-                            object : OnResponseListener {
-                                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                                {
-                                    val response = obj as Data
-                                    otp.putExtra("otp",response.otp)
-                                    otp.putExtra("phone",userPhoneNumber)
-                                    startActivity(otp)
-
-                                }
-
-                                override fun onFailed(code: Int, msg: String?)
-                                {
-                                    alertDialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok))
-                                    {
-                                        alertDialog.cancel()
-                                    }.show()
-                                }
-                            })
-                    }
-                    else
-                    {
-                        userViewModel.sendOtp(userPhoneNumber, object : OnResponseListener
-                        {
-                            override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                            {
-                                startActivity(otp)
-                            }
-
-                            override fun onFailed(code: Int, msg: String?)
-                            {
-                                alertDialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok))
-                                {
-                                    alertDialog.cancel()
-                                }.show()
-                            }
-                        })
-                    }
-                }
+                pDialog.cancel()
+                alertDialog.showWarningDialog(resources.getString(R.string.error_message__blank_phone_number),
+                    resources.getString(R.string.app__ok))
+                alertDialog.show()
             }
             else
             {
-                alertDialog.showErrorDialogWithAction(resources.getString(R.string.no_internet_error),
-                    resources.getString(R.string.app__ok))
+                pDialog.cancel()
+
+                val forgetPassword = intent.getStringExtra(Constants.FORGET_PASSWORD)
+
+                if(forgetPassword != null)
+                {
+                    forgetPasswordSendOtp(userPhoneNumber,otp)
+                }
+                else
+                {
+                    createAccountSendOtp(userPhoneNumber,otp)
+                }
+            }
+        }
+        else
+        {
+            showErrorDialogWithAction()
+        }
+    }
+
+    private fun showErrorDialogWithAction() {
+        alertDialog.showErrorDialogWithAction(resources.getString(R.string.no_internet_error),
+            resources.getString(R.string.app__ok))
+        {
+            alertDialog.cancel()
+        }.show()
+    }
+
+    private fun forgetPasswordSendOtp(userPhoneNumber:String,otp:Intent) {
+        userViewModel.forgetPasswordSendOTP(userPhoneNumber,
+            object : OnResponseListener {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?)
+                {
+                    val response = obj as Data
+                    otp.putExtra("otp",response.otp)
+                    otp.putExtra("phone",userPhoneNumber)
+                    startActivity(otp)
+
+                }
+
+                override fun onFailed(code: Int, msg: String?)
+                {
+                    alertDialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok))
+                    {
+                        alertDialog.cancel()
+                    }.show()
+                }
+            })
+    }
+
+    private fun createAccountSendOtp(userPhoneNumber:String,otp:Intent) {
+        userViewModel.sendOtp(userPhoneNumber, object : OnResponseListener
+        {
+            override fun onSuccess(code: Int, msg: String?, obj: Any?)
+            {
+                startActivity(otp)
+            }
+
+            override fun onFailed(code: Int, msg: String?)
+            {
+                alertDialog.showErrorDialogWithAction(msg,resources.getString(R.string.app__ok))
                 {
                     alertDialog.cancel()
                 }.show()
             }
-        }
+        })
     }
 }

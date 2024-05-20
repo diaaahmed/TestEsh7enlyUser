@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.ApiResponse
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 
@@ -14,6 +15,8 @@ import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,9 +40,12 @@ class UserViewModel @Inject constructor(
         sharedHelper.setUserPassword(userPassword.value)
     }
 
+     fun removeUserPassword() {
+        sharedHelper.setUserPassword("")
+    }
+
     fun userLogin(device_token: String):
-            LiveData<ApiResponse<LoginResponse>>
-    {
+            LiveData<ApiResponse<LoginResponse>> {
         return userRepo.login(
             userPhoneNumber.value, userPassword.value, device_token
         )
@@ -162,29 +168,77 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    val userOldPassword = MutableStateFlow("")
+    val userNewPassword = MutableStateFlow("")
+    val userNewPasswordConfirmation = MutableStateFlow("")
+
+    private val isDataValid = combine(
+        userOldPassword,
+        userNewPassword,
+        userNewPasswordConfirmation) {
+            userOldPassword,userNewPassword,userNewPasswordConfirmation->
+        userOldPassword.isBlank() ||
+                userNewPassword.isBlank()
+                || userNewPasswordConfirmation.isBlank()
+    }
+
+    private val isNewAndConfirmPasswordEqual = combine(
+        userNewPassword,
+        userNewPasswordConfirmation) {
+            userNewPassword,userNewPasswordConfirmation->
+        userNewPassword != userNewPasswordConfirmation
+    }
+
+    var updatePasswordState:MutableStateFlow<NetworkResult<String>?> =
+        MutableStateFlow(null)
+
     fun updatePassword(
         token: String,
-        currentPassword: String,
-        newPassword: String,
         listener: OnResponseListener
     ) {
         viewModelScope.launch {
-            val updateResponse = userRepo.updatePassword(token, currentPassword, newPassword)
 
-            if (updateResponse.isSuccessful) {
-                if (!updateResponse.body()!!.status) {
-                    listener.onFailed(updateResponse.body()!!.code, updateResponse.body()!!.message)
+            if(isDataValid.first())
+            {
+                listener.onFailed(2,"Data empty")
+            }
+            else if(isNewAndConfirmPasswordEqual.first())
+            {
+                listener.onFailed(2,"Passwords not match")
+            } else if(!isValidPassword(userNewPassword.value))
+            {
+                listener.onFailed(2,"Password not valid")
+            }
+            else {
+                val updateResponse = userRepo.updatePassword(
+                    token, userOldPassword.value, userNewPassword.value)
+
+                if (updateResponse.isSuccessful) {
+                    if (!updateResponse.body()!!.status) {
+                        listener.onFailed(updateResponse.body()!!.code,
+                            updateResponse.body()!!.message)
+                    } else {
+                        listener.onSuccess(
+                            updateResponse.body()!!.code,
+                            updateResponse.body()!!.message,
+                            updateResponse.body()!!.data
+                        )
+                    }
                 } else {
-                    listener.onSuccess(
-                        updateResponse.body()!!.code,
-                        updateResponse.body()!!.message,
-                        updateResponse.body()!!.data
-                    )
+                    listener.onFailed(updateResponse.code(), updateResponse.message())
                 }
-            } else {
-                listener.onFailed(updateResponse.code(), updateResponse.message())
             }
         }
+    }
+
+    private fun isValidPassword(password: String): Boolean {
+        if (password.length < 8) return false
+        if (password.filter { it.isDigit() }.firstOrNull() == null) return false
+        if (password.filter { it.isLetter() }.filter { it.isUpperCase() }.firstOrNull() == null) return false
+        if (password.filter { it.isLetter() }.filter { it.isLowerCase() }.firstOrNull() == null) return false
+        if (password.filter { !it.isLetterOrDigit() }.firstOrNull() == null) return false
+
+        return true
     }
 
 

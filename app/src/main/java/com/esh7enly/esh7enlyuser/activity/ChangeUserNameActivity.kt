@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.lifecycleScope
 import com.esh7enly.data.sharedhelper.SharedHelper
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.esh7enlyuser.R
-import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityChangeUserNameBinding
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
@@ -17,6 +18,7 @@ import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.ProgressDialog
 import com.esh7enly.esh7enlyuser.viewModel.UpdateProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -58,55 +60,26 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle {
 
         initToolBar()
 
-        ui.btnUpdateData.setOnClickListener { changeData() }
+       lifecycleScope.launch {
+           updateProfileViewModel.updateProfileState.collect{
+               result ->
+               when(result)
+               {
+                   is NetworkResult.Error -> {
+                       showErrorDialog(result.message,result.code)
+                   }
+                   is NetworkResult.Loading -> {
+                       pDialog.show()
+                   }
+                   is NetworkResult.Success -> {
+                       showSuccessDialog(result.data)
+                   }
+                   null -> {
 
-    }
-
-    private fun changeData() {
-        sendUpdateData()
-    }
-
-    private fun sendUpdateData() {
-        pDialog.show()
-
-        updateProfileViewModel.updateProfile(sharedHelper?.getUserToken().toString(),
-            object : OnResponseListener {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                    showSuccessDialog(msg)
-                }
-
-                override fun onFailed(code: Int, msg: String?) {
-                    when (code) {
-                        1 -> {
-                            showDialogInvalidEmail()
-                        }
-
-                        2 -> {
-                            pDialog.dismiss()
-                        }
-
-                        else -> {
-                            showErrorDialog(msg, code)
-
-                        }
-                    }
-                }
-            })
-    }
-
-    private fun showDialogInvalidEmail() {
-
-        pDialog.cancel()
-
-        dialog.showWarningDialogWithAction(
-            resources.getString(R.string.email_not_valid),
-            resources.getString(R.string.app__ok)
-        )
-        {
-            dialog.cancel()
-        }.show()
-
-
+                   }
+               }
+           }
+       }
     }
 
     private fun showSuccessDialog(msg: String?) {

@@ -35,9 +35,6 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
 
         setContentView(ui.root)
 
-//        pDialog.setMessage(Utils.getSpannableString(this,resources.getString(R.string.message__please_wait)))
-//        pDialog.setCancelable(false)
-
         initToolBar()
 
         ui.changeName.setOnClickListener { NavigateToActivity.navigateToChangeUserNameActivity(this) }
@@ -62,7 +59,6 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
     }
 
     private fun getScheduleList() {
-//        pDialog.show()
         pDialog.show()
 
         lifecycleScope.launch {
@@ -70,7 +66,6 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?)
                     {
-//                        pDialog.cancel()
                         pDialog.cancel()
 
                         ui.scheduleRv.visibility = View.VISIBLE

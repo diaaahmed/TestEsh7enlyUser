@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -32,17 +33,12 @@ class PresentsFragment : BaseFragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)
     {
         super.onViewCreated(view, savedInstanceState)
 
         ui.presentsToolbar.title = resources.getString(R.string.presents)
         ui.btnReplacePoints.text = resources.getString(R.string.replace_points)
-
-
-//        pDialog.setMessage(Utils.getSpannableString(requireActivity(),resources.getString(R.string.message__please_wait)))
-//        pDialog.setCancelable(false)
 
         if(connectivity?.isConnected == true)
         {
@@ -56,11 +52,7 @@ class PresentsFragment : BaseFragment() {
                 dialog.cancel()
             }.show()
         }
-
-        serviceViewModel.points.observe(requireActivity())
-        {
-            ui.userPoints.text = "${resources.getString(R.string.user_points)} $it ${resources.getString(R.string.points)}"
-        }
+        listenPoints()
 
         ui.btnReplacePoints.setOnClickListener {
             replaceUserPoints()
@@ -69,10 +61,37 @@ class PresentsFragment : BaseFragment() {
     }
 
     @SuppressLint("SetTextI18n")
+    private fun listenPoints() {
+        lifecycleScope.launch {
+            serviceViewModel.userPointsState.collect{result->
+                when(result)
+                {
+                    is NetworkResult.Error -> {
+                        ui.userPoints.text = "Error ${result.message}"
+
+                    }
+                    is NetworkResult.Loading -> {
+                        ui.userPoints.text = "${resources.getString(R.string.user_points)} 0.00 ${resources.getString(R.string.points)}"
+
+                    }
+                    is NetworkResult.Success -> {
+                        ui.userPoints.text = "${resources.getString(R.string.user_points)} ${result.data} ${resources.getString(R.string.points)}"
+
+                    }
+                    null -> {
+                        ui.userPoints.text = "${resources.getString(R.string.user_points)} 0.0 ${resources.getString(R.string.points)}"
+
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun getData()
     {
-        sharedHelper!!.getUserToken()?.let {
-            serviceViewModel.getUserPoints(it)
+        sharedHelper!!.getUserToken().let {
+            serviceViewModel.getUserPointsFlow(it)
         }
     }
 

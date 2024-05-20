@@ -127,6 +127,7 @@
             android:id="@+id/btn_update_data"
             android:padding="@dimen/_10sdp"
             tools:text="@string/update_data"
+            android:onClick="@{() -> updateProfileViewModel.updateProfile()}"
             android:textStyle="bold"
             app:cornerRadius="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_40sdp"

@@ -4,6 +4,7 @@ import com.esh7enly.data.remote.ApiService
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
 import com.esh7enly.domain.entity.parametersNew.ParametersResponse
+import com.esh7enly.domain.entity.pointsresponse.PointsResponse
 import com.esh7enly.domain.entity.providersNew.ProviderResponse
 import com.esh7enly.domain.entity.searchresponse.SearchResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
@@ -15,13 +16,13 @@ import java.lang.Exception
 class ServiceRepoImplNewTest(
     private val apiService: ApiService
 
-):ServicesRepo {
+) : ServicesRepo {
 
     override suspend fun getProviders(token: String, categoryId: String): ProviderResponse? {
 
-        val providers = apiService.getProviders(token,categoryId)
+        val providers = apiService.getProviders(token, categoryId)
 
-        return if(providers.isSuccessful) {
+        return if (providers.isSuccessful) {
             providers.body()
         } else {
             ProviderResponse(code = providers.code(), message = providers.message())
@@ -32,37 +33,33 @@ class ServiceRepoImplNewTest(
     override suspend fun getCategories(token: String): CategoriesResponse? {
         val categories = apiService.getCategories(token)
 
-        return if(categories.isSuccessful) {
+        return if (categories.isSuccessful) {
             categories.body()
         } else {
             CategoriesResponse(code = categories.code(), message = categories.message())
         }
     }
 
-    override suspend fun getCategoriesFlow(token: String): Flow<NetworkResult<CategoriesResponse>>
-    = flow{
-        try{
-            emit(NetworkResult.Loading())
+    override suspend fun getCategoriesFlow(token: String): Flow<NetworkResult<CategoriesResponse>> =
+        flow {
+            try {
+                emit(NetworkResult.Loading())
 
-            val categories = apiService.getCategories(token)
-            if(categories.isSuccessful)
-            {
-                emit(NetworkResult.Success(categories.body()!!))
-            }
-            else{
-                emit(NetworkResult.Error(categories.message()))
+                val categories = apiService.getCategories(token)
+                if (categories.isSuccessful) {
+                    emit(NetworkResult.Success(categories.body()!!))
+                } else {
+                    emit(NetworkResult.Error(categories.message()))
+                }
+            } catch (e: Exception) {
+                emit(NetworkResult.Error(e.message))
             }
         }
-        catch (e: Exception)
-        {
-            emit(NetworkResult.Error(e.message))
-        }
-    }
 
     override suspend fun getServices(token: String, providerId: String): ServiceResponse? {
-        val services = apiService.getServices(token,providerId)
+        val services = apiService.getServices(token, providerId)
 
-        return if(services.isSuccessful) {
+        return if (services.isSuccessful) {
             services.body()
         } else {
             ServiceResponse(code = services.code(), message = services.message())
@@ -70,25 +67,43 @@ class ServiceRepoImplNewTest(
     }
 
     override suspend fun getParameters(token: String, serviceID: String): ParametersResponse? {
-        val parameters = apiService.getParameters(token,serviceID)
+        val parameters = apiService.getParameters(token, serviceID)
 
-        return if(parameters.isSuccessful) {
+        return if (parameters.isSuccessful) {
             parameters.body()
         } else {
             ParametersResponse(code = parameters.code(), message = parameters.message())
         }
     }
 
-    override suspend fun serviceSearch(token: String, serviceName: String,page:Int): SearchResponse? {
-        val serviceSearch = apiService.serviceSearch(token,serviceName,page)
+    override suspend fun serviceSearch(
+        token: String,
+        serviceName: String,
+        page: Int
+    ): SearchResponse? {
+        val serviceSearch = apiService.serviceSearch(token, serviceName, page)
 
-        return if(serviceSearch.isSuccessful)
-        {
+        return if (serviceSearch.isSuccessful) {
             serviceSearch.body()
-        }
-        else
-        {
+        } else {
             SearchResponse(code = serviceSearch.code(), message = serviceSearch.message())
         }
     }
+
+    override suspend fun getUserPointsFlow(token: String): Flow<NetworkResult<PointsResponse>> = flow{
+
+        try {
+            emit(NetworkResult.Loading())
+
+            val userPoints = apiService.getUserPoints(token)
+            if (userPoints.isSuccessful) {
+                emit(NetworkResult.Success(userPoints.body()!!))
+            } else {
+                emit(NetworkResult.Error(userPoints.message()))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message))
+        }
+    }
+
 }

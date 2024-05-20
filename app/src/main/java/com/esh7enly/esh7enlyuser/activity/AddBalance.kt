@@ -43,7 +43,6 @@ import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionType
 import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.security.MessageDigest
 import kotlin.random.Random
 
 private const val TAG = "AddBalance"
@@ -78,7 +77,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         ui.digitalWalletWay.text = resources.getString(R.string.vodafone_cash)
         ui.btnPay.text = resources.getString(R.string.pay)
 
-
         initToolBar()
 
         ui.xPayViewModel = xPayViewModel
@@ -102,59 +100,70 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         }
 
         ui.bankWay.setOnClickListener {
-            xPayViewModel.setShowNumber(false)
-            xPayViewModel.setShowNumberNew(PayWays.BANk.toString())
-            xPayViewModel.buttonClicked.value = PayWays.BANk.toString()
-            ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
-
+            bankWayClicked()
         }
 
         ui.digitalWalletWay.setOnClickListener {
-            xPayViewModel.setShowNumberNew(PayWays.WALLET.toString())
-            xPayViewModel.setShowNumber(true)
-            xPayViewModel.buttonClicked.value = PayWays.CASH.toString()
-            ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
+           digitalWalletClicked()
         }
-
 
         ui.btnPay.setOnClickListener {
 
-            if (ui.amountValue.text.toString().isEmpty()) {
-                ui.amountValue.error = resources.getString(R.string.required)
-            } else {
+            payClicked()
+        }
 
-                when (finalPaymentWay) {
-                    PayWays.BANk.toString() -> {
+    }
 
-                        dialog.showWarningDialogWithAction(
-                            resources.getString(R.string.payment_warning),
-                            resources.getString(R.string.app__ok)
-                        )
-                        {
-                            dialog.cancel()
+    private fun digitalWalletClicked() {
+        xPayViewModel.setShowNumberNew(PayWays.WALLET.toString())
+        xPayViewModel.setShowNumber(true)
+        xPayViewModel.buttonClicked.value = PayWays.CASH.toString()
+        ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
+    }
 
-                            pDialog.show()
+    private fun bankWayClicked() {
+        xPayViewModel.setShowNumber(false)
+        xPayViewModel.setShowNumberNew(PayWays.BANk.toString())
+        xPayViewModel.buttonClicked.value = PayWays.BANk.toString()
+        ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
+    }
 
-                            getTotalAmount(GatewayTransactionType.visa.toString())
+    private fun payClicked() {
+        if (ui.amountValue.text.toString().isEmpty()) {
+            ui.amountValue.error = resources.getString(R.string.required)
+        } else {
 
-                        }.show()
+            when (finalPaymentWay) {
+                PayWays.BANk.toString() -> {
 
-                    }
+                    dialog.showWarningDialogWithAction(
+                        resources.getString(R.string.payment_warning),
+                        resources.getString(R.string.app__ok)
+                    )
+                    {
+                        dialog.cancel()
 
-                    PayWays.CASH.toString() -> {
                         pDialog.show()
 
-                        getTotalWithCash()
+                        getTotalAmount(GatewayTransactionType.visa.toString())
 
-                    }
+                    }.show()
 
-                    else -> {
-                        Log.d(TAG, "diaa pay no way")
-
-                    }
                 }
 
+                PayWays.CASH.toString() -> {
+                    pDialog.show()
+
+                    getTotalWithCash()
+
+                }
+
+                else -> {
+                    Log.d(TAG, "diaa pay no way")
+
+                }
             }
+
         }
     }
 
@@ -254,14 +263,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
         }
     }
-
-
-//    fun String.md5(): String {
-//        val md = MessageDigest.getInstance("MD5")
-//        val digest = md.digest(this.toByteArray())
-//        return digest.toHe()
-//    }
-
 
     private fun generatePaytabsConfigurationDetails(
         orderNum: String,

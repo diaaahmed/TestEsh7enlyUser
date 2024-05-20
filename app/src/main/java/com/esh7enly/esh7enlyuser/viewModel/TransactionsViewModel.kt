@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "TransactionsViewModel"
 
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
@@ -40,14 +39,14 @@ class TransactionsViewModel @Inject constructor(
 
                 if (!response.status)
                 {
-                    _responseTransactions.value = NetworkResult.Error(response.message)
+                    _responseTransactions.value = NetworkResult.Error(response.message,response.code)
                 }
                 else {
                     _responseTransactions.value = NetworkResult.Success(response)
                     _transactions.value = response.data
                 }
             } catch (e: Exception) {
-                _responseTransactions.value = NetworkResult.Error(e.message)
+                _responseTransactions.value = NetworkResult.Error(e.message,0)
             }
         }
     }

@@ -25,7 +25,6 @@ import com.esh7enly.domain.entity.searchresponse.SearchResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.esh7enly.domain.entity.startsessionresponse.StartSessionResponse
 import com.esh7enly.domain.entity.totalamountxpayresponse.GetTotalAmountXPayResponse
-import com.esh7enly.domain.entity.userservices.UserServicesResponse
 import com.esh7enly.domain.entity.userwallet.UserWalletResponse
 import com.esh7enly.domain.entity.verifyotp.VerifyOtpResponse
 import com.google.gson.JsonElement
@@ -42,9 +41,6 @@ import retrofit2.http.Query
 
 interface ApiService
 {
-    @POST(Urls.SERVICES)
-    suspend fun getServicesFromRemoteUser(@Header("Authorization") token: String): UserServicesResponse
-
     @FormUrlEncoded
     @POST(Urls.LOGIN)
     fun login(

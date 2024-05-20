@@ -91,7 +91,6 @@ class InquireActivity : AppCompatActivity() {
 
     private val serviceViewModel: ServiceViewModel by viewModels()
 
-    private val RESULT_PICK_CONTACT = 1
     private val PICK_CONTACT_REQUESTCODE = 100
     private var internalId: String? = null
 
@@ -150,7 +149,6 @@ class InquireActivity : AppCompatActivity() {
             Utils.format(DATA_ENTITY?.totalAmount) + resources.getString(R.string.egp)
         ui.tvFee.text = Utils.format(DATA_ENTITY?.serviceCharge) + resources.getString(R.string.egp)
         ui.tvProvider.text = PROVIDER_NAME
-      //  ui.tvService.text = "$NAME_EN $NAME_AR"
         ui.tvService.text = " $NAME_AR"
 
         if (DATA_ENTITY?.description != null && DATA_ENTITY?.description != "") {
@@ -196,15 +194,6 @@ class InquireActivity : AppCompatActivity() {
         }
 
         getParametersRemotely()
-    }
-
-    private fun getParametersDB()
-    {
-        //        serviceViewModel.getParametersFromDB(SERVICE_ID.toString())
-//            .observe(this)
-//            { parameters ->
-//                replaceData(parameters)
-//            }
     }
 
     private fun getParametersRemotely()

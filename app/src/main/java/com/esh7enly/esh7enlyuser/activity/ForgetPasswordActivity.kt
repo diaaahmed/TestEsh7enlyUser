@@ -44,12 +44,14 @@ class ForgetPasswordActivity : AppCompatActivity(),IToolbarTitle
 
     private val userViewModel: UserViewModel by viewModels()
 
-
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
+
+        //ui.lifecycleOwner = this
+        //ui.userViewModel = userViewModel
 
         Language.setLanguageNew(this, Constants.LANG)
 
@@ -57,8 +59,6 @@ class ForgetPasswordActivity : AppCompatActivity(),IToolbarTitle
         ui.fillConfirmPassword.hint = resources.getString(R.string.confirm_new_password)
         ui.userPasswordInstructions.text = resources.getString(R.string.password_instructions)
         ui.btnChangePassword.text = resources.getString(R.string.change_password)
-
-
 
         initToolBar()
 

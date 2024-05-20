@@ -1,38 +1,24 @@
 package com.esh7enly.data.repo
 
-import com.esh7enly.data.local.DatabaseRoom
 import com.esh7enly.data.remote.ApiService
-import com.esh7enly.data.remote.NotificationService
-import com.esh7enly.domain.entity.NotificationModel
 import com.esh7enly.domain.entity.PaymentEntity
 import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.TotalAmountEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel
-import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
 import com.esh7enly.domain.entity.imageadsresponse.ImageAdResponse
-import com.esh7enly.domain.entity.parametersNew.ParametersResponse
-import com.esh7enly.domain.entity.pointsresponse.PointsResponse
-import com.esh7enly.domain.entity.providersNew.ProviderResponse
 import com.esh7enly.domain.entity.replacepointsresponse.ReplacePointsResponse
 import com.esh7enly.domain.entity.scedulelistresponse.ScheduleListResponse
 import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireResponse
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
-import com.esh7enly.domain.entity.servicesNew.ServiceResponse
-import com.esh7enly.domain.entity.userservices.Category
-import com.esh7enly.domain.entity.userservices.UserServicesResponse
 import com.google.gson.JsonElement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import okhttp3.ResponseBody
 import retrofit2.Response
 
 class ServicesRepoImpl(
-    private val apiService: ApiService,
-    private val notificationService: NotificationService,
-    private val databaseRoom: DatabaseRoom
-) {
+    private val apiService: ApiService) {
     suspend fun scheduleInvoice(
         token: String,
         serviceId: String,
@@ -40,18 +26,6 @@ class ServicesRepoImpl(
         invoice_number: String
     ): Response<ScheduleInvoiceResponse> =
         apiService.scheduleInvoice(token, serviceId, scheduleDay, invoice_number)
-
-    suspend fun getProviders(token: String,id: String): Response<ProviderResponse> =
-        apiService.getProviders(token, id)
-
-    suspend fun getServices(token: String,id: String): Response<ServiceResponse> =
-        apiService.getServices(token, id)
-
-    suspend fun getParameters(token: String,id: String): Response<ParametersResponse> =
-        apiService.getParameters(token, id)
-
-    suspend fun getCategories(token: String): Response<CategoriesResponse> =
-        apiService.getCategories(token)
 
     suspend fun getScheduleList(token: String): Response<ScheduleListResponse> =
         apiService.getScheduleList(token)
@@ -63,21 +37,6 @@ class ServicesRepoImpl(
     ): Response<ScheduleInquireResponse> =
         apiService.scheduleInquire(token, serviceId, invoice_number)
 
-    suspend fun getServicesFromRemoteUser(token: String): Flow<UserServicesResponse> = flow {
-        val response = apiService.getServicesFromRemoteUser(token)
-        emit(response)
-    }.flowOn(Dispatchers.IO)
-
-
-    fun getFilteredCategories(): List<Category> {
-
-        val allCategories = databaseRoom.categoryDao().getCategories()
-        val other = Category(
-            "", 0, "خدمات أخرى",
-            "Other services", 0
-        )
-        return listOf(allCategories[0], allCategories[1], other)
-    }
 
     suspend fun getTotalAmount(
         token: String,
@@ -87,8 +46,6 @@ class ServicesRepoImpl(
         emit(response)
     }.flowOn(Dispatchers.IO)
 
-    suspend fun getUserPoints(token: String): Response<PointsResponse> =
-        apiService.getUserPoints(token)
 
     suspend fun replaceUserPoints(token: String): Response<ReplacePointsResponse> =
         apiService.replaceUserPoints(token)
@@ -114,8 +71,5 @@ class ServicesRepoImpl(
         transaction_id: String,
         imei: String
     ): Response<JsonElement> = apiService.cancelTransaction(token, transaction_id, imei)
-
-    suspend fun sendNotification(notificationModel: NotificationModel): Response<ResponseBody> =
-        notificationService.sendNotification(notificationModel)
 
 }

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
@@ -20,7 +19,6 @@ import javax.inject.Inject
 open class BaseFragment: Fragment()
 {
     val serviceViewModel: ServiceViewModel by viewModels()
-    val serviceViewModels: ServiceViewModel by activityViewModels()
 
     val balanceViewModel: BalanceViewModel by viewModels()
 
@@ -34,10 +32,6 @@ open class BaseFragment: Fragment()
     var connectivity: Connectivity? = null
         @Inject set
 
-//     val pDialog by lazy{
-//        ProgressDialog(requireContext(), R.style.MyAlertDialogStyle)
-//    }
-
     val pDialog by lazy{
         ProgressDialog.createProgressDialog(requireContext())
     }
@@ -47,16 +41,5 @@ open class BaseFragment: Fragment()
         super.onViewCreated(view, savedInstanceState)
         Language.setLanguageNew(requireActivity(), Constants.LANG)
 
-    }
-    override fun onStart() {
-        super.onStart()
-
-//        pDialog.setMessage(
-//            Utils.getSpannableString(
-//                this@BaseFragment.requireContext(),
-//                resources.getString(R.string.message__please_wait)
-//            )
-//        )
-//        pDialog.setCancelable(false)
     }
 }

@@ -1,8 +1,7 @@
 package com.esh7enly.esh7enlyuser.di
 
-import com.esh7enly.data.local.DatabaseRoom
+import android.content.Context
 import com.esh7enly.data.remote.ApiService
-import com.esh7enly.data.remote.NotificationService
 import com.esh7enly.data.repo.ServiceRepoImplNewTest
 import com.esh7enly.data.repo.ServicesRepoImpl
 import com.esh7enly.data.repo.TransactionsRepo
@@ -12,6 +11,7 @@ import com.esh7enly.domain.repo.ServicesRepo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -20,10 +20,8 @@ import javax.inject.Singleton
 object RepoModule
 {
     @Provides
-    fun provideRepo(apiService: ApiService,
-                    notificationService: NotificationService,
-    databaseRoom: DatabaseRoom):ServicesRepoImpl{
-        return ServicesRepoImpl(apiService,notificationService,databaseRoom)
+    fun provideRepo(apiService: ApiService):ServicesRepoImpl{
+        return ServicesRepoImpl(apiService)
     }
 
     @Singleton
@@ -39,8 +37,8 @@ object RepoModule
     }
 
     @Provides
-    fun provideUserRepo(apiService: ApiService):UserRepo{
-        return UserRepo(apiService)
+    fun provideUserRepo(apiService: ApiService,@ApplicationContext context:Context):UserRepo{
+        return UserRepo(apiService,context)
     }
 
     @Provides

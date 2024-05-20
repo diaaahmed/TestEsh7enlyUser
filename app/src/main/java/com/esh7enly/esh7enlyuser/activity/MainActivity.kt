@@ -1,19 +1,14 @@
 package com.esh7enly.esh7enlyuser.activity
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
-import android.view.View
-import android.view.animation.AnticipateInterpolator
+
 
 import androidx.annotation.RequiresApi
-import androidx.core.animation.doOnEnd
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.esh7enlyuser.R
@@ -22,14 +17,13 @@ import com.esh7enly.esh7enlyuser.util.*
 import com.google.firebase.messaging.FirebaseMessaging
 
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : BaseActivity()
-{
+class MainActivity : BaseActivity() {
+
     private val ui by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -45,15 +39,11 @@ class MainActivity : BaseActivity()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
-        //initSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
         ui.lifecycleOwner = this
         ui.loginViewModel = userViewModel
-
-
-       // validateToken()
 
         val appLanguage = sharedHelper?.getAppLanguage()
 
@@ -72,8 +62,6 @@ class MainActivity : BaseActivity()
 
         setUpRemember()
 
-      //  ui.phoneNumber.setText(sharedHelper?.getUserName())
-
         ui.forgetPassword.setOnClickListener {
             val forgetPasswordIntent = Intent(this, PhoneActivity::class.java)
             forgetPasswordIntent.putExtra(Constants.FORGET_PASSWORD, Constants.FORGET_PASSWORD)
@@ -88,66 +76,16 @@ class MainActivity : BaseActivity()
             startActivity(Intent(this@MainActivity, PhoneActivity::class.java))
             finishAffinity()
         }
+
         ui.btnLogin.setOnClickListener {
             login()
         }
     }
 
-    private fun initSplashScreen()
-    {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-        {
-            installSplashScreen()
-
-            splashScreen.setOnExitAnimationListener {splashScreenView->
-                val slideUp = ObjectAnimator.ofFloat(
-                    splashScreenView, View.TRANSLATION_Y,0F,splashScreenView.height.toFloat()
-                )
-
-                slideUp.interpolator = AnticipateInterpolator()
-                slideUp.duration = 1000L
-
-                slideUp.doOnEnd { splashScreenView.remove() }
-                slideUp.start()
-            }
-        }
-        else
-        {
-            setTheme(R.style.Theme_Test)
-        }
-
-
-    }
-
-
-    private fun validateToken()
-    {
-        userViewModel.token = sharedHelper?.getUserToken().toString()
-
-        userViewModel.validateTokenResponseUser(userViewModel.token)
-
-        lifecycleScope.launch {
-            userViewModel.login.observe(this@MainActivity)
-            {
-                if (it == true)
-                {
-                    NavigateToActivity.navigateToHomeActivity(this@MainActivity)
-                    return@observe
-                }
-                else
-                {
-                    setContentView(ui.root)
-                    return@observe
-                }
-            }
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun login()
-    {
-        if (connectivity?.isConnected == true)
-        {
+    private fun login() {
+        if (connectivity?.isConnected == true) {
             val phoneNumber = ui.phoneNumber.text.toString().trim()
 
             val password = ui.password.text.toString().trim()
@@ -165,16 +103,13 @@ class MainActivity : BaseActivity()
                     resources.getString(R.string.app__ok)
                 )
                 alertDialog.show()
-            }
-            else if(phoneNumber.length > 11)
-            {
+            } else if (phoneNumber.length > 11) {
                 alertDialog.showWarningDialog(
                     resources.getString(R.string.error_message__wrong_phone),
                     resources.getString(R.string.app__ok)
                 )
                 alertDialog.show()
-            }
-            else {
+            } else {
                 pDialog.show()
 
                 getUserTokenFromFirebase()
@@ -189,55 +124,49 @@ class MainActivity : BaseActivity()
         }
     }
 
-    private fun getUserTokenFromFirebase()
-    {
+    private fun getUserTokenFromFirebase() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (task.isSuccessful)
-            {
+            if (task.isSuccessful) {
                 val token = task.result
-
                 userLogin(token)
             }
         }
     }
 
 
-    private fun userLogin(token:String)
-    {
-        try{
+    private fun userLogin(token: String) {
+        try {
             userViewModel.userLogin(token).observe(this)
             { response ->
                 if (response.isSuccessful)
                 {
-                  //  pDialog.cancel()
                     pDialog.cancel()
 
                     if (!response?.body!!.status!!)
                     {
                         showDialogWithAction(response.body!!.message!!)
-
-                    } else {
+                        logAuthIssueToCrashlytics(response.body!!.message!!,"Email")
+                    }
+                    else {
                         successLoginNavigateToHome(response)
-
                     }
                 } else {
-                   // pDialog.cancel()
                     pDialog.cancel()
                     showDialogWithAction(response.errorMessage.toString())
+                    logAuthIssueToCrashlytics(response.errorMessage.toString(),"Email")
+
                 }
             }
-        }
-        catch (e: Exception)
-        {
-          //  pDialog.cancel()
+        } catch (e: Exception) {
             pDialog.cancel()
+            logAuthIssueToCrashlytics(e.message.toString(),"Email")
             showDialogWithAction(e.message.toString())
         }
     }
 
     private fun successLoginNavigateToHome(
-        response: ApiResponse<LoginResponse>)
-    {
+        response: ApiResponse<LoginResponse>
+    ) {
         sharedHelper?.setStoreName(response.body?.data!!.name)
         sharedHelper?.setUserToken(response.body?.data!!.token)
         sharedHelper?.setUserEmail(response.body?.data!!.email)
@@ -273,7 +202,6 @@ class MainActivity : BaseActivity()
 
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     private fun showLanguage() {
-       // val lang = sharedPreferences.getString("app_lang", Constants.EN)
         val lang = sharedHelper?.getAppLanguage()
 
         val checkedItem = if (lang == "ar") {
@@ -338,15 +266,21 @@ class MainActivity : BaseActivity()
         }
     }
 
-    private fun saveUserPassword()
-    {
+    private fun saveUserPassword() {
         userViewModel.saveUserPassword()
     }
 
     private fun removeUserPassword() {
-        sharedHelper?.setUserPassword("")
+        userViewModel.removeUserPassword()
     }
 
     private fun getSavePassword(): String? = sharedHelper?.getUserPassword()
 
+    private fun logAuthIssueToCrashlytics(msg: String, provider: String) {
+        CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
+            msg,
+            CrashlyticsUtils.LOGIN_KEY to msg,
+            CrashlyticsUtils.LOGIN_PROVIDER to provider,
+        )
+    }
 }

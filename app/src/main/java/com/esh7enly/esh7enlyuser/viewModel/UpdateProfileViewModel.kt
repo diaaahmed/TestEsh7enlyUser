@@ -4,17 +4,20 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.UserRepo
-import com.esh7enly.esh7enlyuser.click.OnResponseListener
+import com.esh7enly.data.sharedhelper.SharedHelper
+import com.esh7enly.domain.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateProfileViewModel @Inject constructor(
     private val userRepo: UserRepo,
+    private val sharedHelper: SharedHelper
 
     ): ViewModel() {
 
@@ -29,11 +32,10 @@ class UpdateProfileViewModel @Inject constructor(
         mobile.isBlank() && first.isBlank() && last.isBlank() && email.isBlank()
     }
 
+    var updateProfileState: MutableStateFlow<NetworkResult<String>?>
+            = MutableStateFlow(null)
 
-    fun updateProfile(
-        token: String,
-        listener: OnResponseListener
-    ) {
+    fun updateProfile() {
         viewModelScope.launch {
             val userEmail = updatedEmail.value
 
@@ -41,44 +43,46 @@ class UpdateProfileViewModel @Inject constructor(
                 isDataValid.first()
             )
             {
-                listener.onFailed(2,"Data empty")
+                updateProfileState.update { NetworkResult.Error("Data empty",0) }
             }
             else if(userEmail.isNotEmpty())
             {
                 if (!isValidEmailId(userEmail))
                 {
-                    listener.onFailed(1,"Email is not valid")
+                    updateProfileState.update { NetworkResult.Error("Email not valid",0) }
                 } else {
-                    sendUpdateRequest(token, listener)
+                    sendUpdateRequest()
                 }
             }
             else
             {
-                sendUpdateRequest(token, listener)
+                sendUpdateRequest()
             }
         }
     }
 
-    private fun sendUpdateRequest(token:String, listener: OnResponseListener)
+    private fun sendUpdateRequest()
     {
+        updateProfileState.update { NetworkResult.Loading() }
+
         viewModelScope.launch {
             val updateResponse = userRepo.updateProfile(
-                token = token, mobile = updatedMobile.value,
+                token = sharedHelper.getUserToken(),
+                mobile = updatedMobile.value,
                 name = "${updatedFirstName.value} ${updatedLastName.value}",
                 email = updatedEmail.value)
 
             if (updateResponse.isSuccessful) {
                 if (!updateResponse.body()!!.status) {
-                    listener.onFailed(updateResponse.body()!!.code, updateResponse.body()!!.message)
+                    updateProfileState.update {
+                        NetworkResult.Error(updateResponse.body()!!.message,updateResponse.body()!!.code) }
+
                 } else {
-                    listener.onSuccess(
-                        updateResponse.body()!!.code,
-                        updateResponse.body()!!.message,
-                        updateResponse.body()!!.data
-                    )
+                    updateProfileState.update { NetworkResult.Success(updateResponse.body()!!.message) }
+
                 }
             } else {
-                listener.onFailed(updateResponse.code(), updateResponse.message())
+                updateProfileState.update { NetworkResult.Error(updateResponse.message(),updateResponse.code()) }
             }
         }
 

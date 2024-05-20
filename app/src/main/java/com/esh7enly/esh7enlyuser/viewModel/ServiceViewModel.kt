@@ -7,11 +7,9 @@ import com.esh7enly.data.repo.ServicesRepoImpl
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
-import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.domain.repo.ServicesRepo
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.ServiceStatus
 import com.google.gson.JsonObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -28,8 +26,7 @@ class ServiceViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-     var categoriesResponse: MutableStateFlow<NetworkResult<CategoriesResponse>?>
-            = MutableStateFlow(null)
+
     fun getProvidersNew(token: String, categoryId: String, listner: OnResponseListener) {
         viewModelScope.launch {
             val providers = servicesRepo.getProviders(token, categoryId)
@@ -91,28 +88,30 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
+    private var categoriesResponse: MutableStateFlow<NetworkResult<CategoriesResponse>?>
+            = MutableStateFlow(null)
     fun getCategoriesNewFlow(token: String) {
 
         viewModelScope.launch {
             servicesRepo.getCategoriesFlow(token)
                 .onEach { result ->
                     when (result) {
-                        is com.esh7enly.domain.NetworkResult.Error -> {
+                        is NetworkResult.Error -> {
                             categoriesResponse.update {
-                                com.esh7enly.domain.NetworkResult.Error(result.message)
+                               NetworkResult.Error(result.message,result.code)
                             }
                         }
 
-                        is com.esh7enly.domain.NetworkResult.Loading -> {
+                        is NetworkResult.Loading -> {
                             categoriesResponse.update {
-                                com.esh7enly.domain.NetworkResult.Loading()
+                                NetworkResult.Loading()
                             }
 
                         }
 
-                        is com.esh7enly.domain.NetworkResult.Success -> {
+                        is NetworkResult.Success -> {
                             categoriesResponse.update {
-                                com.esh7enly.domain.NetworkResult.Success(result.data!!)
+                                NetworkResult.Success(result.data!!)
                             }
                         }
                     }
@@ -154,16 +153,11 @@ class ServiceViewModel @Inject constructor(
 
     var response: LiveData<NetworkResult<TotalAmountEntity>> = _response
 
-    fun searchService(serviceName: String): LiveData<List<Service>> {
-        return databaseRepo.searchService(serviceName)
-    }
-
     fun insertToFawryDao(fawryEntity: FawryEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepo.insertFawryDao(fawryEntity)
         }
     }
-
 
     fun clearFawryOperations() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -176,114 +170,6 @@ class ServiceViewModel @Inject constructor(
             databaseRepo.deleteFawryOperation(id)
         }
     }
-
-    fun getProviders(token: String, id: String, listner: OnResponseListener) {
-        viewModelScope.launch {
-            try {
-                val providers = repo.getProviders(token, id)
-
-                if (providers.isSuccessful) {
-                    if (providers.body()!!.status) {
-
-                        listner.onSuccess(
-                            providers.body()!!.code,
-                            providers.body()!!.message,
-                            providers.body()!!.data
-                        )
-                    } else {
-                        listner.onFailed(providers.body()!!.code, providers.body()!!.message)
-                    }
-                } else {
-                    listner.onFailed(providers.code(), providers.message())
-                }
-            } catch (e: Exception) {
-                listner.onFailed(404, e.message)
-
-            }
-        }
-    }
-
-    fun getServices(token: String, id: String, listner: OnResponseListener) {
-        viewModelScope.launch {
-            try {
-                val services = repo.getServices(token, id)
-
-
-                if (services.isSuccessful) {
-                    if (services.body()!!.status) {
-
-                        listner.onSuccess(
-                            services.body()!!.code,
-                            services.body()!!.message,
-                            services.body()!!.data
-                        )
-                    } else {
-                        listner.onFailed(services.body()!!.code, services.body()!!.message)
-                    }
-                } else {
-                    listner.onFailed(services.code(), services.message())
-                }
-            } catch (e: Exception) {
-                listner.onFailed(404, e.message)
-
-            }
-        }
-    }
-
-    fun getParameters(token: String, id: String, listner: OnResponseListener) {
-        viewModelScope.launch {
-            try {
-                val parameters = repo.getParameters(token, id)
-
-
-                if (parameters.isSuccessful) {
-                    if (parameters.body()!!.status) {
-
-                        listner.onSuccess(
-                            parameters.body()!!.code,
-                            parameters.body()!!.message,
-                            parameters.body()!!.data
-                        )
-                    } else {
-                        listner.onFailed(parameters.body()!!.code, parameters.body()!!.message)
-                    }
-                } else {
-                    listner.onFailed(parameters.code(), parameters.message())
-                }
-            } catch (e: Exception) {
-                listner.onFailed(404, e.message)
-
-            }
-        }
-    }
-
-    fun getCategories(token: String, listner: OnResponseListener) {
-        viewModelScope.launch {
-            try {
-                val categories = repo.getCategories(token)
-
-
-                if (categories.isSuccessful) {
-                    if (categories.body()!!.status) {
-
-                        listner.onSuccess(
-                            categories.body()!!.code,
-                            categories.body()!!.message,
-                            categories.body()!!.data
-                        )
-                    } else {
-                        listner.onFailed(categories.body()!!.code, categories.body()!!.message)
-                    }
-                } else {
-                    listner.onFailed(categories.code(), categories.message())
-                }
-            } catch (e: Exception) {
-                listner.onFailed(404, e.message)
-
-            }
-        }
-    }
-
 
     fun scheduleInquire(
         token: String,
@@ -317,69 +203,6 @@ class ServiceViewModel @Inject constructor(
         return databaseRepo.getFawryOperations()
     }
 
-    private var dataStatus: MutableLiveData<ServiceStatus> = MutableLiveData(ServiceStatus.LOADING)
-
-    private val serviceStatusStateFlow: MutableStateFlow<ServiceStatus> =
-        MutableStateFlow(ServiceStatus.LOADING)
-
-
-    fun getService(token: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-
-            try {
-                repo.getServicesFromRemoteUser(token)
-                    .catch { Log.d(TAG, "diaa getService catch: ${it.message}") }
-                    .buffer()
-                    .collect {
-
-                        databaseRepo.deleteImage()
-                        databaseRepo.deleteCategories()
-                        databaseRepo.deleteServices()
-                        databaseRepo.deleteProviders()
-                        databaseRepo.deleteParameters()
-                        databaseRepo.deleteVersionEntity()
-
-                        databaseRepo.insertCategories(it.data.categories)
-
-                        databaseRepo.insertProviders(it.data.providers)
-
-                        databaseRepo.insertServices(it.data.services)
-
-                        databaseRepo.insertParameters(it.data.parameters)
-
-                        databaseRepo.insertImages(it.data.images)
-
-                        val versionEntity = VersionEntity("", "", it.service_update_num)
-
-                        databaseRepo.insertVersionEntity(versionEntity)
-
-                        Log.d(TAG, "diaa new getService: ${databaseRepo.getServiceUpdateNumber()}")
-
-                        val count = databaseRepo.getImagesCount()
-
-                        Log.d(TAG, "getServices viewModel done: ")
-                        Log.d(TAG, "getServices viewModel image: $count")
-
-                        withContext(Dispatchers.Main)
-                        {
-                            dataStatus.value = ServiceStatus.SUCCESS
-                            serviceStatusStateFlow.emit(ServiceStatus.SUCCESS)
-                            // serviceStatusStateFlow.value = ServiceStatus.SUCCESS
-                        }
-                    }
-
-
-            } catch (e: Exception) {
-                Log.d(TAG, "getServices viewModel error: ${e.message}")
-                withContext(Dispatchers.Main)
-                {
-                    dataStatus.value = ServiceStatus.ERROR
-                    serviceStatusStateFlow.value = ServiceStatus.ERROR
-                }
-            }
-        }
-    }
-
     fun getImageAds(token: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
@@ -406,12 +229,6 @@ class ServiceViewModel @Inject constructor(
 
             }
         }
-    }
-
-
-    fun getImagesFromDB(serviceId: String): LiveData<List<Image>> {
-
-        return databaseRepo.getImages(serviceId)
     }
 
     fun getTotalAmount(
@@ -608,24 +425,33 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    private val _points: MutableLiveData<String> = MutableLiveData("0")
-    val points: LiveData<String> = _points
 
-    fun getUserPoints(token: String) {
+    var userPointsState: MutableStateFlow<NetworkResult<String>?>
+            = MutableStateFlow(null)
+
+    fun getUserPointsFlow(token:String) {
         viewModelScope.launch {
-            val pointsResponse = repo.getUserPoints(token)
+            servicesRepo.getUserPointsFlow(token)
+                .onEach {userPointsResponse->
+                    when(userPointsResponse)
+                    {
+                        is NetworkResult.Error -> {
+                            userPointsState.update {
+                                NetworkResult.Error(userPointsResponse.message,userPointsResponse.code) }
+                        }
+                        is NetworkResult.Loading -> {
+                            userPointsState.update { NetworkResult.Loading() }
 
-            if (pointsResponse.isSuccessful) {
-                if (pointsResponse.body()!!.status == true) {
-                    _points.value = pointsResponse.body()?.data?.points
-                } else {
-                    Log.d(TAG, "diaa points error ${pointsResponse.message()}")
+                        }
+                        is NetworkResult.Success -> {
+                            userPointsState.update {
+                                NetworkResult.Success(userPointsResponse.data?.data?.points!!)
+                            }
+
+                        }
+                    }
                 }
-
-            } else {
-                Log.d(TAG, "diaa points error ${pointsResponse.message()}")
-
-            }
+                .launchIn(viewModelScope)
         }
     }
 
@@ -659,6 +485,7 @@ class ServiceViewModel @Inject constructor(
             }
         }
     }
+
 
     fun replaceUserPoints(token: String, listner: OnResponseListener) {
         viewModelScope.launch {

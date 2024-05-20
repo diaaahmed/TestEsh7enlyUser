@@ -137,7 +137,6 @@ class ReceiptActivity : AppCompatActivity()
 
             Log.d(TAG, "diaa data: here second")
 
-
             for(oneline in lines)
             {
                 if(oneline.contains("Serial"))

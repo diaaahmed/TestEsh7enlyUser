@@ -8,7 +8,6 @@ import com.chuckerteam.chucker.api.RetentionManager
 
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.data.remote.NotificationService
-import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.LiveDataCallAdapterFactory
 import com.esh7enly.esh7enlyuser.BuildConfig
 
@@ -32,7 +31,6 @@ object NetworkModule {
     @Singleton
     fun provideOkhttp(
         @ApplicationContext context: Context,
-        sharedHelper: SharedHelper
     ): OkHttpClient {
 
         val logging = HttpLoggingInterceptor()

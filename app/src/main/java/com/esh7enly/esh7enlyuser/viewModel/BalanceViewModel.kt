@@ -33,7 +33,9 @@ class BalanceViewModel @Inject constructor(
                 {
                     if(!deposits.body()!!.status)
                     {
-                        _responseDeposits.value = NetworkResult.Error(deposits.body()!!.message)
+                        _responseDeposits.value = NetworkResult.Error(
+                            deposits.body()!!.message,
+                            deposits.body()!!.code)
 
                     }
                     else
@@ -43,13 +45,13 @@ class BalanceViewModel @Inject constructor(
                 }
                 else
                 {
-                    _responseDeposits.value = NetworkResult.Error(deposits.message())
+                    _responseDeposits.value = NetworkResult.Error(deposits.message(),deposits.code())
 
                 }
             }
             catch (e: Exception)
             {
-                _responseDeposits.value = NetworkResult.Error(e.message)
+                _responseDeposits.value = NetworkResult.Error(e.message,0)
 
             }
 

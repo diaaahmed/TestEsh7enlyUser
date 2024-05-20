@@ -47,7 +47,6 @@ class IntroActivity : AppCompatActivity()
             OnBoardingItem(R.drawable.onboard_onboard3),
         )
 
-
         pagerAdapter = IntroAdapter(this,listImages)
 
         onBoardingItemAdapter = OnBoardingItemAdapter(
