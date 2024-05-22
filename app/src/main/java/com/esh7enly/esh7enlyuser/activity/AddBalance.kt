@@ -327,8 +327,8 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         lifecycleScope.launch {
 
             xPayViewModel.getTotalXPayFlow(sharedHelper?.getUserToken().toString(),
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionType,
+                paymentMethodType = GatewayMethod.paytabs.toString(),
+                transactionType = transactionType,
                 ui.amountValue.text.toString(), object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
@@ -402,8 +402,8 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         lifecycleScope.launch {
             xPayViewModel.startSessionForPay(
                 finalAmount = amount,
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionType,
+                paymentMethodType = GatewayMethod.paytabs.toString(),
+                transactionType = transactionType,
                 sharedHelper?.getUserToken()
                     .toString(),
                 totalAmount,

@@ -85,6 +85,7 @@ class MainActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun login() {
+
         if (connectivity?.isConnected == true) {
             val phoneNumber = ui.phoneNumber.text.toString().trim()
 
@@ -145,7 +146,7 @@ class MainActivity : BaseActivity() {
                     if (!response?.body!!.status!!)
                     {
                         showDialogWithAction(response.body!!.message!!)
-                        logAuthIssueToCrashlytics(response.body!!.message!!,"Email")
+                        logAuthIssueToCrashlytics(response.body!!.message!!)
                     }
                     else {
                         successLoginNavigateToHome(response)
@@ -153,13 +154,13 @@ class MainActivity : BaseActivity() {
                 } else {
                     pDialog.cancel()
                     showDialogWithAction(response.errorMessage.toString())
-                    logAuthIssueToCrashlytics(response.errorMessage.toString(),"Email")
+                    logAuthIssueToCrashlytics(response.errorMessage.toString())
 
                 }
             }
         } catch (e: Exception) {
             pDialog.cancel()
-            logAuthIssueToCrashlytics(e.message.toString(),"Email")
+            logAuthIssueToCrashlytics(e.message.toString())
             showDialogWithAction(e.message.toString())
         }
     }
@@ -240,7 +241,7 @@ class MainActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     private fun setLanguage(language: String?) {
-        val locale = Locale(language)
+        val locale = Locale(language.toString())
         val dm = resources.displayMetrics
         // val conf = resources.configuration
         val conf = baseContext.resources.configuration
@@ -276,11 +277,11 @@ class MainActivity : BaseActivity() {
 
     private fun getSavePassword(): String? = sharedHelper?.getUserPassword()
 
-    private fun logAuthIssueToCrashlytics(msg: String, provider: String) {
+    private fun logAuthIssueToCrashlytics(msg: String) {
         CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
             msg,
             CrashlyticsUtils.LOGIN_KEY to msg,
-            CrashlyticsUtils.LOGIN_PROVIDER to provider,
+            CrashlyticsUtils.LOGIN_PROVIDER to "Login with Phone and password",
         )
     }
 }

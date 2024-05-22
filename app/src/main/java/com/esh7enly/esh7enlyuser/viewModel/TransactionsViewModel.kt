@@ -9,6 +9,7 @@ import com.esh7enly.data.repo.TransactionsRepo
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.TransactionApiResponse
 import com.esh7enly.domain.entity.TransactionDetailsEntity
+import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,6 +48,7 @@ class TransactionsViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _responseTransactions.value = NetworkResult.Error(e.message,0)
+                sendIssueToCrashlytics(e.message.toString(),"Get transactions from Transactions viewModel")
             }
         }
     }
@@ -65,6 +67,8 @@ class TransactionsViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 Log.d("TAG", "diaa getTransactionDetails exception: ${e.message}")
+                sendIssueToCrashlytics(e.message.toString(),"Get transaction details from Transactions viewModel")
+
             }
         }
     }

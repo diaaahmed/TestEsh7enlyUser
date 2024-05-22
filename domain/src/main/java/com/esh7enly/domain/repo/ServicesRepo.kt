@@ -8,7 +8,6 @@ import com.esh7enly.domain.entity.providersNew.ProviderResponse
 import com.esh7enly.domain.entity.searchresponse.SearchResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import kotlinx.coroutines.flow.Flow
-import retrofit2.Response
 
 interface ServicesRepo
 {

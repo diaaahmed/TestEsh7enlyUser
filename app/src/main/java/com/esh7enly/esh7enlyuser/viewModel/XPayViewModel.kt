@@ -11,6 +11,7 @@ import com.esh7enly.esh7enlyuser.BuildConfig
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.PayWays
+import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -19,82 +20,91 @@ import java.security.MessageDigest
 import javax.inject.Inject
 
 @HiltViewModel
-class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewModel()
-{
+class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewModel() {
     var buttonClicked: MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
     var _buttonClicked: LiveData<String> = buttonClicked
 
-    private var _showPhoneNumberNew:MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
-    var showPhoneNumberNew:LiveData<String>  = _showPhoneNumberNew
+    private var _showPhoneNumberNew: MutableLiveData<String> =
+        MutableLiveData(PayWays.BANk.toString())
+    var showPhoneNumberNew: LiveData<String> = _showPhoneNumberNew
 
-    private var _showPhoneNumber:MutableLiveData<Boolean> = MutableLiveData(false)
-    var showPhoneNumber:LiveData<Boolean>  = _showPhoneNumber
+    private var _showPhoneNumber: MutableLiveData<Boolean> = MutableLiveData(false)
+    var showPhoneNumber: LiveData<Boolean> = _showPhoneNumber
 
-    fun setShowNumber(isShow:Boolean)
-    {
+    fun setShowNumber(isShow: Boolean) {
         _showPhoneNumber.postValue(isShow)
     }
 
-    fun setShowNumberNew(type:String)
-    {
+    fun setShowNumberNew(type: String) {
         _showPhoneNumberNew.postValue(type)
     }
 
 
     suspend fun startSessionForPay(
-        finalAmount:String,
-        payment_method_type:String,
-        transaction_type:String,
+        finalAmount: String,
+        paymentMethodType: String,
+        transactionType: String,
         token: String, amount: String,
         ip: String,
         listner: OnResponseListener
-    )
-    {
+    ) {
         viewModelScope.launch {
-            val startSessionResponse = xPayRepo.startSessionForPay(
-                payment_method_type,transaction_type,token, amount, ip)
-
-            if (startSessionResponse.isSuccessful)
-            {
-                if (!startSessionResponse.body()?.status!!)
-                {
-                    listner.onFailed(
-                        startSessionResponse.body()!!.code,
-                        startSessionResponse.body()!!.message
-                    )
-
-                } else {
-
-                    Constants.START_SESSION_ID = startSessionResponse.body()!!.data.id
-                    val sEncrypted = BuildConfig.SECRET_KEY
-                    Log.d("TAG", "diaa has_id first: ${startSessionResponse.body()!!.data.hash_id}")
-                    val normalId = startSessionResponse.body()!!.data.id
-                    val word = BuildConfig.SECRET_WORD
-
-                    val testNewAgain = normalId.toString()+word+finalAmount+sEncrypted+startSessionResponse.body()!!.data.hash_id
-                    Log.d("TAG", "diaa has_id final form: $testNewAgain")
-                    val dsdas = newmd5(testNewAgain)
-                    Constants.HASH_GENERATED = dsdas
-                    Constants.HASH_ID = startSessionResponse.body()!!.data.hash_id
-                    Log.d("TAG", "diaa has_id after converted : $dsdas")
-
-                    listner.onSuccess(
-                        startSessionResponse.body()!!.code,
-                        startSessionResponse.body()!!.message, startSessionResponse.body()!!.data.id
-                    )
-                }
-
-            } else {
-                listner.onFailed(
-                    startSessionResponse.code(),
-                    startSessionResponse.message()
+            try {
+                val startSessionResponse = xPayRepo.startSessionForPay(
+                    paymentMethodType, transactionType, token, amount, ip
                 )
 
+                if (startSessionResponse.isSuccessful) {
+                    if (!startSessionResponse.body()?.status!!) {
+                        listner.onFailed(
+                            startSessionResponse.body()!!.code,
+                            startSessionResponse.body()!!.message
+                        )
+
+                    } else {
+
+                        Constants.START_SESSION_ID = startSessionResponse.body()!!.data.id
+                        val sEncrypted = BuildConfig.SECRET_KEY
+                        Log.d(
+                            "TAG",
+                            "diaa has_id first: ${startSessionResponse.body()!!.data.hash_id}"
+                        )
+                        val normalId = startSessionResponse.body()!!.data.id
+                        val word = BuildConfig.SECRET_WORD
+
+                        val testNewAgain =
+                            normalId.toString() + word + finalAmount + sEncrypted + startSessionResponse.body()!!.data.hash_id
+                        Log.d("TAG", "diaa has_id final form: $testNewAgain")
+                        val dsdas = newmd5(testNewAgain)
+                        Constants.HASH_GENERATED = dsdas
+                        Constants.HASH_ID = startSessionResponse.body()!!.data.hash_id
+                        Log.d("TAG", "diaa has_id after converted : $dsdas")
+
+                        listner.onSuccess(
+                            startSessionResponse.body()!!.code,
+                            startSessionResponse.body()!!.message,
+                            startSessionResponse.body()!!.data.id
+                        )
+                    }
+
+                } else {
+                    listner.onFailed(
+                        startSessionResponse.code(),
+                        startSessionResponse.message()
+                    )
+
+                }
+            } catch (e: Exception) {
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "startSessionForPay from xPay viewModel"
+                )
             }
         }
 
     }
-    fun newmd5(input:String): String {
+
+    fun newmd5(input: String): String {
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }
@@ -102,58 +112,68 @@ class XPayViewModel @Inject constructor(private val xPayRepo: XPayRepo) : ViewMo
     var amountNumber = MutableStateFlow("")
 
     suspend fun getTotalXPayFlow(
-        token: String, payment_method_type: String,
-        transaction_type:String,amount: String,listner: OnResponseListener) {
+        token: String, paymentMethodType: String,
+        transactionType: String, amount: String, listner: OnResponseListener
+    ) {
         viewModelScope.launch {
-            try{
-                val xPayTotal = xPayRepo.getTotalXPay(token, amount,payment_method_type, transaction_type)
+            try {
+                val xPayTotal =
+                    xPayRepo.getTotalXPay(token, amount, paymentMethodType, transactionType)
 
-                if(xPayTotal.isSuccessful)
-                {
-                    if(xPayTotal.body()!!.status)
-                    {
-                        listner.onSuccess(xPayTotal.body()!!.code,xPayTotal.body()!!.message,xPayTotal.body()!!.data)
+                if (xPayTotal.isSuccessful) {
+                    if (xPayTotal.body()!!.status) {
+                        listner.onSuccess(
+                            xPayTotal.body()!!.code,
+                            xPayTotal.body()!!.message,
+                            xPayTotal.body()!!.data
+                        )
+                    } else {
+                        listner.onFailed(xPayTotal.body()!!.code, xPayTotal.body()!!.message)
                     }
-                    else
-                    {
-                        listner.onFailed(xPayTotal.body()!!.code,xPayTotal.body()!!.message)
-                    }
+                } else {
+                    listner.onFailed(xPayTotal.code(), xPayTotal.message())
                 }
-                else
-                {
-                    listner.onFailed(xPayTotal.code(),xPayTotal.message())
-                }
-            }
-            catch (e:Exception)
-            {
-                listner.onFailed(Constants.EXCEPTION_CODE,e.message)
+            } catch (e: Exception) {
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "getTotalxPayFlow from xPay viewModel"
+                )
 
             }
         }
     }
 
 
-    suspend fun chargeBalanceWithPaytabs(token:String,
-                                         chargeBalanceRequest: ChargeBalanceRequestPaytabs,
-                                         listner: OnResponseListener) {
+    suspend fun chargeBalanceWithPaytabs(
+        token: String,
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+        listner: OnResponseListener
+    ) {
         viewModelScope.launch {
-            val charge = xPayRepo.chargeBalanceWithPaytabs(token,chargeBalanceRequest)
+            try {
+                val charge = xPayRepo.chargeBalanceWithPaytabs(token, chargeBalanceRequest)
 
-            if(charge.isSuccessful)
-            {
-                if(!charge.body()!!.status)
-                {
-                    listner.onFailed(charge.body()!!.code,charge.body()?.message)
+                if (charge.isSuccessful) {
+                    if (!charge.body()!!.status) {
+                        listner.onFailed(charge.body()!!.code, charge.body()?.message)
+                    } else {
+                        listner.onSuccess(
+                            charge.body()!!.code,
+                            charge.body()?.message,
+                            charge.body()!!.data
+                        )
+                    }
+                } else {
+                    listner.onFailed(charge.code(), charge.message())
                 }
-                else
-                {
-                    listner.onSuccess(charge.body()!!.code,charge.body()?.message,charge.body()!!.data)
-                }
+            } catch (e: Exception) {
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "chargeBalanceWithPaytabs from xPay viewModel"
+                )
             }
-            else
-            {
-                listner.onFailed(charge.code(),charge.message())
-            }
+
         }
     }
 

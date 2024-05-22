@@ -49,10 +49,10 @@ class ServiceRepoImplNewTest(
                 if (categories.isSuccessful) {
                     emit(NetworkResult.Success(categories.body()!!))
                 } else {
-                    emit(NetworkResult.Error(categories.message()))
+                    emit(NetworkResult.Error(categories.message(),categories.code()))
                 }
             } catch (e: Exception) {
-                emit(NetworkResult.Error(e.message))
+                emit(NetworkResult.Error(e.message,0))
             }
         }
 
@@ -99,10 +99,10 @@ class ServiceRepoImplNewTest(
             if (userPoints.isSuccessful) {
                 emit(NetworkResult.Success(userPoints.body()!!))
             } else {
-                emit(NetworkResult.Error(userPoints.message()))
+                emit(NetworkResult.Error(userPoints.message(),userPoints.code()))
             }
         } catch (e: Exception) {
-            emit(NetworkResult.Error(e.message))
+            emit(NetworkResult.Error(e.message,0))
         }
     }
 

@@ -7,6 +7,7 @@ import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -46,6 +47,10 @@ class CreateAccountViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 listener.onFailed(Constants.EXCEPTION_CODE, e.message)
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "registerNewAccount from CreateAccountViewModel"
+                )
 
             }
         }

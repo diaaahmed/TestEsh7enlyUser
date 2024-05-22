@@ -81,8 +81,8 @@ class ProfileFragment : BaseFragment() {
         ui.help.setOnClickListener { makeCall() }
 
         ui.share.setOnClickListener {
-            createFirebaseDynamicLink()
-           // shareApp()
+           // createFirebaseDynamicLink()
+            shareApp()
         }
 
         ui.accountSetting.setOnClickListener {

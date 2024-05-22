@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
+import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,6 +53,7 @@ class BalanceViewModel @Inject constructor(
             catch (e: Exception)
             {
                 _responseDeposits.value = NetworkResult.Error(e.message,0)
+                sendIssueToCrashlytics(e.message.toString(),"Get new deposits from Balance viewModel")
 
             }
 
@@ -77,7 +79,8 @@ class BalanceViewModel @Inject constructor(
                }
            }
            catch (e: Exception){
-               _balance.value = e.message
+               _balance.value = e.message.toString()
+               sendIssueToCrashlytics(e.message.toString(),"Get wallet user from Balance viewModel")
 
            }
         }

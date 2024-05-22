@@ -23,8 +23,8 @@ class UserRepo(private val apiService: ApiService,
     fun login(
         mobile: String,
         password: String,
-        device_token:String): LiveData<ApiResponse<LoginResponse>> =
-        apiService.login(mobile,password,device_token)
+        deviceToken:String): LiveData<ApiResponse<LoginResponse>> =
+        apiService.login(mobile,password,deviceToken)
 
     fun getString(resId: Int): String {
         return context.getString(resId)

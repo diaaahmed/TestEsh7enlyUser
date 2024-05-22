@@ -22,3 +22,4 @@ object CrashlyticsUtils {
 }
 
 class LoginException(message: String) : Exception(message)
+class CrashMessage(message: String) : Exception(message)

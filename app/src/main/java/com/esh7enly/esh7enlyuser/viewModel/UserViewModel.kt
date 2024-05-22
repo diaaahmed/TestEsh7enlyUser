@@ -13,6 +13,7 @@ import com.esh7enly.domain.entity.loginresponse.LoginResponse
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -40,35 +41,43 @@ class UserViewModel @Inject constructor(
         sharedHelper.setUserPassword(userPassword.value)
     }
 
-     fun removeUserPassword() {
+    fun removeUserPassword() {
         sharedHelper.setUserPassword("")
     }
 
-    fun userLogin(device_token: String):
+    fun userLogin(deviceToken: String):
             LiveData<ApiResponse<LoginResponse>> {
+
         return userRepo.login(
-            userPhoneNumber.value, userPassword.value, device_token
+            userPhoneNumber.value, userPassword.value, deviceToken
         )
     }
 
     fun sendOtp(mobile: String, listener: OnResponseListener) {
         viewModelScope.launch {
 
-            val otpResponse = userRepo.sendOtp(mobile)
+            try {
+                val otpResponse = userRepo.sendOtp(mobile)
 
-            if (otpResponse.isSuccessful) {
-                if (!otpResponse.body()!!.status!!) {
-                    listener.onFailed(otpResponse.body()!!.code!!, otpResponse.body()!!.message)
+                if (otpResponse.isSuccessful) {
+                    if (!otpResponse.body()!!.status!!) {
+                        listener.onFailed(otpResponse.body()!!.code!!, otpResponse.body()!!.message)
+                    } else {
+                        Constants.USER_KEY = otpResponse.body()!!.data.key
+                        listener.onSuccess(
+                            otpResponse.body()!!.code!!,
+                            otpResponse.body()!!.message,
+                            otpResponse.body()!!.data
+                        )
+                    }
                 } else {
-                    Constants.USER_KEY = otpResponse.body()!!.data.key
-                    listener.onSuccess(
-                        otpResponse.body()!!.code!!,
-                        otpResponse.body()!!.message,
-                        otpResponse.body()!!.data
-                    )
+                    listener.onFailed(otpResponse.code(), otpResponse.message())
                 }
-            } else {
-                listener.onFailed(otpResponse.code(), otpResponse.message())
+            } catch (e: Exception) {
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "send otp from User viewModel")
+
             }
         }
     }
@@ -94,6 +103,10 @@ class UserViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 listener.onFailed(Constants.EXCEPTION_CODE, e.message)
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "forgetPasswordSendOTP from User viewModel"
+                )
 
             }
         }
@@ -112,6 +125,7 @@ class UserViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 listener.onFailed(Constants.EXCEPTION_CODE, e.message)
+                sendIssueToCrashlytics(e.message.toString(), "verify account from User viewModel")
 
             }
         }
@@ -134,6 +148,10 @@ class UserViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 listener.onFailed(Constants.EXCEPTION_CODE, e.message)
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "register new account from User viewModel"
+                )
 
             }
         }
@@ -147,24 +165,38 @@ class UserViewModel @Inject constructor(
         listener: OnResponseListener
     ) {
         viewModelScope.launch {
-            val forgetPasswordResponse =
-                userRepo.createNewPassword(mobile, password, confirmationPassword, otpCode)
-            if (forgetPasswordResponse.isSuccessful) {
-                if (!forgetPasswordResponse.body()!!.status) {
-                    listener.onFailed(
-                        forgetPasswordResponse.body()!!.code,
-                        forgetPasswordResponse.body()!!.message
-                    )
+
+            try {
+                val forgetPasswordResponse =
+                    userRepo.createNewPassword(mobile, password, confirmationPassword, otpCode)
+                if (forgetPasswordResponse.isSuccessful) {
+                    if (!forgetPasswordResponse.body()!!.status) {
+                        listener.onFailed(
+                            forgetPasswordResponse.body()!!.code,
+                            forgetPasswordResponse.body()!!.message
+                        )
+                    } else {
+                        listener.onSuccess(
+                            forgetPasswordResponse.body()!!.code,
+                            forgetPasswordResponse.body()!!.message,
+                            forgetPasswordResponse.body()!!.data
+                        )
+                    }
                 } else {
-                    listener.onSuccess(
-                        forgetPasswordResponse.body()!!.code,
-                        forgetPasswordResponse.body()!!.message,
-                        forgetPasswordResponse.body()!!.data
+                    listener.onFailed(
+                        forgetPasswordResponse.code(),
+                        forgetPasswordResponse.message()
                     )
+
                 }
-            } else {
-                listener.onFailed(forgetPasswordResponse.code(), forgetPasswordResponse.message())
+            } catch (e: Exception) {
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "createNewPassword from User viewModel"
+                )
+
             }
+
         }
     }
 
@@ -175,8 +207,8 @@ class UserViewModel @Inject constructor(
     private val isDataValid = combine(
         userOldPassword,
         userNewPassword,
-        userNewPasswordConfirmation) {
-            userOldPassword,userNewPassword,userNewPasswordConfirmation->
+        userNewPasswordConfirmation
+    ) { userOldPassword, userNewPassword, userNewPasswordConfirmation ->
         userOldPassword.isBlank() ||
                 userNewPassword.isBlank()
                 || userNewPasswordConfirmation.isBlank()
@@ -184,12 +216,12 @@ class UserViewModel @Inject constructor(
 
     private val isNewAndConfirmPasswordEqual = combine(
         userNewPassword,
-        userNewPasswordConfirmation) {
-            userNewPassword,userNewPasswordConfirmation->
+        userNewPasswordConfirmation
+    ) { userNewPassword, userNewPasswordConfirmation ->
         userNewPassword != userNewPasswordConfirmation
     }
 
-    var updatePasswordState:MutableStateFlow<NetworkResult<String>?> =
+    var updatePasswordState: MutableStateFlow<NetworkResult<String>?> =
         MutableStateFlow(null)
 
     fun updatePassword(
@@ -198,34 +230,39 @@ class UserViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
 
-            if(isDataValid.first())
-            {
-                listener.onFailed(2,"Data empty")
-            }
-            else if(isNewAndConfirmPasswordEqual.first())
-            {
-                listener.onFailed(2,"Passwords not match")
-            } else if(!isValidPassword(userNewPassword.value))
-            {
-                listener.onFailed(2,"Password not valid")
-            }
-            else {
-                val updateResponse = userRepo.updatePassword(
-                    token, userOldPassword.value, userNewPassword.value)
+            if (isDataValid.first()) {
+                listener.onFailed(2, "Data empty")
+            } else if (isNewAndConfirmPasswordEqual.first()) {
+                listener.onFailed(2, "Passwords not match")
+            } else if (!isValidPassword(userNewPassword.value)) {
+                listener.onFailed(2, "Password not valid")
+            } else {
+                try {
+                    val updateResponse = userRepo.updatePassword(
+                        token, userOldPassword.value, userNewPassword.value
+                    )
 
-                if (updateResponse.isSuccessful) {
-                    if (!updateResponse.body()!!.status) {
-                        listener.onFailed(updateResponse.body()!!.code,
-                            updateResponse.body()!!.message)
+                    if (updateResponse.isSuccessful) {
+                        if (!updateResponse.body()!!.status) {
+                            listener.onFailed(
+                                updateResponse.body()!!.code,
+                                updateResponse.body()!!.message
+                            )
+                        } else {
+                            listener.onSuccess(
+                                updateResponse.body()!!.code,
+                                updateResponse.body()!!.message,
+                                updateResponse.body()!!.data
+                            )
+                        }
                     } else {
-                        listener.onSuccess(
-                            updateResponse.body()!!.code,
-                            updateResponse.body()!!.message,
-                            updateResponse.body()!!.data
-                        )
+                        listener.onFailed(updateResponse.code(), updateResponse.message())
                     }
-                } else {
-                    listener.onFailed(updateResponse.code(), updateResponse.message())
+                } catch (e: Exception) {
+                    sendIssueToCrashlytics(
+                        e.message.toString(),
+                        "updatePassword from User viewModel"
+                    )
                 }
             }
         }
@@ -234,8 +271,10 @@ class UserViewModel @Inject constructor(
     private fun isValidPassword(password: String): Boolean {
         if (password.length < 8) return false
         if (password.filter { it.isDigit() }.firstOrNull() == null) return false
-        if (password.filter { it.isLetter() }.filter { it.isUpperCase() }.firstOrNull() == null) return false
-        if (password.filter { it.isLetter() }.filter { it.isLowerCase() }.firstOrNull() == null) return false
+        if (password.filter { it.isLetter() }.filter { it.isUpperCase() }
+                .firstOrNull() == null) return false
+        if (password.filter { it.isLetter() }.filter { it.isLowerCase() }
+                .firstOrNull() == null) return false
         if (password.filter { !it.isLetterOrDigit() }.firstOrNull() == null) return false
 
         return true
@@ -260,7 +299,10 @@ class UserViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _login.value = false
-
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "validateTokenResponseUser from User viewModel"
+                )
             }
 
         }
