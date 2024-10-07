@@ -1,27 +1,23 @@
 package com.esh7enly.esh7enlyuser.activity
 
-import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.annotation.RequiresApi
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import com.esh7enly.data.sharedhelper.SharedHelper
+import com.esh7enly.esh7enlyuser.BR
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Connectivity
-import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.ProgressDialog
-import com.esh7enly.esh7enlyuser.viewModel.BalanceViewModel
-import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import javax.inject.Inject
 
-open class BaseFragment: Fragment()
+abstract class BaseFragment<DB : ViewDataBinding, VM : ViewModel> : Fragment()
 {
-    val serviceViewModel: ServiceViewModel by viewModels()
-
-    val balanceViewModel: BalanceViewModel by viewModels()
-
     val dialog by lazy {
         AppDialogMsg(requireActivity(),false)
     }
@@ -36,10 +32,39 @@ open class BaseFragment: Fragment()
         ProgressDialog.createProgressDialog(requireContext())
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    protected abstract val viewModel: VM
+
+    private var _binding: DB? = null
+    protected val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = DataBindingUtil.inflate(inflater, getLayoutResID(), container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?)
+    {
         super.onViewCreated(view, savedInstanceState)
-        Language.setLanguageNew(requireActivity(), Constants.LANG)
+        doDataBinding()
+        init()
+    }
+
+    @LayoutRes
+    abstract fun getLayoutResID(): Int
+
+    private fun doDataBinding() {
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.setVariable(BR.viewModel, viewModel)
+        binding.executePendingBindings()
 
     }
+
+    abstract fun init()
+
 }

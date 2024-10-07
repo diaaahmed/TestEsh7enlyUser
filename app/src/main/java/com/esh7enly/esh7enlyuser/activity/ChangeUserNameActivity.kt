@@ -47,7 +47,7 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle {
         setContentView(ui.root)
 
         ui.lifecycleOwner = this
-        ui.updateProfileViewModel = updateProfileViewModel
+        ui.viewModel = updateProfileViewModel
 
         Language.setLanguageNew(this, Constants.LANG)
 
@@ -89,7 +89,7 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle {
         {
             dialog.cancel()
             sharedHelper?.setUserToken("")
-            NavigateToActivity.navigateToMainActivity(this@ChangeUserNameActivity)
+            NavigateToActivity.navigateToAuthActivity(this@ChangeUserNameActivity)
 
         }
         dialog.show()
@@ -102,10 +102,10 @@ class ChangeUserNameActivity : AppCompatActivity(), IToolbarTitle {
         {
             dialog.cancel()
 
-            if (code.toString() == Constants.CODE_UNAUTH ||
+            if (code == Constants.CODE_UNAUTH_NEW ||
                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
             ) {
-                NavigateToActivity.navigateToMainActivity(this@ChangeUserNameActivity)
+                NavigateToActivity.navigateToAuthActivity(this@ChangeUserNameActivity)
             }
 
         }.show()

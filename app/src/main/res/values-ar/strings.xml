@@ -92,7 +92,7 @@
     <string name="paytabs_title">ادفع الآن مع اشحنلى </string>
     <string name="confirm">تأكيد</string>
     <string name="error"> خطأ </string>
-    <string name="payment_warning">رجاءًا عدم مغاردة صفحة الدفع قبل التحويل التلقائى حتى يتم الدفع بنحاج</string>
+    <string name="payment_warning">رجاءًا عدم مغاردة صفحة الدفع قبل التحويل التلقائى حتى يتم الدفع بنجاح</string>
 
     <string name="warning"> تحذير </string>
     <string name="success">ناجح</string>
@@ -182,6 +182,8 @@
     <string name="error_message__blank_phone_number">يرجى إدخال رقم هاتف صحيح.</string>
     <string name="error_message__blank_otp">يرجى إدخال الرقم بشكل صحيح.</string>
 
+    <string name="manyRequests">طلبات كثيرة جدًا، رجاء الإنتظار قليلًا وإعادة المحاولة</string>
+
     <string name="phone_number_msg">سوف نرسل رمز تأكيدى لرقم الهاتف الخاص بك للتأكيد</string>
 
     <string name="send_otp">أرسل الرمز</string>
@@ -228,5 +230,6 @@
     <string name="vodafone_cash">فودافون كاش</string>
     <string name="email_is_not_valid">البريد الإلكترونى غير صحيح</string>
     <string name="password_is_not_valid_please_use_aa1">الرقم السرى غير مقبول، يرجى استحدام حروف ورموز وارقام</string>
+    <string name="logo">Logo</string>
 
 </resources>

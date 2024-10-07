@@ -44,7 +44,7 @@ class ChangePasswordActivity : AppCompatActivity(), IToolbarTitle {
         setContentView(ui.root)
 
         ui.lifecycleOwner = this
-        ui.userViewModel = userViewModel
+        ui.viewModel = userViewModel
 
         Language.setLanguageNew(this, Constants.LANG)
 
@@ -72,7 +72,7 @@ class ChangePasswordActivity : AppCompatActivity(), IToolbarTitle {
                     {
                         dialog.cancel()
                         sharedHelper?.setUserToken("")
-                        NavigateToActivity.navigateToMainActivity(this@ChangePasswordActivity)
+                        NavigateToActivity.navigateToAuthActivity(this@ChangePasswordActivity)
 
                     }
                     dialog.show()
@@ -84,10 +84,10 @@ class ChangePasswordActivity : AppCompatActivity(), IToolbarTitle {
                     {
                         dialog.cancel()
 
-                        if (code.toString() == Constants.CODE_UNAUTH ||
+                        if (code == Constants.CODE_UNAUTH_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
-                            NavigateToActivity.navigateToMainActivity(this@ChangePasswordActivity)
+                            NavigateToActivity.navigateToAuthActivity(this@ChangePasswordActivity)
                         }
 
                     }.show()

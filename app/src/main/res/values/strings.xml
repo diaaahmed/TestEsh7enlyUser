@@ -20,6 +20,8 @@
     <string name="nov">NOV</string>
     <string name="dec">DEC</string>
 
+    <string name="manyRequests">Too many requests, Please wait and try again</string>
+
     <string name="balance_added">The balance has been added to your account</string>
     <string name="visa">Paid by visa</string>
     <string name="cash">Paid by vodafone cash</string>
@@ -96,7 +98,7 @@
     <string name="remember_me">Remember me</string>
     <string name="forget_password">Forget password?</string>
 
-<!--    <string name="no_account">Don`t have an account? signup</string>-->
+    <!--    <string name="no_account">Don`t have an account? signup</string>-->
 
     <string name="no_account">Don`t have an account? <font color='#bc3827'>signup</font></string>
 
@@ -115,7 +117,7 @@
     <string name="first_name">Write first name</string>
     <string name="last_name">Write last name</string>
     <string name="signUp">Sign up</string>
-<!--    <string name="have_account">Have an account, Sign in</string>-->
+    <!--    <string name="have_account">Have an account, Sign in</string>-->
     <string name="error_message__blank_phone">Please input Phone number.</string>
     <string name="error_message__wrong_phone">Please input Correct Phone number.</string>
     <string name="error_message__blank_first_name">Please input First Name.</string>
@@ -317,5 +319,13 @@ Some products cannot be returned, and they are:
     <string name="vodafone_cash">Vodafone Cash</string>
     <string name="email_is_not_valid">Email is not valid</string>
     <string name="password_is_not_valid_please_use_aa1">Password is not valid please use (Aa1@#$%)</string>
+    <string name="thnx_using_esh7enly" translatable="false">شكرًا لاستخدامكم اشحنلى</string>
+    <string name="client_receipt" translatable="false">نسخة العميل</string>
+    <string name="call_center" translatable="false">خدمة العملاء 19276</string>
+    <string name="when_issue_occur" translatable="false">عند تعطل الشبكة قد يستغرق</string>
+    <string name="_24" translatable="false">تنفيذ العملية 24 ساعة</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logo">Logo</string>
 
 </resources>

@@ -37,8 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -603,12 +602,14 @@ public class Utils {
         return false;
     }
 
-    public static void displayImageOriginalFromCache(Context ctx, ImageView img, String url, boolean isWifi) {
+    public static void displayImageOriginalFromCache(
+            Context ctx, ImageView img, String url, boolean isWifi
+    ) {
         try {
 
             Glide.with(ctx).load(BuildConfig.IMAGE_URL + url)
                     //.crossFade()
-                    .placeholder(R.drawable.logo)
+                    .placeholder(R.drawable.new_logo_trans)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .apply(new RequestOptions()
                             //.onlyRetrieveFromCache(!isWifi)
@@ -626,7 +627,7 @@ public class Utils {
         try {
             Glide.with(ctx).load(BuildConfig.IMAGE_URL + url)
                     //.crossFade()
-                    .placeholder(R.drawable.logo)
+                    .placeholder(R.drawable.new_logo_trans)
                     //.override(100, 100)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(img);

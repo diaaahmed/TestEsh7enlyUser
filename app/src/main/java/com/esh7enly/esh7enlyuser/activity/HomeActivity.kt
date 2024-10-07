@@ -18,7 +18,7 @@ class HomeActivity : BaseActivity() {
     private val ui by lazy {
         ActivityHomeBinding.inflate(layoutInflater)
     }
-    lateinit var navController: NavController
+    private lateinit var navController: NavController
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?)

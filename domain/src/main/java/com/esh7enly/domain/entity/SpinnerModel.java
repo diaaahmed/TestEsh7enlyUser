@@ -70,6 +70,5 @@ public class SpinnerModel implements Parcelable {
         parcel.writeString(aName);
         parcel.writeString(eName);
 
-
     }
 }

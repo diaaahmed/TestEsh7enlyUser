@@ -1,11 +1,11 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.esh7enly.data.repo.UserRepo
+import com.esh7enly.data.repo.UserRepoImpl
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.NetworkResult
+import com.esh7enly.esh7enlyuser.util.isValidEmailId
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpdateProfileViewModel @Inject constructor(
-    private val userRepo: UserRepo,
+    private val userRepo: UserRepoImpl,
     private val sharedHelper: SharedHelper
 
 ) : ViewModel() {
@@ -101,9 +101,4 @@ class UpdateProfileViewModel @Inject constructor(
         }
 
     }
-
-
-    private fun isValidEmailId(email: String): Boolean =
-        Patterns.EMAIL_ADDRESS.matcher(email).matches()
-
 }

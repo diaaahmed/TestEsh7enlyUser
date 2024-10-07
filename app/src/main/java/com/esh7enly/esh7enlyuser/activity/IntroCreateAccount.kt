@@ -3,6 +3,7 @@ package com.esh7enly.esh7enlyuser.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.esh7enly.esh7enlyuser.databinding.ActivityIntroCreateAccountBinding
+import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 
 class IntroCreateAccount : AppCompatActivity()
@@ -17,11 +18,12 @@ class IntroCreateAccount : AppCompatActivity()
         setContentView(ui.root)
 
         ui.btnSkip.setOnClickListener {
-            NavigateToActivity.navigateToMainActivity(this)
+            NavigateToActivity.navigateToAuthActivity(this)
         }
 
         ui.btnNewAccount.setOnClickListener {
-            NavigateToActivity.navigateToPhoneActivity(this)
+            Constants.isSkip = false
+            NavigateToActivity.navigateToAuthActivity(this)
         }
     }
 }

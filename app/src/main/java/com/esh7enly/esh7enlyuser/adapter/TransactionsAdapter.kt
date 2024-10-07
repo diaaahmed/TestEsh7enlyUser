@@ -46,7 +46,7 @@ class TransactionsAdapter (val click: TransactionClick) :
 
             if(response.service.icon == null)
             {
-                image.setImageResource(R.drawable.logo)
+                image.setImageResource(R.drawable.new_logo_trans)
             }
             else
             {

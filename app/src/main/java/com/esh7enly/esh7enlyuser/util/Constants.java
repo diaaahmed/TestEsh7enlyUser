@@ -2,6 +2,7 @@ package com.esh7enly.esh7enlyuser.util;
 
 import com.fawry.nfc.NFC.Shared.NFCConstants;
 
+
 public class Constants {
 
     //region General
@@ -13,13 +14,13 @@ public class Constants {
     // region user
 
     public static final int EXCEPTION_CODE = 400;
-    public static final String USER_ID = "user_id";
+    public static final String OTP = "otp";
+    public static final String PHONE = "phone";
     public static  String BILLING_ACCOUNT_CARD = "billing_account_card";
     public static  int VODAFONE_CASH_ID = 3968;
 
     public static final String USER_PHONE = "user_phone";
     public static  String USER_KEY = "USER_KEY";
-    public static final String USER_PASSWORD = "user_password";
     public static  String IMEI = "imei";
 
     //endregion
@@ -99,8 +100,8 @@ public class Constants {
     //endregion
 
     public static  String LANG = "lang";
+    public static  Boolean isSkip = true;
     public static  String FORGET_PASSWORD = "FORGET_PASSWORD";
-    public static  String SERVICE_UPDATE_NUMBER = "";
 
     public static final String IMAGE = "image";
 
@@ -126,10 +127,10 @@ public class Constants {
 
     //region Error Codes
     public static final String CODE_HTTP_UNAUTHORIZED = "401";
-    public static final String CODE_UNAUTH = "330001";
     public static final int CODE_UNAUTH_NEW = 330001;
 
     //endregion
     public static final String INTERNAL_ID = "internal_id";
+
     //endregion
 }

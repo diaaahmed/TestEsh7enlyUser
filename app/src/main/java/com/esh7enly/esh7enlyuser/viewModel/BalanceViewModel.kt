@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
+import com.esh7enly.domain.repo.UserRepo
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

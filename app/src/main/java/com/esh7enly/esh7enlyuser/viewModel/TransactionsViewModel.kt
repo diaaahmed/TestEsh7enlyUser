@@ -5,15 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.esh7enly.data.repo.TransactionsRepo
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.TransactionApiResponse
 import com.esh7enly.domain.entity.TransactionDetailsEntity
+import com.esh7enly.domain.repo.TransactionsRepo
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,7 +28,6 @@ class TransactionsViewModel @Inject constructor(
 
     var responseTransactions: LiveData<NetworkResult<TransactionApiResponse>> = _responseTransactions
 
-    private val _transactions: MutableStateFlow<TransactionApiResponse.TransactionDataEntity?> = MutableStateFlow(null)
 
     fun getTransactions(token: String, page: Int)
     {
@@ -44,7 +43,6 @@ class TransactionsViewModel @Inject constructor(
                 }
                 else {
                     _responseTransactions.value = NetworkResult.Success(response)
-                    _transactions.value = response.data
                 }
             } catch (e: Exception) {
                 _responseTransactions.value = NetworkResult.Error(e.message,0)
@@ -57,12 +55,12 @@ class TransactionsViewModel @Inject constructor(
         MutableStateFlow(null)
     val transactionDetails: StateFlow<TransactionDetailsEntity?> = _transactionDetails
 
-    fun getTransactionDetails(token: String, transactionId: String) {
+    fun getTransactionDetails(token: String, transactionId: String)
+    {
         viewModelScope.launch {
             try {
                 transactionsRepo.getTransactionDetails(token, transactionId)
-                    .buffer()
-                    .collect {
+                    .collectLatest {
                         _transactionDetails.value = it
                     }
             } catch (e: Exception) {

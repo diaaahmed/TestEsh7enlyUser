@@ -1,51 +1,94 @@
 package com.esh7enly.domain.entity.servicesNew
 
+import com.google.gson.annotations.SerializedName
+
 data class ServiceData(
-    val accept_amount_input: Int,
-    val accept_cancel: Int,
-    val accept_change_paid_amount: Int,
-    val accept_check_integration_provider_status: Int,
-    val alternative_service_id: Any,
-    val charge_tiers: List<ChargeTier>,
-    val charge_type: Int,
-    val commission_category_id: Int,
-    val commission_tiers: List<CommissionTier>,
-    val connector_path: String,
-    val convert_services: String,
-    val created_at: String,
-    val deleted_at: Any,
-    val description_ar: String,
-    val description_en: String,
-    val display_total_amount: Int,
-    val external_id: String,
-    val extra_commission_tiers: List<ExtraCommissionTier>,
-    val footer_description_ar: String,
-    val footer_description_en: String,
-    val grace_period: Int,
+    @SerializedName("accept_amount_input")
+    val acceptAmountInput: Int,
+    @SerializedName("accept_cancel")
+    val acceptCancel: Int,
+    @SerializedName("accept_change_paid_amount")
+    val acceptChangePaidAmount: Int,
+    @SerializedName("accept_check_integration_provider_status")
+    val acceptCheckIntegrationProviderStatus: Int,
+    @SerializedName("alternative_service_id")
+    val alternativeServiceId: Any?,
+    @SerializedName("charge_tiers")
+    val chargeTierList: List<ChargeTier>,
+    @SerializedName("charge_type")
+    val chargeType: Int,
+    @SerializedName("commission_category_id")
+    val commissionCategoryId: Int,
+    @SerializedName("commission_tiers")
+    val commissionTierList: List<CommissionTier>,
+    @SerializedName("connector_path")
+    val connectorPath: String,
+    @SerializedName("convert_services")
+    val convertServices: String,
+    @SerializedName("created_at")
+    val createdAt: String,
+    @SerializedName("deleted_at")
+    val deletedAt: Any?,
+    @SerializedName("description_ar")
+    val descriptionAr: String,
+    @SerializedName("description_en")
+    val descriptionEn: String,
+    @SerializedName("display_total_amount")
+    val displayTotalAmount: Int,
+    @SerializedName("external_id")
+    val externalId: String,
+    @SerializedName("extra_commission_tiers")
+    val extraCommissionTierList: List<ExtraCommissionTier>,
+    @SerializedName("footer_description_ar")
+    val footerDescriptionAr: String,
+    @SerializedName("footer_description_en")
+    val footerDescriptionEn: String,
+    @SerializedName("grace_period")
+    val gracePeriod: Int,
     val icon: String,
     val id: Int,
-    val integration_provider_id: Int,
-    val integration_provider_tiers: List<IntegrationProviderTier>,
-    val name_ar: String,
-    val name_en: String,
-    val platform_ids: List<String>,
-    val powered_by_ar: String,
-    val powered_by_en: String,
-    val price_max_value: String,
-    val price_min_value: String,
-    val price_type: Int,
-    val price_value: String,
-    val price_value_list: String,
-    val rule_path: Any,
-    val rule_settings: Any,
-    val rule_status: Int,
-    val service_provider_id: Int,
+    @SerializedName("integration_provider_id")
+    val integrationProviderId: Int,
+    @SerializedName("integration_provider_tiers")
+    val integrationProviderTierList: List<IntegrationProviderTier>,
+    @SerializedName("name_ar")
+    val nameAr: String,
+    @SerializedName("name_en")
+    val nameEn: String,
+    @SerializedName("platform_ids")
+    val platformIds: List<String>,
+    @SerializedName("powered_by_ar")
+    val poweredByAr: String,
+    @SerializedName("powered_by_en")
+    val poweredByEn: String,
+    @SerializedName("price_max_value")
+    val priceMaxValue: String,
+    @SerializedName("price_min_value")
+    val priceMinValue: String,
+    @SerializedName("price_type")
+    val priceType: Int,
+    @SerializedName("price_value")
+    val priceValue: String,
+    @SerializedName("price_value_list")
+    val priceValueList: String,
+    @SerializedName("rule_path")
+    val rulePath: Any?,
+    @SerializedName("rule_settings")
+    val ruleSettings: Any?,
+    @SerializedName("rule_status")
+    val ruleStatus: Int,
+    @SerializedName("service_provider_id")
+    val serviceProviderId: Int,
     val sort: Int,
-    val staff_id: Int,
+    @SerializedName("staff_id")
+    val staffId: Int,
     val status: Int,
     val type: Int,
-    val type_code: String,
-    val updated_at: String,
+    @SerializedName("type_code")
+    val typeCode: String,
+    @SerializedName("updated_at")
+    val updatedAt: String,
     val visible: Int,
-    val wallet_type_id: Int
+    @SerializedName("wallet_type_id")
+    val walletTypeId: Int
 )

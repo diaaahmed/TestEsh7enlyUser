@@ -23,14 +23,11 @@ import androidx.lifecycle.lifecycleScope
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.parametersNew.ParametersData
-import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.R
-import com.esh7enly.esh7enlyuser.click.DynamicOnClickListener
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityInquireBinding
 import com.esh7enly.esh7enlyuser.util.*
-import com.esh7enly.esh7enlyuser.util.AppDialogMsg.CallBack
-import com.esh7enly.esh7enlyuser.util.AppDialogMsg.CallBackAmount
+
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import com.fawry.nfc.NFC.Main.NFCFawry
 import com.fawry.nfc.NFC.interfaces.NFCWriteCallback
@@ -71,27 +68,39 @@ class InquireActivity : AppCompatActivity() {
             data: PaymentEntity.DataEntity, paymentPojoModel: PaymentPojoModel,
             serviceTypeCode: String, activity: Activity, serviceAmountInput: Int
         ) {
-            val intent = Intent(activity, InquireActivity::class.java)
-            NAME_AR = nameAr
-            NAME_EN = nameEn
-            IMAGE = image
-            PROVIDER_NAME = providerName
-            SERVICE_ID = serviceId
-            SERVICE_TYPE = serviceType
-            ACCEPT_AMOUNT_CHANGE = acceptAmountChange
-            ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS = acceptCheckIntegrationProviderStatus
-            SERVICE_TYPE_CODE = serviceTypeCode
-            PAYMENTPOJOMODEL = paymentPojoModel
-            DATA_ENTITY = data
-            SERVICE_AMOUNT_INPUT = serviceAmountInput
 
-            activity.startActivity(intent)
+           try{
+               val intent = Intent(activity, InquireActivity::class.java)
+               NAME_AR = nameAr
+               NAME_EN = nameEn
+               IMAGE = image
+               PROVIDER_NAME = providerName
+               SERVICE_ID = serviceId
+               SERVICE_TYPE = serviceType
+               ACCEPT_AMOUNT_CHANGE = acceptAmountChange
+               ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS = acceptCheckIntegrationProviderStatus
+               SERVICE_TYPE_CODE = serviceTypeCode
+               PAYMENTPOJOMODEL = paymentPojoModel
+               DATA_ENTITY = data
+               SERVICE_AMOUNT_INPUT = serviceAmountInput
+
+               activity.startActivity(intent)
+           }
+           catch (e: Exception)
+           {
+               sendIssueToCrashlytics(
+                   key = "InquireActivity getIntent",
+                   provider = "InquireActivity getIntent",
+                   msg = e.message.toString(),
+                   functionName = "Get intent"
+               )
+           }
         }
     }
 
     private val serviceViewModel: ServiceViewModel by viewModels()
 
-    private val PICK_CONTACT_REQUESTCODE = 100
+    private val REQUESTCODE = 100
     private var internalId: String? = null
 
     private var editedAmount = ""
@@ -165,7 +174,7 @@ class InquireActivity : AppCompatActivity() {
 
         if (IMAGE == null)
         {
-            ui.img.setImageResource(R.drawable.logo)
+            ui.img.setImageResource(R.drawable.new_logo_trans)
         }
         else {
             Utils.displayImageOriginalFromCache(
@@ -222,10 +231,10 @@ class InquireActivity : AppCompatActivity() {
                     ) {
                         dialog.cancel()
 
-                        if (code.toString() == Constants.CODE_UNAUTH ||
+                        if (code == Constants.CODE_UNAUTH_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
-                            NavigateToActivity.navigateToMainActivity(this@InquireActivity)
+                            NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
                         }
                     }.show()
                 }
@@ -345,7 +354,7 @@ class InquireActivity : AppCompatActivity() {
                                 )
                             }
                             edtNumber.compoundDrawablePadding = 24
-                            edtNumber.setOnTouchListener { v: View?, event: MotionEvent ->
+                            edtNumber.setOnTouchListener { _: View?, event: MotionEvent ->
                                 val DRAWABLE_LEFT = 0
                                 // val DRAWABLE_TOP = 1
                                 val DRAWABLE_RIGHT = 2
@@ -361,7 +370,7 @@ class InquireActivity : AppCompatActivity() {
                                                     PermissionHelper.checkSinglePermission(
                                                         this,
                                                         Manifest.permission.READ_CONTACTS,
-                                                        PICK_CONTACT_REQUESTCODE
+                                                        REQUESTCODE
                                                     )
                                                 if (result) {
                                                     startActivity(internalId)
@@ -380,7 +389,7 @@ class InquireActivity : AppCompatActivity() {
                                                     PermissionHelper.checkSinglePermission(
                                                         this,
                                                         Manifest.permission.READ_CONTACTS,
-                                                        PICK_CONTACT_REQUESTCODE
+                                                        REQUESTCODE
                                                     )
                                                 if (result) {
                                                     startActivity(internalId)
@@ -414,11 +423,8 @@ class InquireActivity : AppCompatActivity() {
                             internalId,
                             paramName,
                             InputType.TYPE_CLASS_TEXT,
-                            1,
-                            object : DynamicOnClickListener {
-                                override fun onItemSelected(value: String?) {
-                                }
-                            })
+                            1
+                        ) { }
                         val edtChar: EditText = ui.lytDynamic.findViewWithTag(internalId)
                         edtChar.setText("")
                         setValue(internalId, edtChar)
@@ -441,12 +447,8 @@ class InquireActivity : AppCompatActivity() {
                             internalId,
                             paramName,
                             InputType.TYPE_CLASS_TEXT,
-                            1,
-                            object : DynamicOnClickListener {
-                                override fun onItemSelected(value: String?) {
-
-                                }
-                            })
+                            1
+                        ) { }
 
                         // get created dynamic editText by id
                         val etDateTime: EditText =
@@ -478,12 +480,8 @@ class InquireActivity : AppCompatActivity() {
                             internalId,
                             paramName,
                             InputType.TYPE_CLASS_TEXT,
-                            4,
-                            object : DynamicOnClickListener {
-                                override fun onItemSelected(value: String?) {
-
-                                }
-                            })
+                            4
+                        ) { }
                         val edtTxtArea: EditText =
                             ui.lytDynamic.findViewWithTag(internalId)
                         edtTxtArea.setText("")
@@ -503,17 +501,15 @@ class InquireActivity : AppCompatActivity() {
                         dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 2)
                         // dynamicLayout.addLineSeperator(lytDynamic);
                         dynamicLayout?.addSpinners(ui.lytDynamic, internalId, 0,
-                            "\u2022 $paramName ", values,
-                            object : DynamicOnClickListener {
-                                override fun onItemSelected(value: String?) {
-                                    paramsArrayListToSend.add(
-                                        TotalAmountPojoModel.Params(
-                                            internalId,
-                                            value
-                                        )
-                                    )
-                                }
-                            })
+                            "\u2022 $paramName ", values
+                        ) { value ->
+                            paramsArrayListToSend.add(
+                                TotalAmountPojoModel.Params(
+                                    internalId,
+                                    value
+                                )
+                            )
+                        }
                         val spinner: Spinner = ui.lytDynamic.findViewWithTag(internalId)
                         // set value to spinner
                         setSpinnerValue(internalId, spinner, values)
@@ -522,10 +518,7 @@ class InquireActivity : AppCompatActivity() {
                     }
 
                     Constants.Radio -> {
-                        dynamicLayout?.addTextViews(
-                            ui.lytDynamic,  /*"\u2022 " +*/
-                            paramName
-                        )
+                        dynamicLayout?.addTextViews(ui.lytDynamic,  /*"\u2022 " +*/ paramName)
                         // adding view
                         dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 2)
                         // dynamicLayout.addLineSeperator(lytDynamic);
@@ -778,10 +771,10 @@ class InquireActivity : AppCompatActivity() {
                         ) {
                             dialog.cancel()
 
-                            if (code.toString() == Constants.CODE_UNAUTH ||
+                            if (code == Constants.CODE_UNAUTH_NEW ||
                                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
-                                NavigateToActivity.navigateToMainActivity(this@InquireActivity)
+                                NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
                             }
                         }.show()
                     }
@@ -804,7 +797,7 @@ class InquireActivity : AppCompatActivity() {
                         .setCancelable(false)
                         .setPositiveButton(resources.getString(R.string.add))
                         {
-                                alertDialog,which->
+                                alertDialog, _ ->
                             alertDialog.cancel()
 
                             val calendar = Calendar.getInstance()
@@ -816,7 +809,7 @@ class InquireActivity : AppCompatActivity() {
                         }
                         .setNegativeButton(resources.getString(R.string.no_add))
                         {
-                                alertDialog,which->
+                                alertDialog, _ ->
                             alertDialog.cancel()
                             ReceiptActivity.getIntent(
                                 this@InquireActivity,
@@ -1025,10 +1018,10 @@ class InquireActivity : AppCompatActivity() {
                         ) {
                             dialog.cancel()
 
-                            if (code.toString() == Constants.CODE_UNAUTH
+                            if (code  == Constants.CODE_UNAUTH_NEW
                                 || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
-                                NavigateToActivity.navigateToMainActivity(this@InquireActivity)
+                                NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
 
                             }
                         }.show()
@@ -1217,92 +1210,86 @@ class InquireActivity : AppCompatActivity() {
             resources.getString(R.string.dialog_editable_amount_msg) + " " +
                     DATA_ENTITY?.minAmount + " " + resources.getString(R.string.and) + DATA_ENTITY?.maxAmount,
             resources.getString(R.string.app__ok), resources.getString(R.string.app__cancel),
-            DATA_ENTITY?.amount.toString(),
-            object : CallBackAmount {
-                override fun onClick(amount: String?) {
-                    dialog.cancel()
-                    editedAmount = amount!!
-                    val totalAmountPojoModel = TotalAmountPojoModel(
-                        Constants.IMEI, SERVICE_ID, amount,
-                        DATA_ENTITY!!.id, PAYMENTPOJOMODEL!!.params
-                    )
+            DATA_ENTITY?.amount.toString()
+        ) { amount ->
+            dialog.cancel()
+            editedAmount = amount!!
+            val totalAmountPojoModel = TotalAmountPojoModel(
+                Constants.IMEI, SERVICE_ID, amount,
+                DATA_ENTITY!!.id, PAYMENTPOJOMODEL!!.params
+            )
 
-                    serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
-                        totalAmountPojoModel,
-                        object : OnResponseListener {
-                            override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                                val data = obj as TotalAmountEntity.DataEntity
+            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+                totalAmountPojoModel,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        val data = obj as TotalAmountEntity.DataEntity
 
-                                val amount = java.lang.String.format(
-                                    " • %s %s %s",
-                                    getString(R.string.dialog_amount),
-                                    Utils.format(data.amount),
-                                    getString(R.string.egp)
-                                )
-                                val totalAmount = java.lang.String.format(
-                                    " • %s %s %s",
-                                    getString(R.string.dialog_total_amount),
-                                    Utils.format(data.totalAmount),
-                                    getString(R.string.egp)
-                                )
-                                val paidAmount = ""
+                        val amount = java.lang.String.format(
+                            " • %s %s %s",
+                            getString(R.string.dialog_amount),
+                            Utils.format(data.amount),
+                            getString(R.string.egp)
+                        )
+                        val totalAmount = java.lang.String.format(
+                            " • %s %s %s",
+                            getString(R.string.dialog_total_amount),
+                            Utils.format(data.totalAmount),
+                            getString(R.string.egp)
+                        )
+                        val paidAmount = ""
 
-                                ui.tvAmount.text = amount
-                                ui.tvPaidAmou.text = paidAmount
-                                ui.tvTotalAmou.text = totalAmount
-                                ui.tvFee.text =
-                                    Utils.format(data.serviceCharge) + resources.getString(R.string.egp)
+                        ui.tvAmount.text = amount
+                        ui.tvPaidAmou.text = paidAmount
+                        ui.tvTotalAmou.text = totalAmount
+                        ui.tvFee.text =
+                            Utils.format(data.serviceCharge) + resources.getString(R.string.egp)
 
-                                dialog.showSuccessDialogWithAction(resources.getString(R.string.confirmation_title),
-                                    String.format(
-                                        "%s \n %s \n %s",
-                                        amount,
-                                        totalAmount,
-                                        paidAmount
-                                    ),
-                                    resources.getString(R.string.app__ok),
-                                    resources.getString(R.string.app__cancel),
-                                    object : CallBack {
-                                        override fun onClick() {
-                                            dialog.cancel()
-                                            val paymentPojoModel = PaymentPojoModel(
-                                                Constants.IMEI,
-                                                "",
-                                                totalAmountPojoModel.serviceId,
-                                                totalAmountPojoModel.amount,
-                                                DATA_ENTITY!!.id.toString(),
-                                                "",
-                                                PAYMENTPOJOMODEL!!.params
-                                            )
+                        dialog.showSuccessDialogWithAction(resources.getString(R.string.confirmation_title),
+                            String.format(
+                                "%s \n %s \n %s",
+                                amount,
+                                totalAmount,
+                                paidAmount
+                            ),
+                            resources.getString(R.string.app__ok),
+                            resources.getString(R.string.app__cancel)
+                        ) {
+                            dialog.cancel()
+                            val paymentPojoModel = PaymentPojoModel(
+                                Constants.IMEI,
+                                "",
+                                totalAmountPojoModel.serviceId,
+                                totalAmountPojoModel.amount,
+                                DATA_ENTITY!!.id.toString(),
+                                "",
+                                PAYMENTPOJOMODEL!!.params
+                            )
 
-                                            pay(paymentPojoModel)
-                                        }
+                            pay(paymentPojoModel)
+                        }.show()
 
-                                    }).show()
+                    }
 
+                    override fun onFailed(code: Int, msg: String?) {
+                        pDialog.cancel()
+
+                        dialog.showErrorDialogWithAction(
+                            msg, resources.getString(R.string.app__ok)
+                        ) {
+                            dialog.cancel()
+
+                            if (code == Constants.CODE_UNAUTH_NEW) {
+                                lifecycleScope.launch(Dispatchers.Main)
+                                {
+                                    NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
+                                }
                             }
+                        }.show()
+                    }
 
-                            override fun onFailed(code: Int, msg: String?) {
-                                pDialog.cancel()
-
-                                dialog.showErrorDialogWithAction(
-                                    msg, resources.getString(R.string.app__ok)
-                                ) {
-                                    dialog.cancel()
-
-                                    if (code == Constants.CODE_UNAUTH_NEW) {
-                                        lifecycleScope.launch(Dispatchers.Main)
-                                        {
-                                            NavigateToActivity.navigateToMainActivity(this@InquireActivity)
-                                        }
-                                    }
-                                }.show()
-                            }
-
-                        })
-
-                }
-            })
+                })
+        }
         dialog.show()
     }
 

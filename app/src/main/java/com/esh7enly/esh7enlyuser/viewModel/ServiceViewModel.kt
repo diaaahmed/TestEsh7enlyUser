@@ -3,10 +3,10 @@ package com.esh7enly.esh7enlyuser.viewModel
 import android.util.Log
 import androidx.lifecycle.*
 import com.esh7enly.data.local.DatabaseRepo
-import com.esh7enly.data.repo.ServicesRepoImpl
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
+import com.esh7enly.domain.entity.imageadsresponse.ImageAdResponse
 import com.esh7enly.domain.repo.ServicesRepo
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
@@ -21,11 +21,14 @@ private const val TAG = "ServiceViewModel"
 
 @HiltViewModel
 class ServiceViewModel @Inject constructor(
-    private val repo: ServicesRepoImpl,
     private val databaseRepo: DatabaseRepo,
     private val servicesRepo: ServicesRepo
 ) :
     ViewModel() {
+
+     private var _categories:MutableStateFlow<NetworkResult<CategoriesResponse>> = MutableStateFlow(NetworkResult.Loading())
+
+    val categories:StateFlow<NetworkResult<CategoriesResponse>> = _categories.asStateFlow()
 
     fun getProvidersNew(token: String, categoryId: String, listner: OnResponseListener) {
         viewModelScope.launch {
@@ -39,7 +42,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(providers?.code!!, providers.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"Get providers new Method serviceViewModel")
             }
         }
@@ -61,8 +64,32 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(serviceSearch?.code!!, serviceSearch.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"Service search Method serviceViewModel")
+
+            }
+        }
+    }
+
+    fun getCategoriesNewState(token: String) {
+        viewModelScope.launch {
+
+            try {
+                val categories = servicesRepo.getCategories(token)
+
+                if (categories?.data?.isNotEmpty() == true) {
+                    _categories.update { NetworkResult.Success(categories) }
+
+
+                } else {
+                    _categories.update { NetworkResult.Error(categories?.message,categories?.code) }
+                }
+            } catch (e: Exception) {
+                _categories.update { NetworkResult.Error(e.message,404) }
+
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "get Categories new Method serviceViewModel")
 
             }
         }
@@ -70,18 +97,26 @@ class ServiceViewModel @Inject constructor(
 
     fun getCategoriesNew(token: String, listner: OnResponseListener) {
         viewModelScope.launch {
+
             try {
                 val categories = servicesRepo.getCategories(token)
 
                 if (categories?.data?.isNotEmpty() == true) {
+                    _categories.update { NetworkResult.Success(categories) }
+
                     listner.onSuccess(categories.code, categories.message, categories.data)
 
                 } else {
+                    _categories.update { NetworkResult.Error(categories?.message,categories?.code) }
                     listner.onFailed(categories?.code!!, categories.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
-                sendIssueToCrashlytics(e.message.toString(),"get Categories new Method serviceViewModel")
+                _categories.update { NetworkResult.Error(e.message,404) }
+
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "get Categories new Method serviceViewModel")
 
             }
         }
@@ -99,38 +134,51 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(services?.code!!, services.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
-                sendIssueToCrashlytics(e.message.toString(),"Get services new serviceViewModel")
-
-
+                listner.onFailed(Constants.EXCEPTION_CODE, "Nod service found")
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "Get services new serviceViewModel")
             }
         }
     }
 
-    private var categoriesResponse: MutableStateFlow<NetworkResult<CategoriesResponse>?> =
-        MutableStateFlow(null)
+    private var _categoriesResponse: MutableStateFlow<NetworkResult<CategoriesResponse>?> =
+        MutableStateFlow(NetworkResult.Loading())
 
-    fun getCategoriesNewFlow(token: String) {
+    val categoriesResponse = this._categoriesResponse.asStateFlow()
+
+    var data: Boolean = false
+
+     fun fetchData(token:String) {
+        if (!data) {
+            getCategoriesNewFlow(token)
+            getImageAds(token)
+            data = true
+        }
+    }
+
+
+    private fun getCategoriesNewFlow(token: String) {
 
         viewModelScope.launch {
             servicesRepo.getCategoriesFlow(token)
                 .onEach { result ->
                     when (result) {
                         is NetworkResult.Error -> {
-                            categoriesResponse.update {
+                            this@ServiceViewModel._categoriesResponse.update {
                                 NetworkResult.Error(result.message, result.code)
                             }
                         }
 
                         is NetworkResult.Loading -> {
-                            categoriesResponse.update {
+                            this@ServiceViewModel._categoriesResponse.update {
                                 NetworkResult.Loading()
                             }
 
                         }
 
                         is NetworkResult.Success -> {
-                            categoriesResponse.update {
+                            this@ServiceViewModel._categoriesResponse.update {
                                 NetworkResult.Success(result.data!!)
                             }
                         }
@@ -153,7 +201,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(parameters?.code!!, parameters.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"Get parameters new serviceViewModel")
 
             }
@@ -200,12 +248,13 @@ class ServiceViewModel @Inject constructor(
     fun scheduleInquire(
         token: String,
         serviceId: String,
-        invoice_number: String,
+        invoiceNumber: String,
         listner: OnResponseListener
-    ) {
+    )
+    {
         viewModelScope.launch {
             try {
-                val scheduleInquireResponse = repo.scheduleInquire(token, serviceId, invoice_number)
+                val scheduleInquireResponse = servicesRepo.scheduleInquire(token, serviceId, invoiceNumber)
 
                 if (scheduleInquireResponse.isSuccessful) {
                     if (scheduleInquireResponse.body()!!.status) {
@@ -227,7 +276,7 @@ class ServiceViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"Schedule inquire Method serviceViewModel")
 
             }
@@ -238,32 +287,40 @@ class ServiceViewModel @Inject constructor(
         return databaseRepo.getFawryOperations()
     }
 
-    fun getImageAds(token: String, listner: OnResponseListener) {
+    private var _dynamicAdsState: MutableStateFlow<NetworkResult<ImageAdResponse>?> =
+        MutableStateFlow(null)
+
+    val dynamicAdsState = _dynamicAdsState.asStateFlow()
+
+    private fun getImageAds(token: String) {
+
         viewModelScope.launch {
-            try {
-                val imageAdResponse = repo.getImageAdResponse(token)
+            servicesRepo.getNewImageAdResponse(token)
+                .collect{response->
+                    when(response)
+                    {
+                        is NetworkResult.Error -> {
+                            _dynamicAdsState.update {
+                                NetworkResult.Error(response.message,response.code)
+                            }
 
-                if (imageAdResponse.isSuccessful) {
-                    if (imageAdResponse.body()!!.status) {
-                        listner.onSuccess(
-                            imageAdResponse.body()!!.code,
-                            imageAdResponse.body()?.message,
-                            imageAdResponse.body()?.data
-                        )
-                    } else {
-                        listner.onFailed(
-                            imageAdResponse.body()!!.code,
-                            imageAdResponse.body()!!.message
-                        )
+                            sendIssueToCrashlytics(response.message.toString(),
+                                "getImageAds serviceViewModel")
+
+                        }
+                        is NetworkResult.Loading -> {
+                            _dynamicAdsState.update {
+                                NetworkResult.Loading()
+                            }
+                        }
+                        is NetworkResult.Success -> {
+                            _dynamicAdsState.update {
+                                NetworkResult.Success(response.data!!)
+                            }
+
+                        }
                     }
-                } else {
-                    listner.onFailed(imageAdResponse.code(), imageAdResponse.message())
                 }
-            } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
-                sendIssueToCrashlytics(e.message.toString(),"getImageAds serviceViewModel")
-
-            }
         }
     }
 
@@ -274,7 +331,7 @@ class ServiceViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                repo.getTotalAmount(token, totalAmountPojoModel)
+                servicesRepo.getTotalAmount(token, totalAmountPojoModel)
                     .catch { Log.d(TAG, "diaa getTotalAmount: catch ${it.message}") }
                     .buffer()
                     .collect { response ->
@@ -286,7 +343,7 @@ class ServiceViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
-                listner.onFailed(Constants.CODE_UNAUTH_NEW, e.message)
+                listner.onFailed(Constants.CODE_UNAUTH_NEW, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"getTotalAmount serviceViewModel")
             }
 
@@ -298,7 +355,7 @@ class ServiceViewModel @Inject constructor(
         viewModelScope.launch {
 
             try {
-                val response = repo.pay(token, paymentPojoModel)
+                val response = servicesRepo.pay(token, paymentPojoModel)
 
                 if (response.isSuccessful) {
                     if (response.body()?.status == false) {
@@ -316,7 +373,7 @@ class ServiceViewModel @Inject constructor(
 
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"pay Method serviceViewModel")
 
 
@@ -332,7 +389,7 @@ class ServiceViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
 
-            val response = repo.cancelTransaction(token, transactionId, imei)
+            val response = servicesRepo.cancelTransaction(token, transactionId, imei)
 
             if (response.isSuccessful) {
                 val code: String
@@ -366,11 +423,12 @@ class ServiceViewModel @Inject constructor(
     }
 
 
-    fun inquire(token: String, paymentPojoModel: PaymentPojoModel, listner: OnResponseListener) {
+    fun inquire(token: String, paymentPojoModel: PaymentPojoModel,
+                listner: OnResponseListener) {
         viewModelScope.launch {
 
             //   try{
-            val inquireResponse = repo.inquire(token, paymentPojoModel)
+            val inquireResponse = servicesRepo.inquire(token, paymentPojoModel)
 
             if (inquireResponse.isSuccessful) {
                 if (inquireResponse.body()?.status == false) {
@@ -399,13 +457,13 @@ class ServiceViewModel @Inject constructor(
 
     fun checkIntegration(
         token: String,
-        transaction_id: String,
+        transactionId1: String,
         imei: String,
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
 
-            val response = repo.checkIntegration(token, transaction_id, imei)
+            val response = servicesRepo.checkIntegration(token, transactionId1, imei)
 
             if (response.isSuccessful) {
 
@@ -438,7 +496,7 @@ class ServiceViewModel @Inject constructor(
     fun getScheduleList(token: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
-                val scheduleListResponse = repo.getScheduleList(token)
+                val scheduleListResponse = servicesRepo.getScheduleList(token)
 
                 if (scheduleListResponse.isSuccessful) {
                     if (scheduleListResponse.body()?.status == true) {
@@ -458,7 +516,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(scheduleListResponse.code(), scheduleListResponse.message())
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"getScheduleList")
 
 
@@ -501,7 +559,7 @@ class ServiceViewModel @Inject constructor(
             } catch (e: Exception) {
                 userPointsState.update {
                     NetworkResult.Error(
-                        e.message,
+                        "No data found",
                         Constants.EXCEPTION_CODE
                     )
                 }
@@ -515,12 +573,12 @@ class ServiceViewModel @Inject constructor(
         token: String,
         serviceId: String,
         scheduleDay: String,
-        invoice_number: String,
+        invoiceNumber: String,
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
             val scheduleResponse =
-                repo.scheduleInvoice(token, serviceId, scheduleDay, invoice_number)
+                servicesRepo.scheduleInvoice(token, serviceId, scheduleDay, invoiceNumber)
 
             if (scheduleResponse.isSuccessful) {
                 if (scheduleResponse.body()!!.status) {
@@ -548,7 +606,7 @@ class ServiceViewModel @Inject constructor(
         viewModelScope.launch {
 
             try {
-                val replaceResponse = repo.replaceUserPoints(token)
+                val replaceResponse = servicesRepo.replaceUserPoints(token)
                 if (replaceResponse.isSuccessful) {
                     if (replaceResponse.body()!!.status == true) {
                         listner.onSuccess(
@@ -566,12 +624,10 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(replaceResponse.code(), replaceResponse.message())
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
                 sendIssueToCrashlytics(e.message.toString(),"replaceUserPoints")
 
             }
         }
     }
-
-
 }

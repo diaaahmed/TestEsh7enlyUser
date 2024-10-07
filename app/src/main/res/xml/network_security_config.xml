@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<network-security-config xmlns:tools="http://schemas.android.com/tools">
+<network-security-config >
+    <base-config cleartextTrafficPermitted="false" />
 
-    <base-config cleartextTrafficPermitted="false"
-        tools:ignore="InsecureBaseConfiguration" />
-
-<!--    <domain-config cleartextTrafficPermitted="true">-->
-<!--        <domain includeSubdomains="true">e-esh7nly.org</domain>-->
-<!--    </domain-config>-->
 
 </network-security-config>

@@ -55,7 +55,7 @@ class MyNotificationManager @Inject constructor(private val mCtx:Application)
 
         notificationBuilder.setAutoCancel(true)
             .setWhen(System.currentTimeMillis())
-            .setSmallIcon(R.drawable.logo)
+            .setSmallIcon(R.drawable.new_logo_trans)
             .setTicker(mCtx.resources.getString(R.string.app_name))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSound(soundUri)

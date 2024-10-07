@@ -9,7 +9,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,8 +20,6 @@ import com.esh7enly.esh7enlyuser.R;
 public class AppDialogMsg {
 
     public TextView msgTextView, titleTextView, tvProgressPercent,tv_title_qty;
-    public TextView tvCreatedAt, tvActionTime, tvComment, tvDesc;
-    public LinearLayout lytDesc, lytActionComment;
     private ProgressBar progressBar;
     public Button okButton, cancelButton;
     private Dialog dialog;
@@ -117,8 +114,7 @@ public class AppDialogMsg {
         this.dialog.setContentView(R.layout.dialog_alert);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_success_white_24);
+
         titleTextView.setTextColor(dialog.getContext().getResources().getColor(R.color.green_800));
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
@@ -144,9 +140,7 @@ public class AppDialogMsg {
         this.dialog.setContentView(R.layout.dialog_message);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_success_white_24);
-        //view.setBackgroundColor(dialog.getContext().getResources().getColor(R.color.colorPrimary));
+
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
         okButton = dialog.findViewById(R.id.dialogOkButton);
@@ -176,9 +170,6 @@ public class AppDialogMsg {
         this.dialog.setContentView(R.layout.dialog_message);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_success_white_24);
-        //view.setBackgroundColor(dialog.getContext().getResources().getColor(R.color.colorPrimary));
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
         okButton = dialog.findViewById(R.id.dialogOkButton);
@@ -316,8 +307,7 @@ public class AppDialogMsg {
         this.dialog.setContentView(R.layout.dialog_alert);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_error_white_24);
+
         titleTextView.setTextColor(dialog.getContext().getResources().getColor(R.color.red_900));
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
@@ -343,8 +333,7 @@ public class AppDialogMsg {
         this.dialog.setContentView(R.layout.dialog_alert);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_error_white_24);
+
         titleTextView.setTextColor(dialog.getContext().getResources().getColor(R.color.red_900));
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
@@ -370,8 +359,6 @@ public class AppDialogMsg {
         this.dialog.setContentView(R.layout.dialog_alert);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_error_white_24);
         titleTextView.setTextColor(dialog.getContext().getResources().getColor(R.color.red_900));
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
@@ -397,8 +384,6 @@ public class AppDialogMsg {
         this.dialog.setContentView(R.layout.dialog_alert);
         view = dialog.findViewById(R.id.dialogTitleView);
         titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_warning_white_24);
         titleTextView.setTextColor(dialog.getContext().getResources().getColor(R.color.lime_700));
 
         msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
@@ -459,132 +444,6 @@ public class AppDialogMsg {
         return dialog;
     }
 
-    /**
-     * Recharge Dialog
-     *
-     * @param callBack
-     * @return
-     */
-    public Dialog showVisaDialog(String error, final VisaCallBack callBack) {
-
-        this.dialog.setContentView(R.layout.dialog_payment_method);
-        //imageView = dialog.findViewById(R.id.dialogIconImageView);
-        //imageView.setImageResource(R.drawable.baseline_success_white_24);
-        //view.setBackgroundColor(dialog.getContext().getResources().getColor(R.color.colorPrimary));
-
-        okButton = dialog.findViewById(R.id.btnAdd);
-        cancelButton = dialog.findViewById(R.id.btnCancel);
-
-        TextView tvCreditCard = dialog.findViewById(R.id.tvCreditCards);
-        TextView tvQr = dialog.findViewById(R.id.tvQr);
-        EditText edtAmount = dialog.findViewById(R.id.edt_amount);
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setAttributes(getLayoutParams(dialog));
-
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.setCancelable(cancelable);
-            //okButton.setOnClickListener(view -> callBack.onClick());
-
-            tvCreditCard.setOnClickListener(view -> {
-
-                amount = edtAmount.getText().toString();
-
-                if (!amount.isEmpty()) {
-                    callBack.onClick("1", amount);
-                } else {
-                    edtAmount.setError(error);
-                }
-            });
-
-            tvQr.setOnClickListener(view -> {
-
-                amount = edtAmount.getText().toString();
-
-                if (!amount.isEmpty()) {
-                    callBack.onClick("2", amount);
-                } else {
-                    edtAmount.setError(error);
-                }
-            });
-
-            cancelButton.setOnClickListener(view -> cancel());
-        }
-        return dialog;
-    }
-
-    public void showDialogWrongTransaction(String title, String message, String okTitle, String cancelTitle,
-                                           String amount, final CallBackAmount callBack) {
-
-        this.dialog.setContentView(R.layout.dialog_wrong_transaction);
-        view = dialog.findViewById(R.id.dialogTitleView);
-        titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-        edtAmount = dialog.findViewById(R.id.edt_desc);
-
-        msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
-        okButton = dialog.findViewById(R.id.dialogOkButton);
-        cancelButton = dialog.findViewById(R.id.dialogCancelButton);
-
-        titleTextView.setText(title);
-        msgTextView.setText(message);
-        edtAmount.setText(amount);
-        okButton.setText(okTitle);
-        cancelButton.setText(cancelTitle);
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setAttributes(getLayoutParams(dialog));
-
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.setCancelable(cancelable);
-            okButton.setOnClickListener(view -> callBack.onClick(edtAmount.getText().toString()));
-            cancelButton.setOnClickListener(view -> cancel());
-        }
-
-    }
-
-    public void showDialogWrongTransReply(String title, String message, String okTitle, String cancelTitle,
-                                          String desc, String createdAt, String action_comment, String action_date_time, String status, final CallBackAmount callBack) {
-
-        this.dialog.setContentView(R.layout.dialog_show_wrong_transaction);
-        view = dialog.findViewById(R.id.dialogTitleView);
-        titleTextView = dialog.findViewById(R.id.dialogTitleTextView);
-
-        tvActionTime = dialog.findViewById(R.id.tv_action_time);
-        tvComment = dialog.findViewById(R.id.tv_comment);
-        tvCreatedAt = dialog.findViewById(R.id.tv_created_at);
-        tvDesc = dialog.findViewById(R.id.tv_desc);
-        lytDesc = dialog.findViewById(R.id.lyt_desc);
-        lytActionComment = dialog.findViewById(R.id.lyt_commit);
-
-        msgTextView = dialog.findViewById(R.id.dialogMessageTextView);
-        cancelButton = dialog.findViewById(R.id.dialogCancelButton);
-
-        titleTextView.setText(title);
-        msgTextView.setText(message);
-        cancelButton.setText(cancelTitle);
-
-        tvDesc.setText(desc);
-        tvCreatedAt.setText(createdAt);
-        tvComment.setText(action_comment);
-        tvActionTime.setText(action_date_time);
-
-        if (action_comment.isEmpty()) {
-            lytActionComment.setVisibility(View.GONE);
-        }
-
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setAttributes(getLayoutParams(dialog));
-
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.setCancelable(cancelable);
-            cancelButton.setOnClickListener(view -> cancel());
-        }
-
-    }
-
-    public boolean isShowing() {
-        return dialog.isShowing();
-    }
 
     public interface CallBack {
         void onClick();
@@ -595,12 +454,6 @@ public class AppDialogMsg {
         void onOkClick();
 
         void onCancelClick();
-
-    }
-
-    public interface VisaCallBack {
-
-        void onClick(String type, String amount);
 
     }
 

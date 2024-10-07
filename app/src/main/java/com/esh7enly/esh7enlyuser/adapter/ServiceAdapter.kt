@@ -7,12 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.esh7enly.domain.entity.servicesNew.ServiceData
-import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.click.ServiceClick
 import com.esh7enly.esh7enlyuser.databinding.ServiceLayoutBinding
 import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.NetworkUtils
-import com.esh7enly.esh7enlyuser.util.Utils
+
 
 class ServiceAdapter (val click: ServiceClick) :
     ListAdapter<ServiceData, ServiceAdapter.ViewHolder>(ServiceDiffCallback()) {
@@ -34,17 +32,16 @@ class ServiceAdapter (val click: ServiceClick) :
 
         fun bind(service: ServiceData) = with(itemBinding)
         {
-            Utils.displayImageOriginalFromCache(root.context,categoryIcon,service.icon,
-                NetworkUtils.isConnectedWifi(root.context))
 
+            serviceModel = service
 
             if(Constants.LANG == Constants.AR)
             {
-                tvTitle.text = service.name_ar
+                tvTitle.text = service.nameAr
             }
             else
             {
-                tvTitle.text = service.name_en
+                tvTitle.text = service.nameEn
             }
 
             root.setOnClickListener {
@@ -60,7 +57,7 @@ class ServiceAdapter (val click: ServiceClick) :
             oldItem: ServiceData,
             newItem: ServiceData
         ): Boolean {
-            return oldItem.name_en == newItem.name_en
+            return oldItem.nameEn == newItem.nameEn
         }
 
         override fun areContentsTheSame(

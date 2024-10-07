@@ -1,23 +1,28 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.esh7enly.data.repo.UserRepo
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.ApiResponse
-import com.esh7enly.domain.NetworkResult
-import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
+import com.esh7enly.domain.repo.UserRepo
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
-import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.isValidPassword
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,17 +30,16 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userRepo: UserRepo,
     private val sharedHelper: SharedHelper
+
 ) :
     ViewModel() {
+
     var phoneNumber: String? = null
     var password: String? = null
 
     var imei: String? = null
 
     var token = ""
-
-    val userPhoneNumber = MutableStateFlow("")
-    val userPassword = MutableStateFlow("")
 
     fun saveUserPassword() {
         sharedHelper.setUserPassword(userPassword.value)
@@ -45,130 +49,34 @@ class UserViewModel @Inject constructor(
         sharedHelper.setUserPassword("")
     }
 
-    fun userLogin(deviceToken: String):
+    val userPhoneNumber = MutableStateFlow("")
+    val userPassword = MutableStateFlow("")
+
+    fun userLogin(deviceToken: String,imei:String):
             LiveData<ApiResponse<LoginResponse>> {
 
         return userRepo.login(
-            userPhoneNumber.value, userPassword.value, deviceToken
+            userPhoneNumber.value, userPassword.value, deviceToken,imei
         )
     }
 
-    fun sendOtp(mobile: String, listener: OnResponseListener) {
-        viewModelScope.launch {
 
-            try {
-                val otpResponse = userRepo.sendOtp(mobile)
-
-                if (otpResponse.isSuccessful) {
-                    if (!otpResponse.body()!!.status!!) {
-                        listener.onFailed(otpResponse.body()!!.code!!, otpResponse.body()!!.message)
-                    } else {
-                        Constants.USER_KEY = otpResponse.body()!!.data.key
-                        listener.onSuccess(
-                            otpResponse.body()!!.code!!,
-                            otpResponse.body()!!.message,
-                            otpResponse.body()!!.data
-                        )
-                    }
-                } else {
-                    listener.onFailed(otpResponse.code(), otpResponse.message())
-                }
-            } catch (e: Exception) {
-                sendIssueToCrashlytics(
-                    e.message.toString(),
-                    "send otp from User viewModel")
-
-            }
-        }
-    }
-
-    fun forgetPasswordSendOTP(mobile: String, listener: OnResponseListener) {
-        viewModelScope.launch {
-            try {
-                val otpResponse = userRepo.forgetPasswordSendOTP(mobile)
-
-                if (otpResponse.isSuccessful) {
-                    if (!otpResponse.body()!!.status) {
-                        listener.onFailed(otpResponse.body()!!.code, otpResponse.body()!!.message)
-                    } else {
-                        listener.onSuccess(
-                            otpResponse.body()!!.code,
-                            otpResponse.body()!!.message,
-                            otpResponse.body()!!.data
-                        )
-                    }
-                } else {
-                    listener.onFailed(otpResponse.code(), otpResponse.message())
-
-                }
-            } catch (e: Exception) {
-                listener.onFailed(Constants.EXCEPTION_CODE, e.message)
-                sendIssueToCrashlytics(
-                    e.message.toString(),
-                    "forgetPasswordSendOTP from User viewModel"
-                )
-
-            }
-        }
-
-    }
-
-    fun verifyAccount(mobile: String, otpCode: String, key: String, listener: OnResponseListener) {
-        viewModelScope.launch {
-            try {
-                val response = userRepo.verifyAccount(mobile, otpCode, key)
-
-                if (!response.status) {
-                    listener.onFailed(response.code, response.message)
-                } else {
-                    listener.onSuccess(response.code, response.message, response.data)
-                }
-            } catch (e: Exception) {
-                listener.onFailed(Constants.EXCEPTION_CODE, e.message)
-                sendIssueToCrashlytics(e.message.toString(), "verify account from User viewModel")
-
-            }
-        }
-    }
-
-    fun registerNewAccount(registerModel: RegisterModel, listener: OnResponseListener) {
-        viewModelScope.launch {
-            try {
-                val registerResponse = userRepo.registerNewAccount(registerModel)
-
-                if (!registerResponse.status!!) {
-                    listener.onFailed(registerResponse.code!!, registerResponse.message)
-                } else {
-                    listener.onSuccess(
-                        registerResponse.code!!,
-                        registerResponse.message,
-                        registerResponse.data
-                    )
-
-                }
-            } catch (e: Exception) {
-                listener.onFailed(Constants.EXCEPTION_CODE, e.message)
-                sendIssueToCrashlytics(
-                    e.message.toString(),
-                    "register new account from User viewModel"
-                )
-
-            }
-        }
-    }
 
     fun createNewPassword(
         mobile: String,
         password: String,
         confirmationPassword: String,
-        otpCode: String,
+        key: String,
+        token: String,
         listener: OnResponseListener
     ) {
         viewModelScope.launch {
-
             try {
                 val forgetPasswordResponse =
-                    userRepo.createNewPassword(mobile, password, confirmationPassword, otpCode)
+                    userRepo.createNewPassword(
+                        mobile, password,
+                        confirmationPassword, key,token)
+
                 if (forgetPasswordResponse.isSuccessful) {
                     if (!forgetPasswordResponse.body()!!.status) {
                         listener.onFailed(
@@ -187,8 +95,9 @@ class UserViewModel @Inject constructor(
                         forgetPasswordResponse.code(),
                         forgetPasswordResponse.message()
                     )
-
                 }
+
+
             } catch (e: Exception) {
                 sendIssueToCrashlytics(
                     e.message.toString(),
@@ -196,7 +105,6 @@ class UserViewModel @Inject constructor(
                 )
 
             }
-
         }
     }
 
@@ -221,8 +129,8 @@ class UserViewModel @Inject constructor(
         userNewPassword != userNewPasswordConfirmation
     }
 
-    var updatePasswordState: MutableStateFlow<NetworkResult<String>?> =
-        MutableStateFlow(null)
+//    var updatePasswordState: MutableStateFlow<NetworkResult<String>?> =
+//        MutableStateFlow(null)
 
     fun updatePassword(
         token: String,
@@ -268,43 +176,28 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    private fun isValidPassword(password: String): Boolean {
-        if (password.length < 8) return false
-        if (password.filter { it.isDigit() }.firstOrNull() == null) return false
-        if (password.filter { it.isLetter() }.filter { it.isUpperCase() }
-                .firstOrNull() == null) return false
-        if (password.filter { it.isLetter() }.filter { it.isLowerCase() }
-                .firstOrNull() == null) return false
-        if (password.filter { !it.isLetterOrDigit() }.firstOrNull() == null) return false
 
-        return true
-    }
-
-
-    private val _login: MutableLiveData<Boolean?> = MutableLiveData()
-    val login: MutableLiveData<Boolean?> = _login
+    private val _loginState: MutableLiveData<Boolean?> = MutableLiveData()
+    val loginState: LiveData<Boolean?> = _loginState
 
     fun validateTokenResponseUser(token: String) {
         viewModelScope.launch {
-
             try {
                 val response = userRepo.getUserWallet(token)
 
                 if (response.isSuccessful) {
-                    _login.value = response.body()!!.status
-                    Constants.SERVICE_UPDATE_NUMBER = response.body()!!.service_update_num
+                    _loginState.value = response.body()!!.status
 
                 } else {
-                    _login.value = false
+                    _loginState.value = false
                 }
             } catch (e: Exception) {
-                _login.value = false
+                _loginState.value = false
                 sendIssueToCrashlytics(
                     e.message.toString(),
                     "validateTokenResponseUser from User viewModel"
                 )
             }
-
         }
     }
 

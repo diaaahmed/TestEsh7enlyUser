@@ -3,16 +3,17 @@ package com.esh7enly.esh7enlyuser.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+
 import com.esh7enly.domain.entity.providersNew.ProviderData
-import com.esh7enly.domain.entity.userservices.*
+
 import com.esh7enly.esh7enlyuser.click.ProviderClick
 import com.esh7enly.esh7enlyuser.databinding.ProviderLayoutBinding
 import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.NetworkUtils
-import com.esh7enly.esh7enlyuser.util.Utils
+
 
 class ProviderAdapter (val click: ProviderClick) :
     ListAdapter<ProviderData, ProviderAdapter.ViewHolder>(ProviderDiffCallback()) {
@@ -34,8 +35,8 @@ class ProviderAdapter (val click: ProviderClick) :
 
         fun bind(provider: ProviderData) = with(itemBinding)
         {
-            Utils.displayImageOriginalFromCache(root.context,categoryIcon,provider.logo,
-            NetworkUtils.isConnectedWifi(root.context))
+
+            providerModel = provider
 
             if(Constants.LANG == Constants.AR)
             {

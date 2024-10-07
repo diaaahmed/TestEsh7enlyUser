@@ -4,6 +4,10 @@
 
     <data>
 
+        <variable
+            name="serviceModel"
+            type="com.esh7enly.domain.entity.servicesNew.ServiceData" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +37,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    providerImage="@{serviceModel.icon}"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_7sdp"
                     android:layout_alignParentStart="true"

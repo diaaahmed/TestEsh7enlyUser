@@ -1,7 +1,37 @@
 package com.esh7enly.data.remote
 
 import androidx.lifecycle.LiveData
-import com.esh7enly.data.url.Urls
+import com.esh7enly.data.url.Url.CANCEL_SERVICE
+import com.esh7enly.data.url.Url.CATEGORIES
+import com.esh7enly.data.url.Url.CHECK_INTEGRATION_PROVIDER_STATUS
+import com.esh7enly.data.url.Url.FORGET_PASSWORD
+import com.esh7enly.data.url.Url.GET_DEPOSITS
+import com.esh7enly.data.url.Url.IMAGE_ADS
+import com.esh7enly.data.url.Url.INQUIRY
+import com.esh7enly.data.url.Url.LOGIN
+import com.esh7enly.data.url.Url.NEW_PASSWORD
+import com.esh7enly.data.url.Url.OTP
+import com.esh7enly.data.url.Url.PARAMETERS
+import com.esh7enly.data.url.Url.PAYMENT
+import com.esh7enly.data.url.Url.PROVIDERS
+import com.esh7enly.data.url.Url.REGISTER
+import com.esh7enly.data.url.Url.REPLACE_POINTS
+import com.esh7enly.data.url.Url.SCHEDULE_INQUIRE
+import com.esh7enly.data.url.Url.SCHEDULE_INVOICE
+import com.esh7enly.data.url.Url.SCHEDULE_LIST
+import com.esh7enly.data.url.Url.SEND_OTP
+import com.esh7enly.data.url.Url.SERVICES_NEW
+import com.esh7enly.data.url.Url.SERVICE_SEARCH
+import com.esh7enly.data.url.Url.START_SESSION
+import com.esh7enly.data.url.Url.TOTAL_AMOUNT
+import com.esh7enly.data.url.Url.TOTAL_XPAY
+import com.esh7enly.data.url.Url.TRANSACTIONS
+import com.esh7enly.data.url.Url.TRANSACTION_DETAILS
+import com.esh7enly.data.url.Url.UPDATE_PASSWORD
+import com.esh7enly.data.url.Url.UPDATE_PROFILE
+import com.esh7enly.data.url.Url.USER_POINTS
+import com.esh7enly.data.url.Url.VERIFY_FORGET_PASSWORD
+import com.esh7enly.data.url.Url.WALLETS
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
@@ -38,69 +68,74 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
+
 
 interface ApiService
 {
     @FormUrlEncoded
-    @POST(Urls.LOGIN)
+    @POST(LOGIN)
     fun login(
         @Field("mobile") mobile: String,
         @Field("password") userPassword: String,
-        @Field("device_token") device_token: String
+        @Field("device_token") deviceToken: String,
+        @Field("type") type: String = "mobile",
+        @Field("imei") imei: String
     ): LiveData<ApiResponse<LoginResponse>>
 
+
     @FormUrlEncoded
-    @POST(Urls.SEND_OTP)
+    @POST(SEND_OTP)
     suspend fun sendOtp(
         @Field("mobile") mobile: String,
     ): Response<NewOtpResponse>
 
     @FormUrlEncoded
-    @POST(Urls.SCHEDULE_INQUIRE)
+    @POST(SCHEDULE_INQUIRE)
     suspend fun scheduleInquire(
         @Header("Authorization") token: String?,
-        @Field("service_id") service_id: String,
-        @Field("invoice_number") invoice_number:String
+        @Field("service_id") serviceId: String,
+        @Field("invoice_number") invoiceNumber:String
     ): Response<ScheduleInquireResponse>
 
-    @POST(Urls.SCHEDULE_LIST)
+    @POST(SCHEDULE_LIST)
     suspend fun getScheduleList(
         @Header("Authorization") token: String?,
     ): Response<ScheduleListResponse>
 
     @FormUrlEncoded
-    @POST(Urls.SCHEDULE_INVOICE)
+    @POST(SCHEDULE_INVOICE)
     suspend fun scheduleInvoice(
         @Header("Authorization") token: String?,
-        @Field("service_id") service_id: String,
+        @Field("service_id") serviceId: String,
         @Field("schedule_date") scheduleDay:String,
-        @Field("invoice_number") invoice_number:String
+        @Field("invoice_number") invoiceNumber:String
     ):Response<ScheduleInvoiceResponse>
 
-    @POST(Urls.IMAGE_ADS)
+    @POST(IMAGE_ADS)
     suspend fun getImageAdResponse(
         @Header("Authorization") token: String?,
     ): Response<ImageAdResponse>
 
-    @POST(Urls.USER_POINTS)
+    @POST(USER_POINTS)
     suspend fun getUserPoints(
         @Header("Authorization") token: String?,
     ): Response<PointsResponse>
 
-    @POST(Urls.REPLACE_POINTS)
+    @POST(REPLACE_POINTS)
     suspend fun replaceUserPoints(
         @Header("Authorization") token: String?,
     ): Response<ReplacePointsResponse>
 
     @FormUrlEncoded
-    @POST(Urls.TRANSACTIONS)
+    @POST(TRANSACTIONS)
     suspend fun getTransactions(
         @Header("Authorization") token: String?,
         @Field("page") page: Int
     ): TransactionApiResponse
 
 
-    @POST(Urls.TRANSACTION_DETAILS)
+    @POST(TRANSACTION_DETAILS)
     suspend fun getTransactionDetails(
         @Header("Authorization") token: String?,
         @Path("TRANSACTION_ID") transactionId: String
@@ -108,7 +143,7 @@ interface ApiService
 
 
     @FormUrlEncoded
-    @POST(Urls.OTP)
+    @POST(OTP)
     suspend fun verifyAccount(
         @Field("mobile") mobile: String,
         @Field("token") otpCode: String,
@@ -116,25 +151,20 @@ interface ApiService
     ): VerifyOtpResponse
 
 
-    @POST(Urls.REGISTER)
+    @POST(REGISTER)
     suspend fun registerNewAccount(
         @Body registerModel: RegisterModel
     ): RegisterResponse
 
-    @POST(Urls.TOTAL_AMOUNT)
+    @POST(TOTAL_AMOUNT)
     suspend fun getTotalAmount(
         @Header("Authorization") token: String?,
         @Body totalAmountPojoModel: TotalAmountPojoModel
     ): TotalAmountEntity
 
-    @POST(Urls.CHARGE_BALANCE)
-    suspend fun chargeBalanceWithPaytabs(
-        @Header("Authorization") token: String?,
-        @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
-    ): Response<ChargeBalanceResponse>
 
     @FormUrlEncoded
-    @POST(Urls.UPDATE_PASSWORD)
+    @POST(UPDATE_PASSWORD)
     suspend fun updatePassword(
         @Header("Authorization") token: String?,
         @Field("currant_password") currentPassword:String,
@@ -142,14 +172,14 @@ interface ApiService
     ): Response<ChargeBalanceResponse>
 
     @FormUrlEncoded
-    @POST(Urls.PROVIDERS)
+    @POST(PROVIDERS)
     suspend fun getProviders(
         @Header("Authorization") token: String?,
         @Field("id") id:String
     ):Response<ProviderResponse>
 
     @FormUrlEncoded
-    @POST(Urls.SERVICE_SEARCH)
+    @POST(SERVICE_SEARCH)
     suspend fun serviceSearch(
         @Header("Authorization") token: String?,
         @Field("name") serviceName:String,
@@ -157,26 +187,26 @@ interface ApiService
     ):Response<SearchResponse>
 
     @FormUrlEncoded
-    @POST(Urls.SERVICES_NEW)
+    @POST(SERVICES_NEW)
     suspend fun getServices(
         @Header("Authorization") token: String?,
         @Field("id") id:String
     ):Response<ServiceResponse>
 
     @FormUrlEncoded
-    @POST(Urls.PARAMETERS)
+    @POST(PARAMETERS)
     suspend fun getParameters(
         @Header("Authorization") token: String?,
         @Field("id") id:String
     ):Response<ParametersResponse>
 
-    @POST(Urls.CATEGORIES)
+    @POST(CATEGORIES)
     suspend fun getCategories(
         @Header("Authorization") token: String?
     ):Response<CategoriesResponse>
 
     @FormUrlEncoded
-    @POST(Urls.UPDATE_PROFILE)
+    @POST(UPDATE_PROFILE)
     suspend fun updateProfile(
         @Header("Authorization") token: String?,
         @Field("mobile") mobile:String,
@@ -184,77 +214,94 @@ interface ApiService
         @Field("email") email:String
     ): Response<ChargeBalanceResponse>
 
-    @POST(Urls.GET_DEPOSITS)
+    @POST(GET_DEPOSITS)
     suspend fun getDeposits(
         @Header("Authorization") token: String?,
         @Query("page") page:Int
     ): Response<DepositResponse>
 
     @FormUrlEncoded
-    @POST(Urls.FORGET_PASSWORD)
+    @POST(FORGET_PASSWORD)
     suspend fun forgetPassword(
         @Field("mobile") mobile: String?,
     ): Response<ForgetPasswordOTPResponse>
 
     @FormUrlEncoded
-    @POST(Urls.NEW_PASSWORD)
+    @POST(VERIFY_FORGET_PASSWORD)
+    suspend fun verifyForgetPassword(
+        @Field("mobile") mobile: String?,
+        @Field("token") token: String?,
+        @Field("key") key: String?,
+    ): Response<VerifyOtpResponse>
+
+    @FormUrlEncoded
+    @POST(NEW_PASSWORD)
     suspend fun createNewPassword(
         @Field("mobile") mobile: String?,
         @Field("password") password: String?,
-        @Field("password_confirmation") password_confirmation: String?,
-        @Field("otp") otp: String?,
+        @Field("password_confirmation") passwordConfirmation: String?,
+        @Field("key") key: String?,
+        @Field("token") token: String?,
     ): Response<ForgetPasswordResponse>
 
     @FormUrlEncoded
-    @POST(Urls.START_SESSION)
+    @POST(TOTAL_XPAY)
+    suspend fun getTotalXpay(
+        @Header("Authorization") token: String?,
+        @Field("amount") amount: String,
+        @Field("payment_method_type") paymentMethodType:String,
+        @Field("transaction_type") transactionType :String,
+    ): Response<GetTotalAmountXPayResponse>
+
+    @FormUrlEncoded
+    @POST(START_SESSION)
     suspend fun startSessionForPay(
-        @Field("payment_method_type") payment_method_type:String,
-        @Field("transaction_type") transaction_type:String,
+        @Field("payment_method_type") paymentMethodType:String,
+        @Field("transaction_type") transactionType:String,
         @Header("Authorization") token: String?,
         @Field("amount") amount: String,
         @Field("ip") ip: String
     ): Response<StartSessionResponse>
 
-    @FormUrlEncoded
-    @POST(Urls.TOTAL_XPAY)
-    suspend fun getTotalXpay(
-        @Header("Authorization") token: String?,
-        @Field("amount") amount: String,
-        @Field("payment_method_type") payment_method_type:String,
-        @Field("transaction_type") transaction_type :String,
-    ): Response<GetTotalAmountXPayResponse>
 
-    @POST(Urls.PAYMENT)
+    @POST
+    suspend fun chargeBalanceWithPaytabs(
+        @Url urlString: String,
+        @Header("Authorization") token: String?,
+        @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+    ): Response<ChargeBalanceResponse>
+
+    @POST(PAYMENT)
     suspend fun pay(
         @Header("Authorization") token: String?,
         @Body paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity>
 
-    @POST(Urls.INQUIRY)
+    @POST(INQUIRY)
     suspend fun inquire(
         @Header("Authorization") token: String?,
         @Body paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity>
 
 
-    @POST(Urls.CHECK_INTEGRATION_PROVIDER_STATUS)
+    @POST(CHECK_INTEGRATION_PROVIDER_STATUS)
     @FormUrlEncoded
     suspend fun checkIntegration(
         @Header("Authorization") token: String?,
-        @Field("id") transaction_id: String,
+        @Field("id") transactionId: String,
         @Field("imei") imei: String
     ): Response<JsonElement>
 
-    @POST(Urls.WALLETS)
+    @POST(WALLETS)
     suspend fun getUserWallet(
         @Header("Authorization") token: String?
     ): Response<UserWalletResponse>
 
-    @POST(Urls.CANCEL_SERVICE)
+    @POST(CANCEL_SERVICE)
     @FormUrlEncoded
     suspend fun cancelTransaction(
         @Header("Authorization") token: String?,
-        @Field("transaction_id") transaction_id: String,
+        @Field("transaction_id") transactionId: String,
         @Field("imei") imei: String
     ): Response<JsonElement>
 

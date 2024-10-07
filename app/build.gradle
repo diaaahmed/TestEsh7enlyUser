@@ -18,8 +18,8 @@ android {
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
 
-        versionCode 19
-        versionName "1.18"
+        versionCode 29
+        versionName "1.28"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -30,16 +30,9 @@ android {
         buildConfigField("String", "BASE_URL_NOTIFICATION", BASE_URL_NOTIFICATION)
         buildConfigField("String", "PRIVACY_POLICY", PRIVACY_POLICY)
         buildConfigField("String", "SERVER_KEY_PRODUCTION", SERVER_KEY_PRODUCTION)
-        buildConfigField("String", "SERVER_KEY_TEST", SERVER_KEY_TEST)
         buildConfigField("String", "CLIENT_KEY_PRODUCTION", CLIENT_KEY_PRODUCTION)
-        buildConfigField("String", "CLIENT_KEY_TEST", CLIENT_KEY_TEST)
-        buildConfigField("String", "PROFILE_ID_TEST", PROFILE_ID_TEST)
         buildConfigField("String", "PROFILE_ID_PRODUCTION", PROFILE_ID_PRODUCTION)
         buildConfigField("String", "ESH7ENLY_EMAIL", ESH7ENLY_EMAIL)
-        buildConfigField("String", "XPAY_API_KEY_PRODUCTION", XPAY_API_KEY_PRODUCTION)
-        buildConfigField("String", "XPAY_COMMUNITY_ID_PRODUCTION", XPAY_COMMUNITY_ID_PRODUCTION)
-        buildConfigField("String", "XPAY_API_PAYMENT_ID_PRODUCTION", XPAY_API_PAYMENT_ID_PRODUCTION)
-
 
         signingConfig signingConfigs.debug
 
@@ -48,9 +41,14 @@ android {
                 arg("room.schemaLocation","$projectDir/schemas")
             }
         }
-
     }
 
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
 
     buildTypes {
         release {
@@ -83,10 +81,16 @@ dependencies {
     implementation libs.material
     implementation libs.androidx.constraintlayout
     implementation(platform(libs.firebase.bom))
+
     implementation libs.firebase.messaging
     implementation(libs.firebase.crashlytics)
     implementation libs.firebase.dynamic.links
+    implementation libs.firebase.config
 
+
+    implementation libs.androidx.activity
+    implementation libs.firebase.config.ktx
+   // implementation libs.firebase.analytics
 
     testImplementation libs.junit
 
@@ -150,7 +154,6 @@ dependencies {
     // Splash screen api
     implementation libs.androidx.core.splashscreen
 
-
     // NFC fawry
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation files('libs/FawryNFC_1.4.0_27082023_release.aar')
@@ -180,4 +183,6 @@ dependencies {
     // For Kotlin users also add the Kotlin extensions library for Play In-App Review:
     implementation libs.review.ktx
 
+    // Generate qr code
+    implementation libs.qrgenerator
 }

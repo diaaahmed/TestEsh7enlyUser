@@ -4,15 +4,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.pdf.PdfDocument
 
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+
 import com.esh7enly.domain.entity.PaymentEntity
 import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.esh7enlyuser.R
@@ -20,6 +23,10 @@ import com.esh7enly.esh7enlyuser.databinding.ActivityReceiptBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Screenshot
 import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 private const val TAG = "ReceiptActivity"
@@ -41,25 +48,47 @@ class ReceiptActivity : AppCompatActivity()
                       data:PaymentEntity.DataEntity,paymentPojoModel: PaymentPojoModel,
                       serviceType:Int)
         {
-            val intent = Intent(activity,ReceiptActivity::class.java)
-            this.DATA_ENTITY = data
-            this.SERVICE_TYPE = serviceType
-            this.PAYMENTPOJOMODEL = paymentPojoModel
-            this.BULK_NUMBER = bulkNumber
-            this.IS_BULK = isBulk
+          try{
+              val intent = Intent(activity,ReceiptActivity::class.java)
+              this.DATA_ENTITY = data
+              this.SERVICE_TYPE = serviceType
+              this.PAYMENTPOJOMODEL = paymentPojoModel
+              this.BULK_NUMBER = bulkNumber
+              this.IS_BULK = isBulk
 
-            activity.startActivity(intent)
+              activity.startActivity(intent)
+          }
+          catch (e: Exception)
+          {
+              sendIssueToCrashlytics(
+                  key = "Receipt activity getIntent with isBulk and paymentPojoModel",
+                  provider = "Receipt activity getIntent with isBulk and paymentPojoModel",
+                  msg = e.message.toString(),
+                  functionName = "Get intent"
+              )
+          }
         }
 
         fun getIntent(activity:Activity,data:PaymentEntity.DataEntity,serviceType:Int)
         {
-            val intent = Intent(activity,ReceiptActivity::class.java)
-            this.DATA_ENTITY = data
-            this.SERVICE_TYPE = serviceType
-            this.BULK_NUMBER = 1
-            this.IS_BULK = false
+           try{
+               val intent = Intent(activity,ReceiptActivity::class.java)
+               this.DATA_ENTITY = data
+               this.SERVICE_TYPE = serviceType
+               this.BULK_NUMBER = 1
+               this.IS_BULK = false
 
-            activity.startActivity(intent)
+               activity.startActivity(intent)
+           }
+           catch (e: Exception)
+           {
+               sendIssueToCrashlytics(
+                   key = "Receipt activity getIntent",
+                   provider = "Receipt activity getIntent",
+                   msg = e.message.toString(),
+                   functionName = "Get intent"
+               )
+           }
         }
     }
 
@@ -78,8 +107,57 @@ class ReceiptActivity : AppCompatActivity()
         ui.chatWhats.setOnClickListener {
             shareImage() }
 
+        ui.generatePdf.setOnClickListener {
+            Toast.makeText(this, "Soon", Toast.LENGTH_SHORT).show()
+
+        }
+
+
         initData()
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun generateReceiptPDF()
+    {
+        generatePdf()
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun generatePdf() {
+        // Create a new document
+        val document = PdfDocument()
+
+        // Create a page description
+        val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
+
+        // Start a page
+        val page = document.startPage(pageInfo)
+
+        // Get the canvas of the page and draw on it
+        val canvas = page.canvas
+        val paint = android.graphics.Paint()
+        paint.textSize = 16f
+
+        // Draw the text
+        canvas.drawText("Name: Diaa", 80f, 50f, paint)
+        canvas.drawText("Phone: 01000", 80f, 80f, paint)
+
+        // Finish the page
+        document.finishPage(page)
+
+        // Create the output file
+        val filePath = File(Environment.getExternalStorageDirectory(), "GeneratedPDF.pdf")
+
+        try {
+            document.writeTo(FileOutputStream(filePath))
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        // Close the document
+        document.close()
     }
 
     @SuppressLint("SetTextI18n")
@@ -204,6 +282,12 @@ class ReceiptActivity : AppCompatActivity()
             }
             catch (e: Exception)
             {
+                sendIssueToCrashlytics(
+                    key = "Share image receipt activity",
+                    provider = "Share image receipt activity",
+                    msg = e.message.toString(),
+                    functionName = "Share receipt image from ReceiptActivity")
+
                 Toast.makeText(this, "Error with share ${e.message}", Toast.LENGTH_SHORT).show()
             }
         } else {
@@ -224,6 +308,9 @@ class ReceiptActivity : AppCompatActivity()
                 }
                 catch (e: Exception)
                 {
+                    sendIssueToCrashlytics(
+                        e.message.toString(),
+                        "Share receipt image from ReceiptActivity")
                     Toast.makeText(this, "Error with share ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }

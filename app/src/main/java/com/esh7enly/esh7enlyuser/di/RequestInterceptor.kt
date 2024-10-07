@@ -15,9 +15,15 @@ class RequestInterceptor: Interceptor
             originalUrl.newBuilder()
                 .build()
 
-        val requestBuilder: Request.Builder = originalRequest.newBuilder().url(url)
+       val requestBuilder: Request.Builder = originalRequest.newBuilder().url(url)
+
+//        val requestBuilder = originalRequest.newBuilder()
+//            .addHeader("Authorization", token)
+//            .url(originalUrl)
+
         val request: Request = requestBuilder.build()
         return chain.proceed(request)
 
     }
+
 }

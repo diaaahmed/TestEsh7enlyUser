@@ -1,36 +1,24 @@
-package com.esh7enly.data.sharedhelper;
+package com.esh7enly.data.sharedhelper
 
-public class Constants {
+object Constants
+{
+    const val STORE_NAME = "store_name"
 
-    // region user
+    const val IS_LOGIN = "isLogin"
+    const val USER_NAME = "user_name"
+    const val FIRST_START = "first_start"
 
-    public static final String STORE_NAME = "store_name";
+    const val USER_PASSWORD = "user_password"
+    const val USER_TOKEN = "user_token"
+    const val USER_EMAIL = "user_email"
+    const val APP_LANGUAGE = "APP_LANGUAGE"
 
-    public static final String IS_LOGIN = "isLogin";
-    public static final String USER_NAME = "user_name";
-    public static final String FIRST_START = "first_start";
+    const val AR = "ar"
 
-    public static final String USER_PASSWORD = "user_password";
-    public static final String USER_TOKEN = "user_token";
-    public static final String USER_EMAIL = "user_email";
-    public static final String APP_LANGUAGE = "APP_LANGUAGE";
+    const val IS_REMEMBER_ME = "is_remember_me"
 
-    //endregion
+    var LANG = "lang"
 
-    //region Settings
+    const val CODE_HTTP_UNAUTHORIZED = "401"
 
-    public static final String AR = "ar";
-
-    //endregion
-
-    public static final String IS_REMEMBER_ME = "is_remember_me";
-
-    public static  String LANG = "lang";
-
-    //endregion
-
-    //region Error Codes
-    public static final String CODE_HTTP_UNAUTHORIZED = "401";
-    public static final String CODE_UNAUTH = "330001";
-    //endregion
 }

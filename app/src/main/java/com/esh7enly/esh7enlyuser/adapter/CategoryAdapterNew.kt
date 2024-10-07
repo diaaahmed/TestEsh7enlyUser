@@ -8,10 +8,8 @@ import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.esh7enlyuser.click.CategoryClick
 import com.esh7enly.esh7enlyuser.databinding.ItemLayoutBinding
 import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.NetworkUtils
-import com.esh7enly.esh7enlyuser.util.Utils
 
-class CategoryAdapterNew(var listCategory:List<CategoryData>,val click: CategoryClick
+class CategoryAdapterNew(private var listCategory:List<CategoryData>,val click: CategoryClick
 ): RecyclerView.Adapter<CategoryAdapterNew.CategoryViewHolderNew>()
 {
 
@@ -22,8 +20,8 @@ class CategoryAdapterNew(var listCategory:List<CategoryData>,val click: Category
         fun bind(category: List<CategoryData>, position: Int) = with(binding)
         {
 
-            Utils.displayImageOriginalFromCache(root.context,binding.categoryIcon,category[position].icon
-                ,NetworkUtils.isConnectedWifi(root.context))
+            categoryModel = category[position]
+
 
             if(Constants.LANG == Constants.AR)
             {

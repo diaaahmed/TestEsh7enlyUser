@@ -98,7 +98,7 @@
 }
 
 # Paytabs
--keep public class com.payment.paymentsdk.**{*;}
+#-keep public class com.payment.paymentsdk.**{*;}
 
 # Fawry
 -keep class com.fawry.** {*;}

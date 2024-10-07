@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="updateProfileViewModel"
+            name="viewModel"
             type="com.esh7enly.esh7enlyuser.viewModel.UpdateProfileViewModel" />
     </data>
 
@@ -51,7 +51,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/new_mobile"
                 android:inputType="text"
-                android:text="@={updateProfileViewModel.updatedMobile}"
+                android:text="@={viewModel.updatedMobile}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary" />
@@ -74,7 +74,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/new_email"
                 android:inputType="textEmailAddress"
-                android:text="@={updateProfileViewModel.updatedEmail}"
+                android:text="@={viewModel.updatedEmail}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary" />
@@ -94,7 +94,7 @@
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/user_first_name"
-                android:text="@={updateProfileViewModel.updatedFirstName}"
+                android:text="@={viewModel.updatedFirstName}"
                 android:textColor="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -116,7 +116,7 @@
             <!--this is the actual edit text which takes the input-->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/user_last_name"
-                android:text="@={updateProfileViewModel.updatedLastName}"
+                android:text="@={viewModel.updatedLastName}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary" />
@@ -127,7 +127,7 @@
             android:id="@+id/btn_update_data"
             android:padding="@dimen/_10sdp"
             tools:text="@string/update_data"
-            android:onClick="@{() -> updateProfileViewModel.updateProfile()}"
+            android:onClick="@{() -> viewModel.updateProfile()}"
             android:textStyle="bold"
             app:cornerRadius="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_40sdp"

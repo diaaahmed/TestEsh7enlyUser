@@ -8,7 +8,6 @@ import androidx.lifecycle.lifecycleScope
 
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.servicesNew.ServiceData
-import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.adapter.ServiceAdapter
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -23,6 +22,7 @@ private const val TAG = "ServiceActivity"
 
 @AndroidEntryPoint
 class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
+
     private val ui by lazy {
         ActivityServiceBinding.inflate(layoutInflater)
     }
@@ -37,7 +37,6 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
 
     private var providerID = 0
-  //  lateinit var providerId: String
     lateinit var providerName: String
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -53,7 +52,6 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
         providerID = intent.getIntExtra(Constants.PROVIDER_ID, 0)
         providerName = intent.getStringExtra(Constants.PROVIDER_NAME).toString()
-     //   providerId = providerID.toString()
 
         getServices()
     }
@@ -90,10 +88,10 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
                     ) {
                         dialog.cancel()
 
-                        if (code.toString() == Constants.CODE_UNAUTH ||
+                        if (code == Constants.CODE_UNAUTH_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
-                            NavigateToActivity.navigateToMainActivity(this@ServiceActivity)
+                            NavigateToActivity.navigateToAuthActivity(this@ServiceActivity)
                         }
                     }.show()
                 }
@@ -102,26 +100,19 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
     }
 
-    private fun getServicesDB() {
-        //        serviceViewModel.getServicesFromDB(providerId).observe(this)
-//        { services ->
-//            adapter.submitList(services)
-//            ui.serviceRv.adapter = adapter
-//        }
-    }
-
     override fun click(service: ServiceData) {
 
         serviceViewModel.serviceType = service.type
 
         Log.d(TAG, "diaa test type: ${service.type}")
 
-        if (service.type == Constants.PREPAID_CARD) {
+        if (service.type == Constants.PREPAID_CARD)
+        {
             if (connectivity?.isConnected == true) {
                 pDialog.show()
 
                 val totalAmountPojoModel =
-                    TotalAmountPojoModel(Constants.IMEI, service.id, service.price_value)
+                    TotalAmountPojoModel(Constants.IMEI, service.id, service.priceValue)
 
                 lifecycleScope.launch(Dispatchers.IO) {
 

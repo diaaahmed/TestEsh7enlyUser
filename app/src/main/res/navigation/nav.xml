@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.esh7enly.esh7enlyuser.fragment.HomeFragment"
+        android:name="com.esh7enly.esh7enlyuser.fragment.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
 
@@ -15,26 +15,26 @@
 
     <fragment
         android:id="@+id/balanceFragment"
-        android:name="com.esh7enly.esh7enlyuser.fragment.BalanceFragment"
+        android:name="com.esh7enly.esh7enlyuser.fragment.home.BalanceFragment"
         android:label="BalanceFragment"
         tools:layout="@layout/fragment_balance"/>
 
     <fragment
         tools:layout="@layout/fragment_profile"
         android:id="@+id/profileFragment"
-        android:name="com.esh7enly.esh7enlyuser.fragment.ProfileFragment"
+        android:name="com.esh7enly.esh7enlyuser.fragment.home.ProfileFragment"
         android:label="ProfileFragment" >
     </fragment>
 
     <fragment
         android:id="@+id/supportFragment"
-        android:name="com.esh7enly.esh7enlyuser.fragment.SupportFragment"
+        android:name="com.esh7enly.esh7enlyuser.fragment.home.SupportFragment"
         android:label="fragment_support"
         tools:layout="@layout/fragment_support" />
 
     <fragment
         tools:layout="@layout/fragment_presents"
         android:id="@+id/presentsFragment"
-        android:name="com.esh7enly.esh7enlyuser.fragment.PresentsFragment"
+        android:name="com.esh7enly.esh7enlyuser.fragment.home.PresentsFragment"
         android:label="PresentsFragment" />
 </navigation>

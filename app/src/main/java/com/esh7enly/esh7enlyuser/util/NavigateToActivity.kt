@@ -4,26 +4,18 @@ import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import com.esh7enly.domain.entity.categoriesNew.CategoryData
-import com.esh7enly.domain.entity.userservices.Category
 import com.esh7enly.esh7enlyuser.activity.*
 
 class NavigateToActivity
 {
     companion object{
 
-        fun navigateToMainActivity(activity:Activity)
+
+        fun navigateToAuthActivity(activity:Activity)
         {
-            val toMain = Intent(activity,MainActivity::class.java)
+            val toMain = Intent(activity,AuthActivity::class.java)
             activity.startActivity(toMain)
             activity.finish()
-        }
-
-        fun navigateToPhoneActivity(activity: Activity)
-        {
-            val toPhoneActivity = Intent(activity,PhoneActivity::class.java)
-            activity.startActivity(toPhoneActivity)
-            activity.finish()
-
         }
 
         fun navigateToIntroCreateAccountActivity(activity:Activity)
@@ -61,12 +53,12 @@ class NavigateToActivity
             activity.startActivity(changeUserNameActivity)
         }
 
-        fun navigateToParametersActivity(activity:Activity,serviceType:Int,
-                                         providerName:String,serviceId:Int,
-        nameAr:String,nameEn:String,accept_amount_input:Int,price_type:Int,
-                                         accept_check_integration_provider_status:Int,
-                                         price_value:String,accept_change_paid_amount:Int,
-                                         icon:String,type_code:String)
+        fun navigateToParametersActivity(activity:Activity, serviceType:Int,
+                                         providerName:String, serviceId:Int,
+                                         nameAr:String, nameEn:String, acceptAmountInput:Int, priceType:Int,
+                                         acceptCheckIntegrationProviderStatus:Int,
+                                         priceValue:String, acceptChangePaidAmount:Int,
+                                         icon:String, typeCode:String)
         {
             val parametersActivity = Intent(activity,ParametersActivity::class.java)
 
@@ -81,13 +73,13 @@ class NavigateToActivity
             parametersActivity.putExtra(Constants.SERVICE_NAME_EN,nameEn)
 
             Log.d("TAG", "diaa service navigate again: english $nameEn arabic $nameAr")
-            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_INPUT, accept_amount_input)
-            parametersActivity.putExtra(Constants.PRICE_TYPE,price_type)
-            parametersActivity.putExtra(Constants.ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS,accept_check_integration_provider_status)
-            parametersActivity.putExtra(Constants.PRICE_VALUE,price_value)
-            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_CHANGE,accept_change_paid_amount)
+            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_INPUT, acceptAmountInput)
+            parametersActivity.putExtra(Constants.PRICE_TYPE,priceType)
+            parametersActivity.putExtra(Constants.ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS,acceptCheckIntegrationProviderStatus)
+            parametersActivity.putExtra(Constants.PRICE_VALUE,priceValue)
+            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_CHANGE,acceptChangePaidAmount)
             parametersActivity.putExtra(Constants.IMAGE,icon)
-            parametersActivity.putExtra(Constants.SERVICE_TYPE_CODE,type_code)
+            parametersActivity.putExtra(Constants.SERVICE_TYPE_CODE,typeCode)
 
             activity.startActivity(parametersActivity)
         }

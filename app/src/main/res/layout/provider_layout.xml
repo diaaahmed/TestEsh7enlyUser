@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="providerModel"
+            type="com.esh7enly.domain.entity.providersNew.ProviderData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +36,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    app:providerImage="@{providerModel.logo}"
                     android:layout_marginTop="@dimen/_7sdp"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentEnd="true"

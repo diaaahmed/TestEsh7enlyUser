@@ -42,7 +42,8 @@ public class DynamicLayout extends AppCompatActivity {
         this.mContext = context;
     }
 
-    public void addRadioButtons(LinearLayout linearLayout, String internalId, ArrayList<SpinnerModel> values) {
+    public void addRadioButtons(
+            LinearLayout linearLayout, String internalId, ArrayList<SpinnerModel> values) {
 
         //RadioButtons are always added inside a RadioGroup
         RadioGroup radioGroup = new RadioGroup(mContext);
@@ -112,8 +113,10 @@ public class DynamicLayout extends AppCompatActivity {
         //addLineSeperator(linearLayout);
     }
 
-    public void addSpinners(LinearLayout linearLayout, String viewId, int check, String selectedValueId,
-                            final List<SpinnerModel> list, final DynamicOnClickListener dynamicOnClickListener) {
+    public void addSpinners(LinearLayout linearLayout, String viewId,
+                            int check, String selectedValueId,
+                            final List<SpinnerModel> list,
+                            final DynamicOnClickListener dynamicOnClickListener) {
         final int[] chk = {check};
         //Adding a LinearLayout with HORIZONTAL orientation
         LinearLayout spinnerLinearLayout = new LinearLayout(mContext);
@@ -127,7 +130,6 @@ public class DynamicLayout extends AppCompatActivity {
         spinnerHelper.setAdapter(spinner);
 
         if (!selectedValueId.equals("")) {
-
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getId().trim().equals(selectedValueId)) {
                     spinner.setSelection(i);
@@ -208,8 +210,10 @@ public class DynamicLayout extends AppCompatActivity {
         //addLineSeperator(linearLayout);
     }
 
-    public void addEditTexts(LinearLayout linearLayout, boolean isEnabled, String viewId, String hint,
-                             int type, int lines, final DynamicOnClickListener dynamicOnClickListener) {
+    public void addEditTexts(
+            LinearLayout linearLayout, boolean isEnabled, String viewId, String hint,
+                             int type, int lines,
+            final DynamicOnClickListener dynamicOnClickListener) {
 
         LinearLayout editTextLayout = new LinearLayout(mContext);
         editTextLayout.setOrientation(LinearLayout.VERTICAL);

@@ -100,7 +100,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
             message, resources.getString(R.string.app__ok)
         ) {
             alertDialog.cancel()
-            NavigateToActivity.navigateToMainActivity(this)
+            NavigateToActivity.navigateToAuthActivity(this)
         }.show()
     }
 
@@ -121,7 +121,6 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
             }
         })
     }
-
 
 
     override fun click(transactionEntity: TransactionEntity)

@@ -1,7 +1,6 @@
 plugins {
     alias libs.plugins.androidlib
     alias libs.plugins.kotlinAndroid
-   // id "dagger.hilt.android.plugin"
 
 }
 
@@ -23,7 +22,8 @@ android {
         release {
             minifyEnabled true
 
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -39,14 +39,7 @@ dependencies {
 
     implementation project(path: ':domain')
 
-    // Hilt
-//    kapt 'androidx.hilt:hilt-compiler:1.0.0'
-//
-//    implementation libs.hiltandroid
-//    kapt libs.hiltcompiler
-
     implementation "androidx.activity:activity-ktx:1.7.2"
-
 
     // Retrofit
     implementation libs.retrofit

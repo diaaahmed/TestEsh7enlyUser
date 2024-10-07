@@ -18,8 +18,11 @@ import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.Decryptor
+import com.esh7enly.esh7enlyuser.util.Encryptor
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.viewModel.PhoneViewModel
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
@@ -38,11 +41,19 @@ abstract class BaseActivity : AppCompatActivity()
 
     val userViewModel: UserViewModel by viewModels()
 
+
     var sharedHelper: SharedHelper? = null
         @Inject set
 
     var connectivity: Connectivity? = null
         @Inject set
+
+    var encryptor: Encryptor? = null
+        @Inject set
+
+    var decryptor: Decryptor? = null
+    @Inject set
+
 
     val pDialog by lazy {
         com.esh7enly.esh7enlyuser.util.ProgressDialog.createProgressDialog(this)
@@ -56,11 +67,13 @@ abstract class BaseActivity : AppCompatActivity()
 
     private var isBulk = false
 
-    open fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel) {
+    open fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel)
+    {
 
         serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
             totalAmountPojoModel, object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+
                     val confirmation: String
                     val amount:String
                     val totalAmount: String
@@ -135,7 +148,7 @@ abstract class BaseActivity : AppCompatActivity()
                         if (code == Constants.CODE_UNAUTH_NEW) {
                             lifecycleScope.launch(Dispatchers.Main)
                             {
-                                NavigateToActivity.navigateToMainActivity(this@BaseActivity)
+                                NavigateToActivity.navigateToAuthActivity(this@BaseActivity)
                             }
                         }
                     }.show()
@@ -173,10 +186,11 @@ abstract class BaseActivity : AppCompatActivity()
                     ) {
                         dialog.cancel()
 
-                        if (code.toString() == Constants.CODE_UNAUTH || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
+                        if (code == Constants.CODE_UNAUTH_NEW ||
+                            code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
                             lifecycleScope.launch(Dispatchers.Main)
                             {
-                                NavigateToActivity.navigateToMainActivity(this@BaseActivity)
+                                NavigateToActivity.navigateToAuthActivity(this@BaseActivity)
                             }
                         }
                     }.show()
@@ -334,29 +348,29 @@ abstract class BaseActivity : AppCompatActivity()
     fun navigateToParametersActivity(service: ServiceData) {
         val providerName =
             if (Constants.LANG == Constants.AR) {
-                service.name_ar
+                service.nameAr
             } else {
-                service.name_en
+                service.nameEn
             }
 
         Log.d(
             "TAG",
-            "diaa service from navigate: english  ${service.name_en} arabic ${service.name_ar}"
+            "diaa service from navigate: english  ${service.nameEn} arabic ${service.nameAr}"
         )
         NavigateToActivity.navigateToParametersActivity(
             this,
             service.type,
             providerName,
             service.id,
-            service.name_ar,
-            service.name_en,
-            service.accept_amount_input,
-            service.price_type,
-            service.accept_check_integration_provider_status,
-            service.price_value,
-            service.accept_change_paid_amount,
+            service.nameAr,
+            service.nameEn,
+            service.acceptAmountInput,
+            service.priceType,
+            service.acceptCheckIntegrationProviderStatus,
+            service.priceValue,
+            service.acceptChangePaidAmount,
             service.icon,
-            service.type_code
+            service.typeCode
         )
     }
 

@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="xPayViewModel"
-            type="com.esh7enly.esh7enlyuser.viewModel.XPayViewModel" />
+            name="viewModel"
+            type="com.esh7enly.esh7enlyuser.viewModel.PaytabsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -95,7 +95,7 @@
 
                                <TextView
                                    android:gravity="center"
-                                   visaColorNew="@{xPayViewModel.showPhoneNumberNew.toString()}"
+                                   visaColorNew="@{viewModel.showPhoneNumberNew.toString()}"
                                    android:layout_weight="1"
                                    android:textSize="@dimen/_11ssp"
                                    app:layout_constraintTop_toTopOf="parent"
@@ -110,7 +110,7 @@
 
                             <TextView
                                 android:gravity="center"
-                                digitalWalletColor="@{xPayViewModel.showPhoneNumberNew.toString()}"
+                                digitalWalletColor="@{viewModel.showPhoneNumberNew.toString()}"
                                 android:layout_weight="1"
                                 android:textSize="@dimen/_11ssp"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -127,7 +127,7 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/fillPhoneNumber"
-                        showFillPhoneNumber="@{xPayViewModel.showPhoneNumber.booleanValue()}"
+                        showFillPhoneNumber="@{viewModel.showPhoneNumber.booleanValue()}"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

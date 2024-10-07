@@ -130,10 +130,10 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
                         ) {
                             dialog.cancel()
 
-                            if (code.toString() == Constants.CODE_UNAUTH ||
+                            if (code == Constants.CODE_UNAUTH_NEW ||
                                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
-                                NavigateToActivity.navigateToMainActivity(this@SearchActivity)
+                                NavigateToActivity.navigateToAuthActivity(this@SearchActivity)
                             }
                         }.show()
                     }

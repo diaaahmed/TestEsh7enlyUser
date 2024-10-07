@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_110sdp"
                     android:src="@drawable/new_logo_trans"
-                    android:contentDescription="Logo" />
+                    android:contentDescription="@string/logo" />
 
                 <TextView
                     app:layout_constraintStart_toStartOf="parent"

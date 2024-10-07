@@ -57,6 +57,7 @@ public class SpinnerHelper {
                 ((TextView) v.findViewById(android.R.id.text1)).setGravity(Gravity.CENTER);
 
                 return v;
+
             }
 
             @Override
