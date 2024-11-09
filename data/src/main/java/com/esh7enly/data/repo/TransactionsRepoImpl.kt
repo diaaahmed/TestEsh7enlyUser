@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.flowOn
 class TransactionsRepoImpl(private val apiService: ApiService): TransactionsRepo
 {
     override suspend fun getTransactions(token: String, page:Int): TransactionApiResponse =
-        apiService.getTransactions(token,page)
+        apiService.getTransactions(page)
 
     override suspend fun getTransactionDetails(
         token: String,
         transactionId: String
     ): Flow<TransactionDetailsEntity> = flow {
-        val response = apiService.getTransactionDetails(token,transactionId)
+        val response = apiService.getTransactionDetails(transactionId)
         emit(response)
     }.flowOn(Dispatchers.IO)
 

@@ -520,6 +520,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
             hash_id = Constants.HASH_ID
         )
 
+
         requestChargeFailed(chargeBalanceRequest, error.msg.toString())
     }
 

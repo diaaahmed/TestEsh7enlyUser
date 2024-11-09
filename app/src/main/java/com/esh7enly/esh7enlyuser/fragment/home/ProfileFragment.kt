@@ -138,6 +138,7 @@ class ProfileFragment : Fragment() {
         Log.d("TAG", " diaa createFirebaseDynamicLink: ${dynamicLinkUri.toString()}")
         Log.d("TAG", " diaa createFirebaseDynamicLink: $manual_link")
     }
+
     private fun shareApp() {
         try {
             val shareIntent = Intent(Intent.ACTION_SEND)
@@ -164,6 +165,7 @@ class ProfileFragment : Fragment() {
 
     private fun logOut() {
         sharedHelper?.setUserToken("")
+
         sharedHelper?.isRememberUser(false)
         sharedHelper?.setUserPassword("")
         NavigateToActivity.navigateToAuthActivity(requireActivity())

@@ -20,10 +20,6 @@ class SharedHelper (var context:Context)
         sharedPref.edit().putBoolean(Constants.IS_LOGIN,boolean).apply()
     }
 
-    fun setUserToken(token:String)
-    {
-        sharedPref.edit().putString(Constants.USER_TOKEN,encrypt(token)).apply()
-    }
 
     fun setAppLanguage(lang:String)
     {
@@ -69,6 +65,11 @@ class SharedHelper (var context:Context)
         sharedPref.edit().putString(Constants.USER_NAME,userPhone).apply()
 
     }
+    fun setUserToken(token:String)
+    {
+        sharedPref.edit().putString(Constants.USER_TOKEN,encrypt(token)).apply()
+    }
+
     fun getUserToken():String = "Bearer "+decrypt(sharedPref.getString(Constants.USER_TOKEN,""))
 
     fun isRememberPassword():Boolean = sharedPref.getBoolean(Constants.IS_REMEMBER_ME,false)
@@ -77,7 +78,6 @@ class SharedHelper (var context:Context)
     {
         sharedPref.edit().putString(Constants.USER_PASSWORD,encrypt(password)).apply()
     }
-
 
     fun getUserPassword(): String = decrypt(sharedPref.getString(Constants.USER_PASSWORD,""))
 

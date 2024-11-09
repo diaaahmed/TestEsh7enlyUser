@@ -31,13 +31,13 @@ class ServiceRepoImpl(
 
 ) : ServicesRepo {
     override suspend fun getImageAdResponse(token: String): Response<ImageAdResponse> =
-        apiService.getImageAdResponse(token)
+        apiService.getImageAdResponse()
 
-    override suspend fun getNewImageAdResponse(token: String):
+    override suspend fun getNewImageAdResponse():
             Flow<NetworkResult<ImageAdResponse>> = flow {
         try {
             emit(NetworkResult.Loading())
-            val dynamicAdsResponse = apiService.getImageAdResponse(token)
+            val dynamicAdsResponse = apiService.getImageAdResponse()
             if(dynamicAdsResponse.isSuccessful)
             {
              emit(NetworkResult.Success(dynamicAdsResponse.body()!!))
@@ -58,33 +58,33 @@ class ServiceRepoImpl(
         token: String,
         id: String,
         imei: String
-    ): Response<JsonElement> = apiService.checkIntegration(token, id, imei)
+    ): Response<JsonElement> = apiService.checkIntegration(id, imei)
 
     override suspend fun cancelTransaction(
         token: String,
         transactionId: String,
         imei: String
-    ): Response<JsonElement> = apiService.cancelTransaction(token, transactionId, imei)
+    ): Response<JsonElement> = apiService.cancelTransaction(transactionId, imei)
 
     override suspend fun inquire(
         token: String,
         paymentPojoModel: PaymentPojoModel
-    ): Response<PaymentEntity> = apiService.inquire(token, paymentPojoModel)
+    ): Response<PaymentEntity> = apiService.inquire(paymentPojoModel)
 
     override suspend fun pay(
         token: String,
         paymentPojoModel: PaymentPojoModel
-    ): Response<PaymentEntity> = apiService.pay(token, paymentPojoModel)
+    ): Response<PaymentEntity> = apiService.pay(paymentPojoModel)
 
 
     override suspend fun replaceUserPoints(token: String): Response<ReplacePointsResponse> =
-        apiService.replaceUserPoints(token)
+        apiService.replaceUserPoints()
 
     override suspend fun getTotalAmount(
         token: String,
         totalAmountPojoModel: TotalAmountPojoModel
     ): Flow<TotalAmountEntity> = flow {
-        val response = apiService.getTotalAmount(token, totalAmountPojoModel)
+        val response = apiService.getTotalAmount(totalAmountPojoModel)
         emit(response)
     }.flowOn(Dispatchers.IO)
 
@@ -93,10 +93,10 @@ class ServiceRepoImpl(
         serviceId: String,
         invoiceNumber: String
     ): Response<ScheduleInquireResponse> =
-        apiService.scheduleInquire(token, serviceId, invoiceNumber)
+        apiService.scheduleInquire(serviceId, invoiceNumber)
 
     override suspend fun getScheduleList(token: String): Response<ScheduleListResponse> =
-        apiService.getScheduleList(token)
+        apiService.getScheduleList()
 
     override suspend fun scheduleInvoice(
         token: String,
@@ -104,11 +104,11 @@ class ServiceRepoImpl(
         scheduleDay: String,
         invoiceNumber: String
     ): Response<ScheduleInvoiceResponse> =
-        apiService.scheduleInvoice(token, serviceId, scheduleDay, invoiceNumber)
+        apiService.scheduleInvoice(serviceId, scheduleDay, invoiceNumber)
 
     override suspend fun getProviders(token: String, categoryId: String): ProviderResponse? {
 
-        val providers = apiService.getProviders(token, categoryId)
+        val providers = apiService.getProviders(categoryId)
 
         return if (providers.isSuccessful) {
             providers.body()
@@ -119,7 +119,7 @@ class ServiceRepoImpl(
     }
 
     override suspend fun getCategories(token: String): CategoriesResponse? {
-        val categories = apiService.getCategories(token)
+        val categories = apiService.getCategories()
 
         return if (categories.isSuccessful) {
             categories.body()
@@ -128,12 +128,12 @@ class ServiceRepoImpl(
         }
     }
 
-    override fun getCategoriesFlow(token: String): Flow<NetworkResult<CategoriesResponse>> =
+    override fun getCategoriesFlow(): Flow<NetworkResult<CategoriesResponse>> =
         flow {
             try {
                 emit(NetworkResult.Loading())
 
-                val categories = apiService.getCategories(token)
+                val categories = apiService.getCategories()
                 if (categories.isSuccessful) {
                     emit(NetworkResult.Success(categories.body()!!))
                 } else {
@@ -145,7 +145,7 @@ class ServiceRepoImpl(
         }
 
     override suspend fun getServices(token: String, providerId: String): ServiceResponse? {
-        val services = apiService.getServices(token, providerId)
+        val services = apiService.getServices(providerId)
 
         return if (services.isSuccessful) {
             services.body()
@@ -154,8 +154,8 @@ class ServiceRepoImpl(
         }
     }
 
-    override suspend fun getParameters(token: String, serviceID: String): ParametersResponse? {
-        val parameters = apiService.getParameters(token, serviceID)
+    override suspend fun getParameters(serviceID: String): ParametersResponse? {
+        val parameters = apiService.getParameters(serviceID)
 
         return if (parameters.isSuccessful) {
             parameters.body()
@@ -169,7 +169,7 @@ class ServiceRepoImpl(
         serviceName: String,
         page: Int
     ): SearchResponse? {
-        val serviceSearch = apiService.serviceSearch(token, serviceName, page)
+        val serviceSearch = apiService.serviceSearch(serviceName, page)
 
         return if (serviceSearch.isSuccessful) {
             serviceSearch.body()
@@ -184,7 +184,7 @@ class ServiceRepoImpl(
             try {
                 emit(NetworkResult.Loading())
 
-                val userPoints = apiService.getUserPoints(token)
+                val userPoints = apiService.getUserPoints()
 
                 if (userPoints.isSuccessful) {
                     emit(NetworkResult.Success(userPoints.body()!!))

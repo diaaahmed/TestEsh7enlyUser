@@ -209,7 +209,7 @@ class InquireActivity : AppCompatActivity() {
     {
         pDialog.show()
 
-        serviceViewModel.getParametersNew(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.getParametersNew(
             SERVICE_ID.toString(),
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
@@ -1039,20 +1039,21 @@ class InquireActivity : AppCompatActivity() {
             val type: Int = this.parametersList[i].type
             //   val paramNameAr: String = this.parametersList[i].name_ar
             //  val paramNameEn: String = this.parametersList[i].name_en
-            val minLenght: Int = this.parametersList[i].min_length
-            val maxLenght: Int = this.parametersList[i].max_length
+            val minLength: Int = this.parametersList[i].min_length
+            val maxLength: Int = this.parametersList[i].max_length
             val required: Int = this.parametersList[i].required
             val display: String = this.parametersList[i].display.toString()
             var shouldBreak = false
             val values = ArrayList<SpinnerModel>()
+
             for (ii in 0 until parametersList[i].type_values.size) {
                 values.add(
                     SpinnerModel(
                         java.lang.String.valueOf(
                             parametersList[i].type_values[ii].value
                         ),
-                        parametersList[i].type_values.get(ii).name_ar,
-                        parametersList[i].type_values.get(ii).name_en
+                        parametersList[i].type_values[ii].name_ar,
+                        parametersList[i].type_values[ii].name_en
                     )
                 )
             }
@@ -1065,17 +1066,17 @@ class InquireActivity : AppCompatActivity() {
                         if (required == 1 && valueNumber.isEmpty()) {
                             etNumber.error = getString(R.string.required)
                             shouldBreak = true
-                        } else if (valueNumber.length < minLenght || valueNumber.length > maxLenght) {
-                            if (minLenght == maxLenght) {
+                        } else if (valueNumber.length < minLength || valueNumber.length > maxLength) {
+                            if (minLength == maxLength) {
                                 etNumber.error =
-                                    getString(R.string.required_value_number) + " " + minLenght + getString(
+                                    getString(R.string.required_value_number) + " " + minLength + getString(
                                         R.string.number
                                     )
                             } else {
                                 etNumber.error =
-                                    getString(R.string.required_value_range) + " " + minLenght + " " + getString(
+                                    getString(R.string.required_value_range) + " " + minLength + " " + getString(
                                         R.string.number
-                                    ) + getString(R.string.and) + " " + getString(R.string.number) + maxLenght
+                                    ) + getString(R.string.and) + " " + getString(R.string.number) + maxLength
                             }
                             shouldBreak = true
                         }
@@ -1212,8 +1213,12 @@ class InquireActivity : AppCompatActivity() {
             resources.getString(R.string.app__ok), resources.getString(R.string.app__cancel),
             DATA_ENTITY?.amount.toString()
         ) { amount ->
+
             dialog.cancel()
+            pDialog.show()
+
             editedAmount = amount!!
+
             val totalAmountPojoModel = TotalAmountPojoModel(
                 Constants.IMEI, SERVICE_ID, amount,
                 DATA_ENTITY!!.id, PAYMENTPOJOMODEL!!.params
@@ -1223,6 +1228,9 @@ class InquireActivity : AppCompatActivity() {
                 totalAmountPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+
+                        pDialog.cancel()
+
                         val data = obj as TotalAmountEntity.DataEntity
 
                         val amount = java.lang.String.format(

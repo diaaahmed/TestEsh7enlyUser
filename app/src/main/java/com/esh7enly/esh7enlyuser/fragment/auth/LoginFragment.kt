@@ -253,7 +253,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
         response: ApiResponse<LoginResponse>
     ) {
         sharedHelper?.setStoreName(response.body?.data!!.name)
+
         sharedHelper?.setUserToken(response.body?.data!!.token)
+
+        Log.d("diaa from login", sharedHelper?.getUserToken().toString())
+
         sharedHelper?.setUserEmail(response.body?.data!!.email)
         sharedHelper?.isRememberUser(true)
 

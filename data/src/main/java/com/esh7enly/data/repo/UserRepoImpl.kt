@@ -40,10 +40,10 @@ class UserRepoImpl (private val apiService: ApiService): UserRepo
     override suspend fun verifyAccount(mobile: String, otpCode: String, key: String): VerifyOtpResponse = apiService.verifyAccount(mobile,otpCode,key)
 
     override suspend fun getDeposits(token: String, page: Int): Response<DepositResponse> =
-        apiService.getDeposits(token, page)
+        apiService.getDeposits(page)
 
     override suspend fun getUserWallet(token: String): Response<UserWalletResponse> =
-        apiService.getUserWallet(token)
+        apiService.getUserWallet()
 
     override suspend fun updatePassword(
         token: String,
@@ -51,7 +51,6 @@ class UserRepoImpl (private val apiService: ApiService): UserRepo
         newPassword: String
     ): Response<ChargeBalanceResponse> =
         apiService.updatePassword(
-            token,
             currentPassword,
             newPassword)
 
@@ -62,7 +61,6 @@ class UserRepoImpl (private val apiService: ApiService): UserRepo
         email: String
     ): Response<ChargeBalanceResponse> =
         apiService.updateProfile(
-            token = token,
         mobile,name, email = email)
 
     override suspend fun forgetPasswordSendOTP(mobile: String): Response<ForgetPasswordOTPResponse> =

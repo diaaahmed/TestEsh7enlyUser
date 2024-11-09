@@ -64,7 +64,6 @@ import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -73,6 +72,8 @@ import retrofit2.http.Url
 
 interface ApiService
 {
+   // Start Auth region
+
     @FormUrlEncoded
     @POST(LOGIN)
     fun login(
@@ -91,58 +92,6 @@ interface ApiService
     ): Response<NewOtpResponse>
 
     @FormUrlEncoded
-    @POST(SCHEDULE_INQUIRE)
-    suspend fun scheduleInquire(
-        @Header("Authorization") token: String?,
-        @Field("service_id") serviceId: String,
-        @Field("invoice_number") invoiceNumber:String
-    ): Response<ScheduleInquireResponse>
-
-    @POST(SCHEDULE_LIST)
-    suspend fun getScheduleList(
-        @Header("Authorization") token: String?,
-    ): Response<ScheduleListResponse>
-
-    @FormUrlEncoded
-    @POST(SCHEDULE_INVOICE)
-    suspend fun scheduleInvoice(
-        @Header("Authorization") token: String?,
-        @Field("service_id") serviceId: String,
-        @Field("schedule_date") scheduleDay:String,
-        @Field("invoice_number") invoiceNumber:String
-    ):Response<ScheduleInvoiceResponse>
-
-    @POST(IMAGE_ADS)
-    suspend fun getImageAdResponse(
-        @Header("Authorization") token: String?,
-    ): Response<ImageAdResponse>
-
-    @POST(USER_POINTS)
-    suspend fun getUserPoints(
-        @Header("Authorization") token: String?,
-    ): Response<PointsResponse>
-
-    @POST(REPLACE_POINTS)
-    suspend fun replaceUserPoints(
-        @Header("Authorization") token: String?,
-    ): Response<ReplacePointsResponse>
-
-    @FormUrlEncoded
-    @POST(TRANSACTIONS)
-    suspend fun getTransactions(
-        @Header("Authorization") token: String?,
-        @Field("page") page: Int
-    ): TransactionApiResponse
-
-
-    @POST(TRANSACTION_DETAILS)
-    suspend fun getTransactionDetails(
-        @Header("Authorization") token: String?,
-        @Path("TRANSACTION_ID") transactionId: String
-    ): TransactionDetailsEntity
-
-
-    @FormUrlEncoded
     @POST(OTP)
     suspend fun verifyAccount(
         @Field("mobile") mobile: String,
@@ -155,70 +104,6 @@ interface ApiService
     suspend fun registerNewAccount(
         @Body registerModel: RegisterModel
     ): RegisterResponse
-
-    @POST(TOTAL_AMOUNT)
-    suspend fun getTotalAmount(
-        @Header("Authorization") token: String?,
-        @Body totalAmountPojoModel: TotalAmountPojoModel
-    ): TotalAmountEntity
-
-
-    @FormUrlEncoded
-    @POST(UPDATE_PASSWORD)
-    suspend fun updatePassword(
-        @Header("Authorization") token: String?,
-        @Field("currant_password") currentPassword:String,
-        @Field("new_password") newPassword:String
-    ): Response<ChargeBalanceResponse>
-
-    @FormUrlEncoded
-    @POST(PROVIDERS)
-    suspend fun getProviders(
-        @Header("Authorization") token: String?,
-        @Field("id") id:String
-    ):Response<ProviderResponse>
-
-    @FormUrlEncoded
-    @POST(SERVICE_SEARCH)
-    suspend fun serviceSearch(
-        @Header("Authorization") token: String?,
-        @Field("name") serviceName:String,
-        @Field("page") page: Int
-    ):Response<SearchResponse>
-
-    @FormUrlEncoded
-    @POST(SERVICES_NEW)
-    suspend fun getServices(
-        @Header("Authorization") token: String?,
-        @Field("id") id:String
-    ):Response<ServiceResponse>
-
-    @FormUrlEncoded
-    @POST(PARAMETERS)
-    suspend fun getParameters(
-        @Header("Authorization") token: String?,
-        @Field("id") id:String
-    ):Response<ParametersResponse>
-
-    @POST(CATEGORIES)
-    suspend fun getCategories(
-        @Header("Authorization") token: String?
-    ):Response<CategoriesResponse>
-
-    @FormUrlEncoded
-    @POST(UPDATE_PROFILE)
-    suspend fun updateProfile(
-        @Header("Authorization") token: String?,
-        @Field("mobile") mobile:String,
-        @Field("name") name:String,
-        @Field("email") email:String
-    ): Response<ChargeBalanceResponse>
-
-    @POST(GET_DEPOSITS)
-    suspend fun getDeposits(
-        @Header("Authorization") token: String?,
-        @Query("page") page:Int
-    ): Response<DepositResponse>
 
     @FormUrlEncoded
     @POST(FORGET_PASSWORD)
@@ -234,6 +119,110 @@ interface ApiService
         @Field("key") key: String?,
     ): Response<VerifyOtpResponse>
 
+
+    // End Auth region
+
+
+    @FormUrlEncoded
+    @POST(SCHEDULE_INQUIRE)
+    suspend fun scheduleInquire(
+        @Field("service_id") serviceId: String,
+        @Field("invoice_number") invoiceNumber:String
+    ): Response<ScheduleInquireResponse>
+
+    @POST(SCHEDULE_LIST)
+    suspend fun getScheduleList(
+    ): Response<ScheduleListResponse>
+
+    @FormUrlEncoded
+    @POST(SCHEDULE_INVOICE)
+    suspend fun scheduleInvoice(
+        @Field("service_id") serviceId: String,
+        @Field("schedule_date") scheduleDay:String,
+        @Field("invoice_number") invoiceNumber:String
+    ):Response<ScheduleInvoiceResponse>
+
+    @POST(IMAGE_ADS)
+    suspend fun getImageAdResponse(
+    ): Response<ImageAdResponse>
+
+    @POST(USER_POINTS)
+    suspend fun getUserPoints(
+    ): Response<PointsResponse>
+
+    @POST(REPLACE_POINTS)
+    suspend fun replaceUserPoints(
+    ): Response<ReplacePointsResponse>
+
+    @FormUrlEncoded
+    @POST(TRANSACTIONS)
+    suspend fun getTransactions(
+        @Field("page") page: Int
+    ): TransactionApiResponse
+
+
+    @POST(TRANSACTION_DETAILS)
+    suspend fun getTransactionDetails(
+        @Path("TRANSACTION_ID") transactionId: String
+    ): TransactionDetailsEntity
+
+
+    @POST(TOTAL_AMOUNT)
+    suspend fun getTotalAmount(
+        @Body totalAmountPojoModel: TotalAmountPojoModel
+    ): TotalAmountEntity
+
+
+    @FormUrlEncoded
+    @POST(UPDATE_PASSWORD)
+    suspend fun updatePassword(
+        @Field("currant_password") currentPassword:String,
+        @Field("new_password") newPassword:String
+    ): Response<ChargeBalanceResponse>
+
+    @FormUrlEncoded
+    @POST(PROVIDERS)
+    suspend fun getProviders(
+        @Field("id") id:String
+    ):Response<ProviderResponse>
+
+    @FormUrlEncoded
+    @POST(SERVICE_SEARCH)
+    suspend fun serviceSearch(
+        @Field("name") serviceName:String,
+        @Field("page") page: Int
+    ):Response<SearchResponse>
+
+    @FormUrlEncoded
+    @POST(SERVICES_NEW)
+    suspend fun getServices(
+        @Field("id") id:String
+    ):Response<ServiceResponse>
+
+    @FormUrlEncoded
+    @POST(PARAMETERS)
+    suspend fun getParameters(
+        @Field("id") id:String
+    ):Response<ParametersResponse>
+
+    @POST(CATEGORIES)
+    suspend fun getCategories(
+    ):Response<CategoriesResponse>
+
+    @FormUrlEncoded
+    @POST(UPDATE_PROFILE)
+    suspend fun updateProfile(
+        @Field("mobile") mobile:String,
+        @Field("name") name:String,
+        @Field("email") email:String
+    ): Response<ChargeBalanceResponse>
+
+    @POST(GET_DEPOSITS)
+    suspend fun getDeposits(
+        @Query("page") page:Int
+    ): Response<DepositResponse>
+
+
     @FormUrlEncoded
     @POST(NEW_PASSWORD)
     suspend fun createNewPassword(
@@ -247,7 +236,6 @@ interface ApiService
     @FormUrlEncoded
     @POST(TOTAL_XPAY)
     suspend fun getTotalXpay(
-        @Header("Authorization") token: String?,
         @Field("amount") amount: String,
         @Field("payment_method_type") paymentMethodType:String,
         @Field("transaction_type") transactionType :String,
@@ -258,7 +246,6 @@ interface ApiService
     suspend fun startSessionForPay(
         @Field("payment_method_type") paymentMethodType:String,
         @Field("transaction_type") transactionType:String,
-        @Header("Authorization") token: String?,
         @Field("amount") amount: String,
         @Field("ip") ip: String
     ): Response<StartSessionResponse>
@@ -267,19 +254,16 @@ interface ApiService
     @POST
     suspend fun chargeBalanceWithPaytabs(
         @Url urlString: String,
-        @Header("Authorization") token: String?,
         @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
     ): Response<ChargeBalanceResponse>
 
     @POST(PAYMENT)
     suspend fun pay(
-        @Header("Authorization") token: String?,
         @Body paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity>
 
     @POST(INQUIRY)
     suspend fun inquire(
-        @Header("Authorization") token: String?,
         @Body paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity>
 
@@ -287,20 +271,17 @@ interface ApiService
     @POST(CHECK_INTEGRATION_PROVIDER_STATUS)
     @FormUrlEncoded
     suspend fun checkIntegration(
-        @Header("Authorization") token: String?,
         @Field("id") transactionId: String,
         @Field("imei") imei: String
     ): Response<JsonElement>
 
     @POST(WALLETS)
     suspend fun getUserWallet(
-        @Header("Authorization") token: String?
     ): Response<UserWalletResponse>
 
     @POST(CANCEL_SERVICE)
     @FormUrlEncoded
     suspend fun cancelTransaction(
-        @Header("Authorization") token: String?,
         @Field("transaction_id") transactionId: String,
         @Field("imei") imei: String
     ): Response<JsonElement>

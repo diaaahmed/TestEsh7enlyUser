@@ -4,22 +4,21 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
-
 class RequestInterceptor: Interceptor
 {
     override fun intercept(chain: Interceptor.Chain): Response
     {
+
         val originalRequest = chain.request()
         val originalUrl = originalRequest.url
         val url =
             originalUrl.newBuilder()
                 .build()
 
-       val requestBuilder: Request.Builder = originalRequest.newBuilder().url(url)
+        val requestBuilder = originalRequest.newBuilder()
 
-//        val requestBuilder = originalRequest.newBuilder()
-//            .addHeader("Authorization", token)
-//            .url(originalUrl)
+            .addHeader("TEST_DATA", "test")
+            .url(url)
 
         val request: Request = requestBuilder.build()
         return chain.proceed(request)

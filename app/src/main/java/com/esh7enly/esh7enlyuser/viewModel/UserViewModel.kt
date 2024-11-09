@@ -11,11 +11,14 @@ import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.repo.UserRepo
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
+import com.esh7enly.esh7enlyuser.intent.LoginScreenIntent
+import com.esh7enly.esh7enlyuser.intent.LoginScreenState
 import com.esh7enly.esh7enlyuser.util.isValidPassword
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -40,6 +43,29 @@ class UserViewModel @Inject constructor(
     var imei: String? = null
 
     var token = ""
+
+    private var _loginScreenState: MutableStateFlow<LoginScreenState> = MutableStateFlow(LoginScreenState.Idle)
+    val loginScreenState:StateFlow<LoginScreenState> get() = _loginScreenState
+
+
+    private fun processIntent(intent:LoginScreenIntent)
+    {
+        when(intent)
+        {
+            LoginScreenIntent.ForgetPasswordClick -> TODO()
+            LoginScreenIntent.LoginClick -> TODO()
+            LoginScreenIntent.SignupClick -> TODO()
+        }
+    }
+
+    private fun produceResult()
+    {
+        viewModelScope.launch {
+
+        }
+    }
+
+
 
     fun saveUserPassword() {
         sharedHelper.setUserPassword(userPassword.value)

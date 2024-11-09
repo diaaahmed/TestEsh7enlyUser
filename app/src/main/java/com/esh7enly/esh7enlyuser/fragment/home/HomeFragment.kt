@@ -276,11 +276,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, ServiceViewModel>(), Cate
 
         lifecycleScope.launch {
 
-            viewModel.fetchData(sharedHelper?.getUserToken().toString())
+            viewModel.fetchData()
 
             viewModel.categoriesResponse.collect{response->
                 when(response)
                 {
+                    null -> {}
                     is NetworkResult.Error -> {
                         dialog.showErrorDialogWithAction(
                             response.message, resources.getString(R.string.app__ok)
@@ -291,7 +292,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, ServiceViewModel>(), Cate
                     }
                     is NetworkResult.Loading -> {
                         binding.shimmerViewContainer.startShimmerAnimation()
+
                     }
+
                     is NetworkResult.Success -> {
                         binding.shimmerViewContainer.stopShimmerAnimation()
                         binding.shimmerViewContainer.visibility = View.GONE
@@ -309,7 +312,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, ServiceViewModel>(), Cate
 
                         replaceData(filteredCategory)
                     }
-                    null -> {}
                 }
             }
 

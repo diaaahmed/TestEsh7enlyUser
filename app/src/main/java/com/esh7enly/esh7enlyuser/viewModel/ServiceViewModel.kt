@@ -149,19 +149,19 @@ class ServiceViewModel @Inject constructor(
 
     var data: Boolean = false
 
-     fun fetchData(token:String) {
+     fun fetchData() {
         if (!data) {
-            getCategoriesNewFlow(token)
-            getImageAds(token)
+            getCategoriesNewFlow()
+            getImageAds()
             data = true
         }
     }
 
 
-    private fun getCategoriesNewFlow(token: String) {
+    private fun getCategoriesNewFlow() {
 
         viewModelScope.launch {
-            servicesRepo.getCategoriesFlow(token)
+            servicesRepo.getCategoriesFlow()
                 .onEach { result ->
                     when (result) {
                         is NetworkResult.Error -> {
@@ -189,10 +189,10 @@ class ServiceViewModel @Inject constructor(
 
     }
 
-    fun getParametersNew(token: String, serviceID: String, listner: OnResponseListener) {
+    fun getParametersNew(serviceID: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
-                val parameters = servicesRepo.getParameters(token, serviceID)
+                val parameters = servicesRepo.getParameters(serviceID)
 
                 if (parameters?.data?.isNotEmpty() == true) {
                     listner.onSuccess(parameters.code, parameters.message, parameters.data)
@@ -208,17 +208,19 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
+    var servicesId = 0
     var serviceType = 0
-    var providerName: String? = null
-    var serviceTypeCode = ""
     var serviceName: String? = null
     var serviceNameEN: String? = null
-    var servicesId = 0
-    var acceptAmountinput = 0
+    var providerName: String? = null
     var priceType = 0
     var priceValue: String? = null
     var acceptAmountChange = 0
     var image: String? = null
+    var acceptAmountinput = 0
+
+
+    var serviceTypeCode = ""
     val acceptCheckIntegrationProviderStatus = 0
     var transactionId = ""
     var transactionType = 0
@@ -292,10 +294,10 @@ class ServiceViewModel @Inject constructor(
 
     val dynamicAdsState = _dynamicAdsState.asStateFlow()
 
-    private fun getImageAds(token: String) {
+    private fun getImageAds() {
 
         viewModelScope.launch {
-            servicesRepo.getNewImageAdResponse(token)
+            servicesRepo.getNewImageAdResponse()
                 .collect{response->
                     when(response)
                     {

@@ -8,6 +8,7 @@ import com.chuckerteam.chucker.api.RetentionManager
 
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.data.remote.NotificationService
+import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.LiveDataCallAdapterFactory
 import com.esh7enly.esh7enlyuser.BuildConfig
 
@@ -16,6 +17,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -31,24 +33,44 @@ object NetworkModule {
     private external fun baseUrl(): String
 
     init {
-         System.loadLibrary("esh7enlyuser")
+        System.loadLibrary("esh7enlyuser")
+    }
+
+    @Provides
+    @Named("Header-Interceptor")
+    fun provideHeaderInterceptor(
+        sharedHelper: SharedHelper
+    ): Interceptor {
+
+        return HeaderInterceptor(sharedHelper)
+    }
+
+    @Named("Logging-interceptor")
+    @Provides
+    @Singleton
+    fun providerLoggingInterceptor(): Interceptor {
+        val loggingInterceptor = HttpLoggingInterceptor()
+
+        if (BuildConfig.DEBUG) {
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        } else {
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
+        }
+
+        if (!BuildConfig.DEBUG) {
+            loggingInterceptor.redactHeader("Authorization")
+        }
+
+        return loggingInterceptor
+
     }
 
     @Provides
     @Singleton
-    fun provideOkhttp(
+    fun provideCheckerInterceptor(
         @ApplicationContext context: Context,
-    ): OkHttpClient {
 
-        val logging = HttpLoggingInterceptor()
-
-        if (BuildConfig.DEBUG)
-        {
-            logging.level = HttpLoggingInterceptor.Level.BODY
-        }
-        else {
-            logging.level = HttpLoggingInterceptor.Level.NONE
-        }
+        ): ChuckerInterceptor {
 
         // Create the Collector
         val chuckerCollector = ChuckerCollector(
@@ -60,7 +82,7 @@ object NetworkModule {
         )
 
         // Create the Interceptor
-        val chuckerInterceptor = ChuckerInterceptor.Builder(context)
+        return ChuckerInterceptor.Builder(context)
             // The previously created Collector
             .collector(chuckerCollector)
             // The max body content length in bytes, after this responses will be truncated.
@@ -69,10 +91,24 @@ object NetworkModule {
             .alwaysReadResponseBody(true)
             .build()
 
+
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkhttp(
+        @Named("Logging-interceptor") loggingInterceptor: Interceptor,
+        @Named("Header-Interceptor") headerInterceptor: Interceptor,
+    ): OkHttpClient {
+
+
         return OkHttpClient.Builder()
-//            .addInterceptor(chuckerInterceptor)
-            .addInterceptor(logging)
-            .addNetworkInterceptor(RequestInterceptor())
+            .retryOnConnectionFailure(true)
+            // .followSslRedirects(false)
+            // .followRedirects(false)
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(headerInterceptor)
+            //.addNetworkInterceptor(chuckerInterceptor)
             .connectTimeout(3, TimeUnit.MINUTES)
             .readTimeout(3, TimeUnit.MINUTES)
             .writeTimeout(3, TimeUnit.MINUTES)

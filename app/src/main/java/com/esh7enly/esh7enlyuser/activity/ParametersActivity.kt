@@ -86,16 +86,20 @@ open class ParametersActivity : BaseActivity() {
 
         ui.btnSubmit.setOnClickListener { pushSubmitBtn() }
 
+        // Done
         getIntentData()
 
         serviceName =
             if (Constants.LANG == Constants.AR) Constants.SERVICE_NAME_AR else Constants.SERVICE_NAME_EN
 
+        // Done
         initToolBar()
 
+        // Done
         showData()
 
     }
+
 
     private fun showData() {
 
@@ -120,14 +124,16 @@ open class ParametersActivity : BaseActivity() {
 
         getParametersFromRemote()
 
-        //  getImagesFromDB()
     }
 
-    private fun getParametersFromRemote() {
+
+    // Done
+    private fun getParametersFromRemote()
+    {
 
         pDialog.show()
 
-        serviceViewModel.getParametersNew(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.getParametersNew(
             serviceViewModel.servicesId.toString(), object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
                 {
@@ -143,6 +149,7 @@ open class ParametersActivity : BaseActivity() {
                         ui.lytDynamic.visibility = View.GONE
                         ui.cardReading.visibility = View.VISIBLE
                     } else {
+
                         ui.lytDynamic.visibility = View.VISIBLE
                         ui.cardReading.visibility = View.GONE
 
@@ -195,10 +202,23 @@ open class ParametersActivity : BaseActivity() {
             } else {
                 // Getting amount value if this service need it
                 if (serviceViewModel.acceptAmountinput == 1) {
-                    // find amount EdtTxt by id
-                    val etAmount: EditText = ui.lytDynamic.findViewWithTag("amount")
-                    // get Amount By User
-                    amount = Utils.replaceArabicNumbers(etAmount.text.toString())
+
+                   try{
+                       // find amount EdtTxt by id
+                       val etAmount: EditText = ui.lytDynamic.findViewWithTag("amount")
+                       // get Amount By User
+                       amount = Utils.replaceArabicNumbers(etAmount.text.toString())
+                   }
+                   catch (e: Exception)
+                   {
+                       sendIssueToCrashlytics(
+                           msg = e.message.toString(),
+                           functionName = "Push submit in parameters activity serviceViewModel.acceptAmountinput == 1",
+                           provider = "service name${serviceViewModel.serviceName} ",
+                           key = "service id ${serviceViewModel.servicesId} provider ${serviceViewModel.providerName}"
+                       )
+                   }
+
                 } else {
                     if (serviceViewModel.priceType == 2) {
                         // get Specific Amount from DB
@@ -271,7 +291,6 @@ open class ParametersActivity : BaseActivity() {
                 message("Success read")
 
                 paramsArrayListToSend.add(Params("ClientIdentifier", data.clientIdentifier))
-                // paramsArrayListToSend.add(Params("ClientIdentifier", client))
                 paramsArrayListToSend.add(Params("billing_account", data.bilingAccount))
                 Constants.BILLING_ACCOUNT_CARD = data.bilingAccount
                 paramsArrayListToSend.add(Params("CardMetadata", data.cardMetadata))
@@ -661,8 +680,11 @@ open class ParametersActivity : BaseActivity() {
         }
     }
 
+
+    // Done
     @SuppressLint("ClickableViewAccessibility")
-    private fun replaceData(parameters: List<ParametersData>) {
+    private fun replaceData(parameters: List<ParametersData>)
+    {
         ui.lytDynamic.removeAllViewsInLayout()
 
         this.parametersList = parameters
@@ -693,7 +715,9 @@ open class ParametersActivity : BaseActivity() {
 
             if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT)
             {
-                if (display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_INQUIRY) {
+                if (display == Constants.DISPLAY_FOR_ALL ||
+                    display == Constants.DISPLAY_FOR_INQUIRY)
+                {
                     when (type) {
                         Constants.Number -> {
                             // adding title
@@ -805,7 +829,6 @@ open class ParametersActivity : BaseActivity() {
                             val edtChar: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             edtChar.setText("")
-                            // println("edtChar.getId():-> " + edtChar.tag + " : " + internalId)
                         }
 
                         Constants.Date -> {
@@ -859,7 +882,6 @@ open class ParametersActivity : BaseActivity() {
                             ) {
 
                             }
-
                             val edtTxtArea: EditText = ui.lytDynamic.findViewWithTag(internalId)
                             edtTxtArea.setText("")
                         }
@@ -1131,7 +1153,10 @@ open class ParametersActivity : BaseActivity() {
             dynamicLayout?.addViews(ui.lytDynamic, 0, 0, 2)
         }
 
-        if (serviceViewModel.acceptAmountinput == 1) {
+        Log.d("diaa", "serviceViewModel.acceptAmountinput ${serviceViewModel.acceptAmountinput}")
+
+        if (serviceViewModel.acceptAmountinput == 1)
+        {
             // adding title
             dynamicLayout?.addTextViews(
                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -1150,6 +1175,7 @@ open class ParametersActivity : BaseActivity() {
             ) { }
 
             val edtAmount: EditText = ui.lytDynamic.findViewWithTag("amount")
+
             edtAmount.inputType =
                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
             edtAmount.setText("")
@@ -1160,6 +1186,7 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun getIntentData() {
+
         try {
             if (intent.extras != null) {
                 serviceViewModel.servicesId = intent.getIntExtra(Constants.SERVICE_ID, 0)
@@ -1178,6 +1205,12 @@ open class ParametersActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             Log.d(TAG, "getIntentData catch: ${e.message}")
+            sendIssueToCrashlytics(
+                msg =  e.message.toString(),
+                functionName = "getIntentData",
+                provider = "Parameters activity",
+                key = "Get intent data"
+            )
         }
     }
 

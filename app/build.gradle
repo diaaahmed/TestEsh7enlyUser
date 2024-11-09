@@ -18,8 +18,8 @@ android {
         minSdk libs.versions.minSdk.get().toInteger()
         targetSdk libs.versions.targetSdk.get().toInteger()
 
-        versionCode 29
-        versionName "1.28"
+        versionCode 30
+        versionName "1.29"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -185,4 +185,8 @@ dependencies {
 
     // Generate qr code
     implementation libs.qrgenerator
+
+    implementation libs.dataStore
+    implementation libs.dataStoreProto
+
 }

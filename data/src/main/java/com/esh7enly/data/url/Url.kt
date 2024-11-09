@@ -2,7 +2,19 @@ package com.esh7enly.data.url
 
 object Url {
 
+    // Start Auth region
+
     const val LOGIN = "auth/login"
+    const val FORGET_PASSWORD = "auth/send-forget-password-otp"
+    const val VERIFY_FORGET_PASSWORD = "auth/forget-password"
+    const val NEW_PASSWORD = "auth/forget-change-password"
+    const val OTP = "auth/otp"
+    const val REGISTER = "auth/register"
+    const val SEND_OTP = "auth/send-otp"
+
+    // End Auth region
+
+
     const val UPDATE_PASSWORD = "misc/change-password"
 
     const val PROVIDERS = "service/providers"
@@ -13,13 +25,8 @@ object Url {
 
     const val UPDATE_PROFILE = "misc/update-profile"
     const val GET_DEPOSITS = "visa/list-wallet"
-    const val FORGET_PASSWORD = "auth/send-forget-password-otp"
-    const val VERIFY_FORGET_PASSWORD = "auth/forget-password"
-    const val NEW_PASSWORD = "auth/forget-change-password"
 
-    const val OTP = "auth/otp"
-    const val REGISTER = "auth/register"
-    const val SEND_OTP = "auth/send-otp"
+
     const val SCHEDULE_INVOICE = "schedule/add"
     const val SCHEDULE_INQUIRE = "schedule/check"
     const val SCHEDULE_LIST = "schedule/list"

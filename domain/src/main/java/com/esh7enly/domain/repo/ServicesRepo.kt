@@ -22,7 +22,8 @@ import retrofit2.Response
 
 interface ServicesRepo {
     suspend fun getImageAdResponse(token: String): Response<ImageAdResponse>
-    suspend fun getNewImageAdResponse(token: String): Flow<NetworkResult<ImageAdResponse>>
+
+    suspend fun getNewImageAdResponse(): Flow<NetworkResult<ImageAdResponse>>
 
     suspend fun checkIntegration(token: String, id: String, imei: String): Response<JsonElement>
 
@@ -61,9 +62,9 @@ interface ServicesRepo {
     ): Response<ScheduleInvoiceResponse>
     suspend fun getProviders(token: String, categoryId: String): ProviderResponse?
     suspend fun getCategories(token: String): CategoriesResponse?
-    fun getCategoriesFlow(token: String): Flow<NetworkResult<CategoriesResponse>>
+    fun getCategoriesFlow(): Flow<NetworkResult<CategoriesResponse>>
     suspend fun getServices(token: String, providerId: String): ServiceResponse?
-    suspend fun getParameters(token: String, serviceID: String): ParametersResponse?
+    suspend fun getParameters(serviceID: String): ParametersResponse?
     suspend fun serviceSearch(token: String, serviceName: String, page: Int): SearchResponse?
     suspend fun getUserPointsFlow(token: String): Flow<NetworkResult<PointsResponse>>
 

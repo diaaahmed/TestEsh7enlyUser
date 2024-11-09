@@ -22,6 +22,7 @@ import com.esh7enly.esh7enlyuser.util.Decryptor
 import com.esh7enly.esh7enlyuser.util.Encryptor
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.viewModel.ParametersViewModel
 import com.esh7enly.esh7enlyuser.viewModel.PhoneViewModel
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
@@ -36,6 +37,7 @@ import javax.inject.Inject
 abstract class BaseActivity : AppCompatActivity()
 {
     val serviceViewModel: ServiceViewModel by viewModels()
+    val parametersViewModel: ParametersViewModel by viewModels()
 
     val transactionsViewModel: TransactionsViewModel by viewModels()
 
