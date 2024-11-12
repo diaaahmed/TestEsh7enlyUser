@@ -29,7 +29,7 @@ class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-
+        //installSplashScreen()
         Language.setLanguageNew(this, Constants.LANG)
 
         setContentView(ui.root)
@@ -45,7 +45,6 @@ class AuthActivity : AppCompatActivity() {
     private fun setStartDestination(navController: NavController) {
         val graph = navController.navInflater.inflate(R.navigation.auth_nav)
 
-
         // Set start destination based on the condition
         graph.setStartDestination(
             if (Constants.isSkip) {
@@ -58,6 +57,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun initSplashScreen() {
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
         {
             installSplashScreen()
@@ -76,7 +76,8 @@ class AuthActivity : AppCompatActivity() {
         }
         else
         {
-            setTheme(R.style.Theme_Test)
+            setTheme(R.style.Theme_AuthActivity)
         }
     }
+
 }

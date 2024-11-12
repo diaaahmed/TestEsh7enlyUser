@@ -257,6 +257,11 @@ interface ApiService
         @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
     ): Response<ChargeBalanceResponse>
 
+
+    @POST
+    suspend fun checkWalletStatus()
+
+
     @POST(PAYMENT)
     suspend fun pay(
         @Body paymentPojoModel: PaymentPojoModel

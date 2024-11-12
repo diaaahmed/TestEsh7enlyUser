@@ -64,13 +64,12 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         ActivityAddBalanceBinding.inflate(layoutInflater)
     }
 
-    private var transactionTypeFinal = ""
-
     private val dialog by lazy {
         AppDialogMsg(this, false)
     }
 
     private var finalPaymentWay = ""
+    private var transactionTypeFinal = ""
 
     private val paytabsViewModel: PaytabsViewModel by viewModels()
 
@@ -116,6 +115,10 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         }
 
         ui.digitalWalletWay.setOnClickListener {
+            cashWalletClicked()
+        }
+
+        ui.digitalWay.setOnClickListener{
             digitalWalletClicked()
         }
 
@@ -127,12 +130,21 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
     }
 
 
-    private fun digitalWalletClicked() {
-        paytabsViewModel.setShowNumberNew(PayWays.WALLET.toString())
+    private fun cashWalletClicked() {
+     //   paytabsViewModel.setShowNumberNew(PayWays.WALLET.toString())
+        paytabsViewModel.setShowNumberNew(PayWays.CASH.toString())
         paytabsViewModel.setShowNumber(true)
         paytabsViewModel.buttonClicked.value = PayWays.CASH.toString()
         ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
     }
+
+    private fun digitalWalletClicked() {
+        paytabsViewModel.setShowNumberNew(PayWays.WALLET.toString())
+        paytabsViewModel.setShowNumber(false)
+        paytabsViewModel.buttonClicked.value = PayWays.WALLET.toString()
+        ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
+    }
+
 
     private fun bankWayClicked() {
         paytabsViewModel.setShowNumber(false)
@@ -163,6 +175,21 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
                     }.show()
 
+                }
+
+                PayWays.WALLET.toString() -> {
+                    dialog.showWarningDialogWithAction(
+                        resources.getString(R.string.payment_warning),
+                        resources.getString(R.string.app__ok)
+                    )
+                    {
+                        dialog.cancel()
+
+                        pDialog.show()
+
+                        getTotalAmount(GatewayTransactionType.wallet.toString())
+
+                    }.show()
                 }
 
                 PayWays.CASH.toString() -> {
@@ -256,7 +283,10 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         totalAmount: String, drawable: Drawable?,
         startSessionId: Int
     ) {
-        val number = Random(9000000000000000000).nextInt()
+       // val number = Random(9000000000000000000).nextInt()
+        val number = "cart_diaa_wallet_test"
+
+        Log.d(TAG, "diaa wallet click number: $number ")
 
         val configData: PaymentSdkConfigurationDetails =
 
@@ -528,19 +558,28 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
     {
         pDialog.cancel()
 
-        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-            status = PaymentStatus.CANCELLED.toString(),
-            id = Constants.START_SESSION_ID,
-            amount = ui.amountValue.text.toString(),
-            errorCode = "400",
-            errorMsg = "Payment cancelled",
-            payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal,
-            hash_generated = Constants.HASH_GENERATED,
-            hash_id = Constants.HASH_ID
-        )
+        if(finalPaymentWay== PayWays.WALLET.toString())
+        {
+            // Call query by cart_id
+        }
+        else
+        {
+            val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+                status = PaymentStatus.CANCELLED.toString(),
+                id = Constants.START_SESSION_ID,
+                amount = ui.amountValue.text.toString(),
+                errorCode = "400",
+                errorMsg = "Payment cancelled",
+                payment_method_type = GatewayMethod.paytabs.toString(),
+                transaction_type = transactionTypeFinal,
+                hash_generated = Constants.HASH_GENERATED,
+                hash_id = Constants.HASH_ID
+            )
 
-        requestChargeFailed(chargeBalanceRequest, "Payment cancelled")
+            requestChargeFailed(chargeBalanceRequest, "Payment cancelled")
+        }
+
+
     }
 
     override fun onPaymentFinish(

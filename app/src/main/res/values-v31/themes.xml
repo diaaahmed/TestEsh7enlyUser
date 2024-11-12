@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Splash" parent="Theme.SplashScreen">
+    <style name="Theme.AuthActivity" parent="Theme.SplashScreen">
 
-        <item name="windowSplashScreenBackground">@color/colorPrimary</item>
+        <item name="android:windowSplashScreenBackground">@color/colorPrimary</item>
 
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo_splash_new</item>
-        <!--        <item name="windowSplashScreenAnimatedIcon">@drawable/launch_bg</item>-->
 
-<!--        <item name="splashScreenIconSize">@dimen/_100sdp</item>-->
+        <item name="postSplashScreenTheme">@style/Theme.Esh7enlyUser</item>
 
-        <item name="iconSize">@dimen/_200sdp</item>
-
-        <item name="android:windowSplashScreenBrandingImage">@drawable/capture_prev_ui</item>
-
-        <item name="windowSplashScreenAnimationDuration">2000</item>
+        <item name="android:windowSplashScreenAnimationDuration">2000</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:windowLightStatusBar" >false</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:statusBarColor">@color/colorAccent</item>
-        <item name="postSplashScreenTheme">@style/Theme.Test</item>
+
     </style>
 
 </resources>

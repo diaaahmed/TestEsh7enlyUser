@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:drawable="@color/colorPrimary"/>
 
     <item
-        android:width="@dimen/_150sdp"
-        android:height="@dimen/_150sdp"
+        android:width="@dimen/_200sdp"
+        android:height="@dimen/_200sdp"
         android:drawable="@drawable/logo_splash_new"
         android:gravity="center"/>
 
 
-    <item
-        android:width="@dimen/_150sdp"
-        android:height="@dimen/_150sdp"
-        android:drawable="@drawable/capture_prev_ui"
-        android:gravity="bottom"/>
+<!--    <item-->
+<!--        android:width="@dimen/_150sdp"-->
+<!--        android:height="@dimen/_150sdp"-->
+<!--        android:drawable="@drawable/capture_prev_ui"-->
+<!--        android:gravity="bottom"/>-->
 
 </layer-list>
