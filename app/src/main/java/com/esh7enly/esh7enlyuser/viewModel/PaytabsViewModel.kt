@@ -61,8 +61,7 @@ class PaytabsViewModel @Inject constructor(
                     paymentMethodType, transactionType, token, amount, ip
                 )
 
-                if (startSessionResponse.isSuccessful)
-                {
+                if (startSessionResponse.isSuccessful) {
                     if (!startSessionResponse.body()?.status!!) {
                         listner.onFailed(
                             startSessionResponse.body()!!.code,
@@ -83,8 +82,12 @@ class PaytabsViewModel @Inject constructor(
                         val generated = newmd5(finalData)
 
                         Constants.HASH_GENERATED = generated
+
                         Constants.HASH_ID = startSessionResponse.body()!!.data.hash_id
+
                         Log.d("TAG", "diaa has_id after converted : $generated")
+                        Log.d("TAG", "diaa hash_id : ${Constants.HASH_ID}")
+
 
                         listner.onSuccess(
                             startSessionResponse.body()!!.code,
@@ -98,7 +101,6 @@ class PaytabsViewModel @Inject constructor(
                         startSessionResponse.code(),
                         startSessionResponse.message()
                     )
-
                 }
             } catch (e: Exception) {
                 sendIssueToCrashlytics(
@@ -111,11 +113,11 @@ class PaytabsViewModel @Inject constructor(
     }
 
 
-
     private fun newmd5(input: String): String {
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(
-            1, md.digest(input.toByteArray())).toString(16)
+            1, md.digest(input.toByteArray())
+        ).toString(16)
             .padStart(32, '0')
     }
 
@@ -128,7 +130,12 @@ class PaytabsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val xPayTotal =
-                    chargeBalanceRepo.getTotalXPay(token, amount, paymentMethodType, transactionType)
+                    chargeBalanceRepo.getTotalXPay(
+                        token,
+                        amount,
+                        paymentMethodType,
+                        transactionType
+                    )
 
                 if (xPayTotal.isSuccessful) {
                     if (xPayTotal.body()!!.status) {
@@ -163,6 +170,49 @@ class PaytabsViewModel @Inject constructor(
         System.loadLibrary("esh7enlyuser")
     }
 
+    suspend fun checkWalletStatus(
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+        listner: OnResponseListener
+    ) {
+        viewModelScope.launch {
+
+            try {
+                val checkWalletStatusResponse =
+                    chargeBalanceRepo.checkWalletStatus(chargeBalanceRequest)
+
+                if (checkWalletStatusResponse.isSuccessful) {
+
+                    if (checkWalletStatusResponse.body()!!.status) {
+                        listner.onSuccess(
+                            checkWalletStatusResponse.code(),
+                            checkWalletStatusResponse.message(),
+                            checkWalletStatusResponse.body()
+                        )
+
+                    } else {
+                        listner.onFailed(
+                            checkWalletStatusResponse.body()!!.code,
+                            checkWalletStatusResponse.body()!!.message
+                        )
+                    }
+
+                } else {
+                    listner.onFailed(
+                        checkWalletStatusResponse.code(),
+                        checkWalletStatusResponse.message()
+                    )
+                }
+            } catch (e: Exception) {
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                sendIssueToCrashlytics(
+                    e.message.toString(),
+                    "checkWalletStatus from paytabs viewModel"
+                )
+            }
+        }
+    }
+
+
     suspend fun chargeBalanceWithPaytabs(
         token: String,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs,
@@ -172,7 +222,8 @@ class PaytabsViewModel @Inject constructor(
             try {
                 val charge = chargeBalanceRepo.chargeBalanceWithPaytabs(
                     url = pay(),
-                    token, chargeBalanceRequest)
+                    token, chargeBalanceRequest
+                )
 
                 if (charge.isSuccessful) {
                     if (!charge.body()!!.status) {

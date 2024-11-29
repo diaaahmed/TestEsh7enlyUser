@@ -19,7 +19,6 @@
     <color name="payment_sdk_stroke_color">#bc3827</color>
     <color name="payment_sdk_title_text_color">#bc3827</color>
 
-
     <color name="text__primary">#202540</color>
     <color name="grey_400">#BDBDBD</color>
     <color name="grey_600">#757575</color>
@@ -37,7 +36,6 @@
     <color name="grey_20">#CCCCCC</color>
     <color name="overlay_dark_20">#33000000</color>
 
-
     <color name="colorPrimary">#bc3827</color>
     <color name="waveColor">#e7bab6</color>
     <color name="colorPrimaryLight">#BF5345</color>
@@ -48,12 +46,10 @@
     <color name="instaPrimary">#ffffff</color>
     <color name="textview__star_point">#D50000</color>
 
-
     <color name="startcolor">#781715</color>
     <color name="centerColor">#bc3827</color>
     <color name="endColor">#ee5d36</color>
     <color name="overlay_dark_10">#1A000000</color>
-
 
     <color name="background_color">#FDFAFA</color>
 

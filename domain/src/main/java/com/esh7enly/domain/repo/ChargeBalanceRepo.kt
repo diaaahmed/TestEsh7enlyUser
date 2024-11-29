@@ -14,6 +14,10 @@ interface ChargeBalanceRepo
         chargeBalanceRequest: ChargeBalanceRequestPaytabs
     ): Response<ChargeBalanceResponse>
 
+    suspend fun checkWalletStatus(
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs
+    ): Response<ChargeBalanceResponse>
+
     suspend fun startSessionForPay(
         paymentMethodType: String,
         transactionType: String,

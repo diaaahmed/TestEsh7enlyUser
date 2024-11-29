@@ -73,6 +73,7 @@ public class Constants {
     public static final String DISPLAY_FOR_INQUIRY = "2";
     public static final String DISPLAY_FOR_PAYMENT = "3";
     public static  int START_SESSION_ID = 0;
+    public static  String TOTAL_AMOUNT_PAYTABS = "0";
     public static  String HASH_GENERATED = "";
     public static  String HASH_ID = "";
 

@@ -31,6 +31,7 @@ import com.esh7enly.data.url.Url.UPDATE_PASSWORD
 import com.esh7enly.data.url.Url.UPDATE_PROFILE
 import com.esh7enly.data.url.Url.USER_POINTS
 import com.esh7enly.data.url.Url.VERIFY_FORGET_PASSWORD
+import com.esh7enly.data.url.Url.VISA_WALLET
 import com.esh7enly.data.url.Url.WALLETS
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.*
@@ -258,8 +259,10 @@ interface ApiService
     ): Response<ChargeBalanceResponse>
 
 
-    @POST
-    suspend fun checkWalletStatus()
+    @POST(VISA_WALLET)
+    suspend fun checkWalletStatus(
+        @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs
+    ):Response<ChargeBalanceResponse>
 
 
     @POST(PAYMENT)

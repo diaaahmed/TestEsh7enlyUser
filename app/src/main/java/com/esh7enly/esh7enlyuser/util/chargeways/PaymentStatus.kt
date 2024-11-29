@@ -5,5 +5,6 @@ enum class PaymentStatus
     SUCCESSFUL,
     FAILED,
     PENDING,
-    CANCELLED
+    CANCELLED,
+    CANCELLED_WALLET
 }

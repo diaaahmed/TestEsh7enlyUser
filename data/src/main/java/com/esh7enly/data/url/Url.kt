@@ -43,6 +43,7 @@ object Url {
     const val INQUIRY = "service/inquiry"
 
     const val PAYMENT = "service/payment"
+    const val VISA_WALLET = "visa/check-complete"
 
     const val TOTAL_AMOUNT = "service/total-amount"
 

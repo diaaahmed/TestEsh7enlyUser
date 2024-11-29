@@ -17,6 +17,9 @@ class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRe
         urlString = url, chargeBalanceRequest = chargeBalanceRequest
     )
 
+    override suspend fun checkWalletStatus(chargeBalanceRequest: ChargeBalanceRequestPaytabs): Response<ChargeBalanceResponse>  =
+        apiService.checkWalletStatus(chargeBalanceRequest)
+
     override suspend fun startSessionForPay(
         paymentMethodType: String,
         transactionType: String,

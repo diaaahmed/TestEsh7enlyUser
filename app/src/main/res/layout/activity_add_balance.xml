@@ -133,7 +133,7 @@
                                 android:padding="@dimen/_5sdp"
                                 android:id="@+id/digitalWay"
                                 android:drawablePadding="@dimen/_6sdp"
-                                android:text="Wallet"
+                                android:text="@string/digital_wallet"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 app:drawableStartCompat="@drawable/wallet" />
