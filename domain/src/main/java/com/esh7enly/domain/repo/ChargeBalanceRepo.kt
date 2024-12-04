@@ -23,6 +23,7 @@ interface ChargeBalanceRepo
         transactionType: String,
         token: String,
         amount: String,
+        total_amount:String,
         ip: String
     ): Response<StartSessionResponse>
 

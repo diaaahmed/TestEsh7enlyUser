@@ -9,6 +9,7 @@ import com.esh7enly.domain.repo.ChargeBalanceRepo
 import retrofit2.Response
 
 class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRepo {
+
     override suspend fun chargeBalanceWithPaytabs(
         url:String,
         token: String,
@@ -25,10 +26,11 @@ class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRe
         transactionType: String,
         token: String,
         amount: String,
+        total_amount:String,
         ip: String
     ): Response<StartSessionResponse> = apiService.startSessionForPay(
         paymentMethodType = paymentMethodType, transactionType = transactionType,
-        amount = amount, ip = ip
+        amount = amount,total_amount = total_amount, ip = ip
     )
 
     override suspend fun getTotalXPay(

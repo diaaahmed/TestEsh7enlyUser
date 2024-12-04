@@ -51,14 +51,20 @@ class PaytabsViewModel @Inject constructor(
         finalAmount: String,
         paymentMethodType: String,
         transactionType: String,
-        token: String, amount: String,
+        token: String,
+        amount: String,
         ip: String,
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
             try {
                 val startSessionResponse = chargeBalanceRepo.startSessionForPay(
-                    paymentMethodType, transactionType, token, amount, ip
+                    paymentMethodType = paymentMethodType,
+                    transactionType = transactionType,
+                    token = token,
+                    amount = finalAmount,
+                    total_amount = amount,
+                    ip = ip
                 )
 
                 if (startSessionResponse.isSuccessful) {

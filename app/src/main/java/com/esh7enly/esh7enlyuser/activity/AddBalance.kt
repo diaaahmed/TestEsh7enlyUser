@@ -288,7 +288,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         startSessionId: Int
     ) {
        // val number = Random(9000000000000000000).nextInt()
-   //     val number = "cart_diaa_wallet_test_failed"
+       // val number = "cart_diaa_wallet_test_failed"
 
      //   Log.d(TAG, "diaa wallet click number: $number ")
 
@@ -444,7 +444,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                             dialog.cancel()
 
                             pDialog.show()
-
+                            
                             startSessionForPay(
                                 ui.amountValue.text.toString(),
                                 data.amount.toString(), transactionType
@@ -520,7 +520,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
     }
 
-
     private fun showFailedPay(msg: String?, code: Int)
     {
         pDialog.cancel()
@@ -571,6 +570,7 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
                 hash_generated = Constants.HASH_GENERATED,
                 hash_id = Constants.HASH_ID
             )
+
             requestChargeWalletCancelled(chargeBalanceRequest)
         }
         else

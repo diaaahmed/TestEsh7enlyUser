@@ -248,6 +248,7 @@ interface ApiService
         @Field("payment_method_type") paymentMethodType:String,
         @Field("transaction_type") transactionType:String,
         @Field("amount") amount: String,
+        @Field("total_amount") total_amount: String,
         @Field("ip") ip: String
     ): Response<StartSessionResponse>
 
