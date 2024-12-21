@@ -1,12 +1,12 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.ApiResponse
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.repo.UserRepo
 
@@ -16,16 +16,13 @@ import com.esh7enly.esh7enlyuser.intent.LoginScreenState
 import com.esh7enly.esh7enlyuser.util.isValidPassword
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -84,6 +81,39 @@ class UserViewModel @Inject constructor(
         return userRepo.login(
             userPhoneNumber.value, userPassword.value, deviceToken,imei
         )
+    }
+
+    private var _loginStateSharedFlow = MutableSharedFlow<NetworkResult<LoginResponse>>()
+    val loginStateSharedFlow = _loginStateSharedFlow.asSharedFlow()
+
+
+
+
+    fun loginWithState(
+        deviceToken: String,imei:String
+    )
+    {
+        viewModelScope.launch{
+            userRepo.loginWithState(
+                userPhoneNumber.value, userPassword.value,
+                deviceToken,imei)
+                .collect{
+                    when(it){
+                        is NetworkResult.Error -> {
+                            _loginStateSharedFlow.emit(NetworkResult.Error(
+                                message = it.message,
+                                code = it.code
+                            ))
+                        }
+                        is NetworkResult.Loading -> {
+                            _loginStateSharedFlow.emit(NetworkResult.Loading())
+                        }
+                        is NetworkResult.Success -> {
+                            _loginStateSharedFlow.emit(NetworkResult.Success(it.data!!))
+                        }
+                    }
+                }
+        }
     }
 
 

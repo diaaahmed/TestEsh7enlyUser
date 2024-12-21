@@ -85,6 +85,16 @@ interface ApiService
         @Field("imei") imei: String
     ): LiveData<ApiResponse<LoginResponse>>
 
+    @FormUrlEncoded
+    @POST(LOGIN)
+    suspend fun loginWithState(
+        @Field("mobile") mobile: String,
+        @Field("password") userPassword: String,
+        @Field("device_token") deviceToken: String,
+        @Field("type") type: String = "mobile",
+        @Field("imei") imei: String
+    ): Response<LoginResponse>
+
 
     @FormUrlEncoded
     @POST(SEND_OTP)

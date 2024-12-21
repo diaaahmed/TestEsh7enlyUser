@@ -3,21 +3,74 @@ package com.esh7enly.data.repo
 import androidx.lifecycle.LiveData
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.domain.ApiResponse
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
 import com.esh7enly.domain.entity.forgetpasswordotp.ForgetPasswordOTPResponse
 import com.esh7enly.domain.entity.forgetpasswordresponse.ForgetPasswordResponse
+import com.esh7enly.domain.entity.loginresponse.Data
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.entity.otpresponse.NewOtpResponse
 import com.esh7enly.domain.entity.registerresponse.RegisterResponse
 import com.esh7enly.domain.entity.userwallet.UserWalletResponse
 import com.esh7enly.domain.entity.verifyotp.VerifyOtpResponse
 import com.esh7enly.domain.repo.UserRepo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
 class UserRepoImpl (private val apiService: ApiService): UserRepo
 {
+
+    override fun loginWithState(
+        mobile:String,
+        password:String,
+        deviceToken:String,
+        imei:String
+    ): Flow<NetworkResult<LoginResponse>> = flow {
+        try{
+            emit(NetworkResult.Loading())
+
+            val getLoginResponse = apiService.loginWithState(
+                mobile = mobile,
+                userPassword = password,
+                imei = imei,
+                deviceToken = deviceToken
+            )
+
+            if(getLoginResponse.isSuccessful)
+            {
+                if(getLoginResponse.body()?.status== true)
+                {
+                    emit(NetworkResult.Success(getLoginResponse.body()!!))
+                }
+                else
+                {
+                    emit(NetworkResult.Error(
+                        message = getLoginResponse.body()?.message,
+                        code = getLoginResponse.body()?.code
+                    ))
+                }
+            }
+            else
+            {
+                emit(NetworkResult.Error(
+                    message = getLoginResponse.message(),
+                    code = getLoginResponse.code()
+                ))
+            }
+        }
+        catch (e: Exception)
+        {
+            emit(NetworkResult.Error(
+                message = e.message,
+                code = 404
+            ))
+        }
+    }
+
+    
     override fun login(
         mobile: String,
         password: String,

@@ -9,8 +9,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.recreate
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.esh7enly.domain.ApiResponse
+import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.activity.BaseFragment
@@ -30,6 +32,8 @@ import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -207,32 +211,62 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
     private fun userLogin(token: String) {
         try {
+            lifecycleScope.launch{
+                viewModel.loginWithState(token, imei)
 
-            viewModel.userLogin(token, imei).observe(viewLifecycleOwner)
-            { response ->
-                if (response.isSuccessful) {
-                    pDialog.cancel()
+                viewModel.loginStateSharedFlow.collect {
+                    when(it)
+                    {
+                        is NetworkResult.Error -> {
+                            Log.d("TAG", "diaa userLogin Error: ")
+                            pDialog.cancel()
+                        //    showDialogWithAction(it.message!!)
+                            logAuthIssueToCrashlytics(it.message!!)
 
-                    if (!response?.body!!.status!!) {
-                        showDialogWithAction(response.body!!.message!!)
-                        logAuthIssueToCrashlytics(response.body!!.message!!)
-                    } else {
-                        successLoginNavigateToHome(response)
+                            if (it.message!!.contains("<html")) {
+                                showDialogWithAction(resources.getString(R.string.manyRequests))
+                            } else {
+                                showDialogWithAction(it.message!!)
+
+                            }
+                        }
+                        is NetworkResult.Loading -> {
+                            Log.d("TAG", "diaa userLogin Loading: ")
+                        }
+                        is NetworkResult.Success -> {
+                            Log.d("TAG", "diaa userLogin Success: ")
+                            pDialog.cancel()
+
+                            successLoginNavigateToHome(it.data!!)
+                        }
                     }
-                } else {
-                    pDialog.cancel()
-
-                    if (response.errorMessage!!.contains("<html")) {
-                        showDialogWithAction(resources.getString(R.string.manyRequests))
-                    } else {
-                        showDialogWithAction(response.errorMessage.toString())
-
-                    }
-                    Log.d("TAG", "diaa userLogin:  not successful ${response.errorMessage}")
-                    logAuthIssueToCrashlytics(response.errorMessage.toString())
-
                 }
             }
+//            viewModel.userLogin(token, imei).observe(viewLifecycleOwner)
+//            { response ->
+//                if (response.isSuccessful) {
+//                    pDialog.cancel()
+//
+//                    if (!response?.body!!.status!!) {
+//                        showDialogWithAction(response.body!!.message!!)
+//                        logAuthIssueToCrashlytics(response.body!!.message!!)
+//                    } else {
+//                        successLoginNavigateToHome(response)
+//                    }
+//                } else {
+//                    pDialog.cancel()
+//
+//                    if (response.errorMessage!!.contains("<html")) {
+//                        showDialogWithAction(resources.getString(R.string.manyRequests))
+//                    } else {
+//                        showDialogWithAction(response.errorMessage.toString())
+//
+//                    }
+//                    Log.d("TAG", "diaa userLogin:  not successful ${response.errorMessage}")
+//                    logAuthIssueToCrashlytics(response.errorMessage.toString())
+//
+//                }
+//            }
         } catch (e: Exception) {
             pDialog.cancel()
             logAuthIssueToCrashlytics(e.message.toString())
@@ -247,6 +281,32 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
             CrashlyticsUtils.LOGIN_KEY to "$msg with ${binding.phoneNumber.text.toString()}",
             CrashlyticsUtils.LOGIN_PROVIDER to "Login with Phone and password",
         )
+    }
+
+    private fun successLoginNavigateToHome(
+        response: LoginResponse
+    ) {
+        sharedHelper?.setStoreName(response.data.name)
+
+        sharedHelper?.setUserToken(response.data.token)
+
+        Log.d("diaa from login", sharedHelper?.getUserToken().toString())
+
+        sharedHelper?.setUserEmail(response.data.email)
+        sharedHelper?.isRememberUser(true)
+
+        sharedHelper?.setUserName(response.data.name)
+        sharedHelper?.setUserPhone(response.data.mobile)
+
+        if (binding.checkBox.isChecked) {
+            sharedHelper?.setRememberPassword(true)
+            saveUserPassword()
+        } else {
+            sharedHelper?.setRememberPassword(false)
+            removeUserPassword()
+        }
+
+        NavigateToActivity.navigateToHomeActivity(requireActivity())
     }
 
     private fun successLoginNavigateToHome(
