@@ -57,5 +57,5 @@ dependencies {
     implementation libs.roomrxjava
 
     implementation libs.dataStore
-
+    implementation libs.encryptedSharedPref
 }

@@ -43,8 +43,12 @@ firebaseConfigKtx = "22.0.0"
 googleGmsGoogleServices = "4.4.2"
 firebaseAnalytics = "22.0.2"
 dataStoreVersion = "1.0.0"
+encrptedSharedVersion = "1.1.0-alpha03"
+
 
 [libraries]
+
+encryptedSharedPref = {module = "androidx.security:security-crypto",version.ref = "encrptedSharedVersion"}
 dataStoreProto = { module = "androidx.datastore:datastore",version.ref = "dataStoreVersion"}
 dataStore = {module = "androidx.datastore:datastore-preferences",version.ref = "dataStoreVersion"}
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }

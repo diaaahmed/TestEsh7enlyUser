@@ -1,92 +1,107 @@
 package com.esh7enly.data.sharedhelper
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Base64
+import androidx.security.crypto.EncryptedSharedPreferences
 import com.esh7enly.data.R
 
-class SharedHelper (var context:Context)
-{
+class SharedHelper(var context: Context) {
+
+    val sharedPreferencesEncrypted: SharedPreferences = EncryptedSharedPreferences.create(
+         "shared_setting",
+        "setting",
+         context,
+        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+    )
+
+
     private val data = "data"
 
-    private var sharedPref = context.getSharedPreferences(data,Context.MODE_PRIVATE)
+    private var sharedPref = context.getSharedPreferences(data, Context.MODE_PRIVATE)
 
-    fun setRememberPassword(boolean: Boolean)
-    {
-        sharedPref.edit().putBoolean(Constants.IS_REMEMBER_ME,boolean).apply()
+    fun setRememberPassword(boolean: Boolean) {
+        sharedPref.edit().putBoolean(Constants.IS_REMEMBER_ME, boolean).apply()
     }
 
-    fun isRememberUser(boolean: Boolean)
-    {
-        sharedPref.edit().putBoolean(Constants.IS_LOGIN,boolean).apply()
+    fun isRememberUser(boolean: Boolean) {
+        sharedPref.edit().putBoolean(Constants.IS_LOGIN, boolean).apply()
     }
 
 
-    fun setAppLanguage(lang:String)
-    {
-        sharedPref.edit().putString(Constants.APP_LANGUAGE,lang).apply()
+    fun setAppLanguage(lang: String) {
+        sharedPref.edit().putString(Constants.APP_LANGUAGE, lang).apply()
     }
 
-    fun getAppLanguage():String? =
-        sharedPref.getString(Constants.APP_LANGUAGE,"ar")
+    fun getAppLanguage(): String? =
+        sharedPref.getString(Constants.APP_LANGUAGE, "ar")
 
 
-    fun setUserEmail(email:String?)
-    {
-        sharedPref.edit().putString(Constants.USER_EMAIL,email).apply()
+    fun setUserEmail(email: String?) {
+        sharedPref.edit().putString(Constants.USER_EMAIL, email).apply()
     }
 
-    fun getUserEmail():String? =
-        sharedPref.getString(Constants.USER_EMAIL,
-            "esh7enly@gmail.com")
+    fun getUserEmail(): String? =
+        sharedPref.getString(
+            Constants.USER_EMAIL,
+            "esh7enly@gmail.com"
+        )
 
 
-    fun setUserName(userName: String)
-    {
-        sharedPref.edit().putString(Constants.USER_NAME,userName).apply()
+    fun setUserName(userName: String) {
+        sharedPref.edit().putString(Constants.USER_NAME, userName).apply()
     }
 
-    fun setFirstOpen(isFirst: Boolean)
-    {
-        sharedPref.edit().putBoolean(Constants.FIRST_START,isFirst).apply()
+    fun setFirstOpen(isFirst: Boolean) {
+        sharedPref.edit().putBoolean(Constants.FIRST_START, isFirst).apply()
     }
 
     fun isFirstOpen() = sharedPref.getBoolean(Constants.FIRST_START, true)
 
-    fun getUserName(): String? = sharedPref.getString(Constants.USER_NAME,
+    fun getUserName(): String? = sharedPref.getString(
+        Constants.USER_NAME,
         ""
     )
 
-    fun getUserPhone():String? =
-        sharedPref.getString(Constants.USER_NAME,
-            "")
+    fun getUserPhone(): String? =
+        sharedPref.getString(
+            Constants.USER_NAME,
+            ""
+        )
 
-
-    fun setUserPhone(userPhone:String){
-        sharedPref.edit().putString(Constants.USER_NAME,userPhone).apply()
+    fun setUserPhone(userPhone: String) {
+        sharedPref.edit().putString(Constants.USER_NAME, userPhone).apply()
 
     }
-    fun setUserToken(token:String)
-    {
-        sharedPref.edit().putString(Constants.USER_TOKEN,encrypt(token)).apply()
+
+    fun setUserToken(token: String) {
+        with(sharedPreferencesEncrypted.edit())
+        {
+            putString(Constants.USER_TOKEN, token)
+            apply()
+        }
+
+     //   sharedPref.edit().putString(Constants.USER_TOKEN, encrypt(token)).apply()
     }
 
-    fun getUserToken():String = "Bearer "+decrypt(sharedPref.getString(Constants.USER_TOKEN,""))
+   //  fun getUserToken(): String = "Bearer " + decrypt(sharedPref.getString(Constants.USER_TOKEN, ""))
+     fun getUserToken(): String = "Bearer " + sharedPreferencesEncrypted.getString(Constants.USER_TOKEN, "")
 
-    fun isRememberPassword():Boolean = sharedPref.getBoolean(Constants.IS_REMEMBER_ME,false)
+    fun isRememberPassword(): Boolean = sharedPref.getBoolean(Constants.IS_REMEMBER_ME, false)
 
-    fun setUserPassword(password: String)
-    {
-        sharedPref.edit().putString(Constants.USER_PASSWORD,encrypt(password)).apply()
+    fun setUserPassword(password: String) {
+        sharedPref.edit().putString(Constants.USER_PASSWORD, encrypt(password)).apply()
     }
 
-    fun getUserPassword(): String = decrypt(sharedPref.getString(Constants.USER_PASSWORD,""))
+    fun getUserPassword(): String = decrypt(sharedPref.getString(Constants.USER_PASSWORD, ""))
 
-    fun setStoreName(storeName: String)
-    {
-        sharedPref.edit().putString(Constants.STORE_NAME,storeName).apply()
+    fun setStoreName(storeName: String) {
+        sharedPref.edit().putString(Constants.STORE_NAME, storeName).apply()
     }
 
-    fun getStoreName(): String? = sharedPref.getString(Constants.STORE_NAME, R.string.default_name.toString())
+    fun getStoreName(): String? =
+        sharedPref.getString(Constants.STORE_NAME, R.string.default_name.toString())
 
     //endregion
 

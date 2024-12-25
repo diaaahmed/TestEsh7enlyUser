@@ -47,7 +47,10 @@ object ActivityModule
 
     @Singleton
     @Provides
-    fun provideDataStoreHelper(@ApplicationContext context: Context): DataStoreHelper = DataStoreHelper(context)
+    fun provideDataStoreHelper(
+        @ApplicationContext context: Context,
+        cryptoData: CryptoData): DataStoreHelper = DataStoreHelper(context,cryptoData)
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     @Singleton

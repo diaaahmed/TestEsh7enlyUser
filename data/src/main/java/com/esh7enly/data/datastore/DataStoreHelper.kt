@@ -23,10 +23,9 @@ import kotlin.text.decodeToString
 import kotlin.text.toByteArray
 
 
-class DataStoreHelper(var context: Context) {
-
-    var cryptoData: CryptoData = CryptoData()
-
+class DataStoreHelper(var context: Context,
+                      var cryptoData: CryptoData
+) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("data")
 

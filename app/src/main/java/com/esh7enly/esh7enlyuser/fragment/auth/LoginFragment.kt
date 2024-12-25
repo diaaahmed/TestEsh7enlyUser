@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.recreate
 import androidx.core.os.bundleOf
@@ -12,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.esh7enly.data.datastore.UserDataStore
-import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.esh7enlyuser.R
@@ -291,6 +289,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
     }
 
     private fun saveUserPassword() {
+
         viewModel.saveUserPassword()
     }
 
