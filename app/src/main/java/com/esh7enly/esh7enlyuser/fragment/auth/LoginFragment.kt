@@ -247,34 +247,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
         }
     }
 
-    private fun loginWithLiveData() {
-        //            viewModel.userLogin(token, imei).observe(viewLifecycleOwner)
-//            { response ->
-//                if (response.isSuccessful) {
-//                    pDialog.cancel()
-//
-//                    if (!response?.body!!.status!!) {
-//                        showDialogWithAction(response.body!!.message!!)
-//                        logAuthIssueToCrashlytics(response.body!!.message!!)
-//                    } else {
-//                        successLoginNavigateToHome(response)
-//                    }
-//                } else {
-//                    pDialog.cancel()
-//
-//                    if (response.errorMessage!!.contains("<html")) {
-//                        showDialogWithAction(resources.getString(R.string.manyRequests))
-//                    } else {
-//                        showDialogWithAction(response.errorMessage.toString())
-//
-//                    }
-//                    Log.d("TAG", "diaa userLogin:  not successful ${response.errorMessage}")
-//                    logAuthIssueToCrashlytics(response.errorMessage.toString())
-//
-//                }
-//            }
-    }
-
     private fun logAuthIssueToCrashlytics(msg: String) {
         CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
             msg,
@@ -306,30 +278,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
         sharedHelper?.setUserName(response.data.name)
         sharedHelper?.setUserPhone(response.data.mobile)
-
-        if (binding.checkBox.isChecked) {
-            sharedHelper?.setRememberPassword(true)
-            saveUserPassword()
-        } else {
-            sharedHelper?.setRememberPassword(false)
-            removeUserPassword()
-        }
-
-        NavigateToActivity.navigateToHomeActivity(requireActivity())
-    }
-
-    private fun successLoginNavigateToHome(response: ApiResponse<LoginResponse>) {
-        sharedHelper?.setStoreName(response.body?.data!!.name)
-
-        sharedHelper?.setUserToken(response.body?.data!!.token)
-
-        Log.d("diaa from login", sharedHelper?.getUserToken().toString())
-
-        sharedHelper?.setUserEmail(response.body?.data!!.email)
-        sharedHelper?.isRememberUser(true)
-
-        sharedHelper?.setUserName(response.body?.data!!.name)
-        sharedHelper?.setUserPhone(response.body?.data!!.mobile)
 
         if (binding.checkBox.isChecked) {
             sharedHelper?.setRememberPassword(true)
