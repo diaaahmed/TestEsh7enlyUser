@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esh7enly.data.datastore.DataStoreHelper
+import com.esh7enly.data.datastore.UserDataStore
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
@@ -11,14 +13,11 @@ import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.repo.UserRepo
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
-import com.esh7enly.esh7enlyuser.intent.LoginScreenIntent
-import com.esh7enly.esh7enlyuser.intent.LoginScreenState
 import com.esh7enly.esh7enlyuser.util.isValidPassword
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -29,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepo: UserRepo,
-    private val sharedHelper: SharedHelper
+    private val sharedHelper: SharedHelper,
+    private val dataStoreHelper: DataStoreHelper
 
 ) :
     ViewModel() {
@@ -41,28 +41,19 @@ class UserViewModel @Inject constructor(
 
     var token = ""
 
-    private var _loginScreenState: MutableStateFlow<LoginScreenState> = MutableStateFlow(LoginScreenState.Idle)
-    val loginScreenState:StateFlow<LoginScreenState> get() = _loginScreenState
-
-
-    private fun processIntent(intent:LoginScreenIntent)
+    fun saveTokenWithDataStore(token: String)
     {
-        when(intent)
-        {
-            LoginScreenIntent.ForgetPasswordClick -> TODO()
-            LoginScreenIntent.LoginClick -> TODO()
-            LoginScreenIntent.SignupClick -> TODO()
+        viewModelScope.launch{
+            dataStoreHelper.saveTokenKey(token)
         }
     }
 
-    private fun produceResult()
+    fun saveUserDataWithDataStore(userDataStore: UserDataStore)
     {
-        viewModelScope.launch {
-
+        viewModelScope.launch{
+            dataStoreHelper.saveUserData(userDataStore)
         }
     }
-
-
 
     fun saveUserPassword() {
         sharedHelper.setUserPassword(userPassword.value)
@@ -85,8 +76,6 @@ class UserViewModel @Inject constructor(
 
     private var _loginStateSharedFlow = MutableSharedFlow<NetworkResult<LoginResponse>>()
     val loginStateSharedFlow = _loginStateSharedFlow.asSharedFlow()
-
-
 
 
     fun loginWithState(
@@ -115,8 +104,6 @@ class UserViewModel @Inject constructor(
                 }
         }
     }
-
-
 
     fun createNewPassword(
         mobile: String,

@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.esh7enly.data.datastore.UserDataStore
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
@@ -32,7 +33,6 @@ import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -49,6 +49,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun init() {
+
         val appLanguage = sharedHelper?.getAppLanguage()
 
         Constants.LANG = appLanguage
@@ -155,6 +156,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
     private fun login() {
 
         if (connectivity?.isConnected == true) {
+
             val phoneNumber = binding.phoneNumber.text.toString().trim()
 
             val password = binding.password.text.toString().trim()
@@ -212,15 +214,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
     private fun userLogin(token: String) {
         try {
             lifecycleScope.launch{
+
                 viewModel.loginWithState(token, imei)
 
                 viewModel.loginStateSharedFlow.collect {
                     when(it)
                     {
                         is NetworkResult.Error -> {
-                            Log.d("TAG", "diaa userLogin Error: ")
                             pDialog.cancel()
-                        //    showDialogWithAction(it.message!!)
                             logAuthIssueToCrashlytics(it.message!!)
 
                             if (it.message!!.contains("<html")) {
@@ -231,18 +232,23 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
                             }
                         }
                         is NetworkResult.Loading -> {
-                            Log.d("TAG", "diaa userLogin Loading: ")
                         }
                         is NetworkResult.Success -> {
-                            Log.d("TAG", "diaa userLogin Success: ")
                             pDialog.cancel()
-
                             successLoginNavigateToHome(it.data!!)
                         }
                     }
                 }
             }
-//            viewModel.userLogin(token, imei).observe(viewLifecycleOwner)
+        } catch (e: Exception) {
+            pDialog.cancel()
+            logAuthIssueToCrashlytics(e.message.toString())
+            showDialogWithAction(e.message.toString())
+        }
+    }
+
+    private fun loginWithLiveData() {
+        //            viewModel.userLogin(token, imei).observe(viewLifecycleOwner)
 //            { response ->
 //                if (response.isSuccessful) {
 //                    pDialog.cancel()
@@ -267,15 +273,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 //
 //                }
 //            }
-        } catch (e: Exception) {
-            pDialog.cancel()
-            logAuthIssueToCrashlytics(e.message.toString())
-            showDialogWithAction(e.message.toString())
-        }
     }
 
-    private fun logAuthIssueToCrashlytics(msg: String)
-    {
+    private fun logAuthIssueToCrashlytics(msg: String) {
         CrashlyticsUtils.sendCustomLogToCrashlytics<LoginException>(
             msg,
             CrashlyticsUtils.LOGIN_KEY to "$msg with ${binding.phoneNumber.text.toString()}",
@@ -283,14 +283,23 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
         )
     }
 
-    private fun successLoginNavigateToHome(
-        response: LoginResponse
-    ) {
+    @SuppressLint("NewApi")
+    private fun successLoginNavigateToHome(response: LoginResponse) {
+
         sharedHelper?.setStoreName(response.data.name)
 
-        sharedHelper?.setUserToken(response.data.token)
+        viewModel.saveTokenWithDataStore(response.data.token)
 
-        Log.d("diaa from login", sharedHelper?.getUserToken().toString())
+        viewModel.saveUserDataWithDataStore(
+            UserDataStore(
+                token = response.data.token,
+                userName = response.data.name,
+                userEmail = response.data.email,
+                userPhone = response.data.mobile
+            )
+        )
+
+        sharedHelper?.setUserToken(response.data.token)
 
         sharedHelper?.setUserEmail(response.data.email)
         sharedHelper?.isRememberUser(true)
@@ -309,9 +318,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
         NavigateToActivity.navigateToHomeActivity(requireActivity())
     }
 
-    private fun successLoginNavigateToHome(
-        response: ApiResponse<LoginResponse>
-    ) {
+    private fun successLoginNavigateToHome(response: ApiResponse<LoginResponse>) {
         sharedHelper?.setStoreName(response.body?.data!!.name)
 
         sharedHelper?.setUserToken(response.body?.data!!.token)

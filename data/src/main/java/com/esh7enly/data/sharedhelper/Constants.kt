@@ -1,7 +1,11 @@
 package com.esh7enly.data.sharedhelper
 
+import androidx.datastore.preferences.core.stringPreferencesKey
+
 object Constants
 {
+    val token_key = stringPreferencesKey("token_key")
+
     const val STORE_NAME = "store_name"
 
     const val IS_LOGIN = "isLogin"

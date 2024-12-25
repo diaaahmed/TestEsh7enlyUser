@@ -55,4 +55,7 @@ dependencies {
     kapt libs.roomcomplier
     implementation libs.roomktx
     implementation libs.roomrxjava
+
+    implementation libs.dataStore
+
 }

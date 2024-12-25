@@ -20,8 +20,10 @@ import javax.crypto.NoSuchPaddingException
 import javax.crypto.SecretKey
 
 class Encryptor {
+
     lateinit var encryption: ByteArray
         private set
+
     lateinit var iv: ByteArray
         private set
 

@@ -31,7 +31,6 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "ServiceActivity"
 
-
 val Context.dataStoreProto by dataStore("setting.json",StringSer)
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore("language")

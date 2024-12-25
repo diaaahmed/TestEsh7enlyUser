@@ -43,7 +43,8 @@ import kotlin.math.abs
 private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding, ServiceViewModel>(), CategoryClick {
+class HomeFragment : BaseFragment<FragmentHomeBinding,
+        ServiceViewModel>(), CategoryClick {
 
     private var categories: List<CategoryData>? = null
 

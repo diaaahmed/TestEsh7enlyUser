@@ -9,7 +9,6 @@ import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
 import com.esh7enly.domain.entity.forgetpasswordotp.ForgetPasswordOTPResponse
 import com.esh7enly.domain.entity.forgetpasswordresponse.ForgetPasswordResponse
-import com.esh7enly.domain.entity.loginresponse.Data
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.entity.otpresponse.NewOtpResponse
 import com.esh7enly.domain.entity.registerresponse.RegisterResponse
