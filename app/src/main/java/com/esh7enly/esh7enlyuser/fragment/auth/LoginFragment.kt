@@ -256,25 +256,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
     @SuppressLint("NewApi")
     private fun successLoginNavigateToHome(response: LoginResponse) {
 
-        sharedHelper?.setStoreName(response.data.name)
-
-        viewModel.saveTokenWithDataStore(response.data.token)
-
-        viewModel.saveUserDataWithDataStore(
-            UserDataStore(
-                token = response.data.token,
-                userName = response.data.name,
-                userEmail = response.data.email,
-                userPhone = response.data.mobile
-            )
-        )
-
         sharedHelper?.setUserToken(response.data.token)
+
+        sharedHelper?.setStoreName(response.data.name)
 
         sharedHelper?.setUserEmail(response.data.email)
         sharedHelper?.isRememberUser(true)
 
         sharedHelper?.setUserName(response.data.name)
+
         sharedHelper?.setUserPhone(response.data.mobile)
 
         if (binding.checkBox.isChecked) {

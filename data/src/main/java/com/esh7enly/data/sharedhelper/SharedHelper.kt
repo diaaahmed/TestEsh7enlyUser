@@ -3,19 +3,9 @@ package com.esh7enly.data.sharedhelper
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
-import androidx.security.crypto.EncryptedSharedPreferences
 import com.esh7enly.data.R
 
-class SharedHelper(var context: Context) {
-
-    val sharedPreferencesEncrypted: SharedPreferences = EncryptedSharedPreferences.create(
-         "shared_setting",
-        "setting",
-         context,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
-
+class SharedHelper(var context: Context, var sharedPreferencesEncrypted: SharedPreferences ) {
 
     private val data = "data"
 
@@ -76,6 +66,7 @@ class SharedHelper(var context: Context) {
     }
 
     fun setUserToken(token: String) {
+
         with(sharedPreferencesEncrypted.edit())
         {
             putString(Constants.USER_TOKEN, token)

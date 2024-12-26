@@ -1,9 +1,12 @@
 package com.esh7enly.esh7enlyuser.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.security.crypto.EncryptedSharedPreferences
 import com.esh7enly.data.datastore.DataStoreHelper
+import com.esh7enly.data.sharedhelper.Constants
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.CryptoData
@@ -15,6 +18,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -42,7 +46,22 @@ object ActivityModule
 
     @Singleton
     @Provides
-    fun provideSharedHelper(@ApplicationContext context: Context): SharedHelper = SharedHelper(context)
+    fun provideSharedHelper(
+        @ApplicationContext context: Context,
+        @Named(Constants.ENCRYPTED_SHARED_PREF) sharedPreferences: SharedPreferences
+    ): SharedHelper = SharedHelper(context,sharedPreferences)
+
+    @Singleton
+    @Provides
+    @Named(Constants.ENCRYPTED_SHARED_PREF)
+    fun provideEncryptedSharedPreferences(@ApplicationContext context: Context): SharedPreferences  {
+        return EncryptedSharedPreferences.create(
+            Constants.SHARED_PREF_FILE_NAME,
+            "shared_setting",
+            context,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
+    }
 
 
     @Singleton

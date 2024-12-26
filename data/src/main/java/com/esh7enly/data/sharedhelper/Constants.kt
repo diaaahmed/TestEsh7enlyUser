@@ -10,6 +10,8 @@ object Constants
 
     const val IS_LOGIN = "isLogin"
     const val USER_NAME = "user_name"
+    const val SHARED_PREF_FILE_NAME = "data"
+    const val ENCRYPTED_SHARED_PREF = "ENCRYPTED_SHARED_PREF"
     const val FIRST_START = "first_start"
 
     const val USER_PASSWORD = "user_password"
