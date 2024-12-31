@@ -4,7 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
-
+import com.esh7enly.esh7enlyuser.LoggingInterceptorLevel
 
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.data.remote.NotificationService
@@ -49,13 +49,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun providerLoggingInterceptor(): Interceptor {
+
         val loggingInterceptor = HttpLoggingInterceptor()
 
-        if (BuildConfig.DEBUG) {
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        } else {
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
-        }
+         loggingInterceptor.level = LoggingInterceptorLevel.level
 
         if (!BuildConfig.DEBUG) {
             loggingInterceptor.redactHeader("Authorization")

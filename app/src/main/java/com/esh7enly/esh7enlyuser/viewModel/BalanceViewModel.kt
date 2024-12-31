@@ -18,6 +18,7 @@ class BalanceViewModel @Inject constructor(
 
     ): ViewModel()
 {
+
     private var _responseDeposits: MutableLiveData<NetworkResult<DepositResponse>> = MutableLiveData()
 
     var responseDeposits: LiveData<NetworkResult<DepositResponse>> = _responseDeposits
