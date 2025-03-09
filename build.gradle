@@ -22,13 +22,15 @@ buildscript {
 plugins {
 
    // id 'com.android.application' version '8.6.0' apply false
-    id 'com.android.application' version '7.4.2' apply false
+  //   id 'com.android.application' version '7.4.2' apply false
+    id 'com.android.application' version '8.1.4' apply false
 
     alias libs.plugins.androidlib apply false
 
     alias libs.plugins.kotlinAndroid  apply false
 
     id("com.google.firebase.crashlytics") version "2.9.9" apply false
+
     alias(libs.plugins.googleGmsGoogleServices) apply false
 
 }

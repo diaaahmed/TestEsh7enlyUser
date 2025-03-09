@@ -22,6 +22,7 @@ class SharedHelper(var context: Context, var sharedPreferencesEncrypted: SharedP
 
     fun setAppLanguage(lang: String) {
         sharedPref.edit().putString(Constants.APP_LANGUAGE, lang).apply()
+
     }
 
     fun getAppLanguage(): String? =

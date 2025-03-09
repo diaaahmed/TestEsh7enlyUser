@@ -214,8 +214,8 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
 
 
     private fun getTotalWithCash() {
-        lifecycleScope.launch {
 
+        lifecycleScope.launch {
             val params =
                 TotalAmountPojoModel.Params(
                     Constants.BILLING_ACCOUNT,

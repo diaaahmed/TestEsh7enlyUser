@@ -1,4 +1,3 @@
-# Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
 #
@@ -98,7 +97,8 @@
 }
 
 # Paytabs
-#-keep public class com.payment.paymentsdk.**{*;}
+# -keep public class com.payment.paymentsdk.**{*;}
+
 
 # Fawry
 -keep class com.fawry.** {*;}
@@ -114,3 +114,18 @@
     public static int e(...);
 }
 
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
+-dontwarn com.paytabs.paytabscardrecognizer.cards.pay.paycardsrecognizer.sdk.Card
+-dontwarn com.paytabs.paytabscardrecognizer.cards.pay.paycardsrecognizer.sdk.ScanCardIntent$Builder
+-dontwarn kotlinx.android.parcel.Parcelize
+-dontwarn kotlinx.parcelize.Parcelize
+-dontwarn org.bouncycastle.jsse.BCSSLParameters
+-dontwarn org.bouncycastle.jsse.BCSSLSocket
+-dontwarn org.bouncycastle.jsse.provider.BouncyCastleJsseProvider
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
