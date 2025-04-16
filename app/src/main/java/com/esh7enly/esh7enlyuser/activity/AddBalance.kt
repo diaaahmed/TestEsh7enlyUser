@@ -286,10 +286,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         totalAmount: String, drawable: Drawable?,
         startSessionId: Int
     ) {
-       // val number = Random(9000000000000000000).nextInt()
-       // val number = "cart_diaa_wallet_test_failed"
-
-     //   Log.d(TAG, "diaa wallet click number: $number ")
 
         val configData: PaymentSdkConfigurationDetails =
 

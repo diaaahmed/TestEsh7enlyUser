@@ -47,9 +47,9 @@ object Url {
 
     const val TOTAL_AMOUNT = "service/total-amount"
 
-    const val START_SESSION = "visa/start-session-wallet"
+    const val START_SESSION = "newvisa/start-session-wallet"
 
-    const val TOTAL_XPAY = "visa/get-amount-wallet"
+    const val TOTAL_XPAY = "newvisa/get-amount-wallet"
 
 
     const val CANCEL_SERVICE = "service/cancel"
