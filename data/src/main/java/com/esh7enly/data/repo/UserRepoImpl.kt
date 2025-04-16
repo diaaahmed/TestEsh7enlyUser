@@ -19,7 +19,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import retrofit2.Response
 
-class UserRepoImpl (private val apiService: ApiService): UserRepo
+class UserRepoImpl (
+    private val apiService: ApiService,
+): UserRepo
 {
 
     override fun loginWithState(
@@ -119,6 +121,8 @@ class UserRepoImpl (private val apiService: ApiService): UserRepo
         apiService.forgetPassword(mobile)
 
     override suspend fun registerNewAccount(registerModel: RegisterModel): RegisterResponse = apiService.registerNewAccount(registerModel)
+
+
     override suspend fun verifyForgetPassword(
         mobile: String,
         token: String,

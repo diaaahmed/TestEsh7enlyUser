@@ -15,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class BalanceViewModel @Inject constructor(
     private val userRepo: UserRepo,
-
     ): ViewModel()
 {
 

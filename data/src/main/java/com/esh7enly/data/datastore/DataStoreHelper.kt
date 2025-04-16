@@ -27,7 +27,8 @@ class DataStoreHelper(var context: Context,
                       var cryptoData: CryptoData
 ) {
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("data")
+    private val Context.dataStore: DataStore<Preferences> by
+    preferencesDataStore("data")
 
     private val Context.dataStoreProto by dataStore("dataproto.json", UserSerializer)
 
@@ -62,11 +63,8 @@ class DataStoreHelper(var context: Context,
     @SuppressLint("NewApi")
     fun saveTokenKey(token: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            var encryptedToken =
+            val encryptedToken =
                 Base64.getEncoder().encodeToString(cryptoData.encrypt(bytes = token.toByteArray()))
-
-            Log.d("TAG", "dataStore: Main token $token")
-            Log.d("TAG", "dataStore: encryptedToken $encryptedToken")
 
             context.dataStore.edit { preferences ->
                 preferences[Constants.token_key] = encryptedToken

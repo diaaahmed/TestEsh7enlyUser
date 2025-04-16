@@ -71,8 +71,8 @@
     <string name="insert_card_please">من فضلك اضغط استعلام ثم ضع الكارت</string>
 
     <string name="email">البريد الإلكترونى</string>
-    <string name="bank_card">الكارت البنكى</string>
-    <string name="digital_wallet">المحافظ الالكترونية</string>
+    <string name="bank_card">كارت البنكى</string>
+    <string name="digital_wallet">محافظ الالكترونية</string>
     <string name="support">الدعم والتواصل</string>
     <string name="call_us">تواصل معنا</string>
     <string name="chatting">تواصل على واتساب</string>
@@ -231,5 +231,6 @@
     <string name="email_is_not_valid">البريد الإلكترونى غير صحيح</string>
     <string name="password_is_not_valid_please_use_aa1">الرقم السرى غير مقبول، يرجى استحدام حروف ورموز وارقام</string>
     <string name="logo">Logo</string>
+    <string name="choose_pay_way">اختر طريقة الدفع:</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.esh7enly.domain.repo
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
@@ -16,20 +17,20 @@ import com.esh7enly.domain.entity.verifyotp.VerifyOtpResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
-interface UserRepo
-{
+interface UserRepo {
 
     fun login(
         mobile: String,
         password: String,
-        deviceToken:String,
-        imei:String): LiveData<ApiResponse<LoginResponse>>
+        deviceToken: String,
+        imei: String
+    ): LiveData<ApiResponse<LoginResponse>>
 
     fun loginWithState(
-        mobile:String,
-        password:String,
-        deviceToken:String,
-        imei:String
+        mobile: String,
+        password: String,
+        deviceToken: String,
+        imei: String
     ): Flow<NetworkResult<LoginResponse>>
 
     suspend fun sendOtp(mobile: String): Response<NewOtpResponse>
@@ -65,5 +66,10 @@ interface UserRepo
 
     suspend fun registerNewAccount(registerModel: RegisterModel): RegisterResponse
 
-    suspend fun verifyForgetPassword(mobile: String,token: String,key: String): Response<VerifyOtpResponse>
+
+    suspend fun verifyForgetPassword(
+        mobile: String,
+        token: String,
+        key: String
+    ): Response<VerifyOtpResponse>
 }

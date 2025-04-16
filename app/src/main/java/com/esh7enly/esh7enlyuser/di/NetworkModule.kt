@@ -162,6 +162,7 @@ object NetworkModule {
         sslSocketFactory(sslContext.socketFactory, trustManager)
     }
 
+
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {

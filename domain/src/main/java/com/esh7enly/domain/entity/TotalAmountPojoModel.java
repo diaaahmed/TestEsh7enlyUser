@@ -42,6 +42,7 @@ public class TotalAmountPojoModel {
         this.amount = amount;
         this.inquiryTransactionId = inquiryTransactionId;
     }
+
     @SerializedName("imei")
     private String imei;
     @Expose

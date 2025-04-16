@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class AccountSettingActivity : BaseActivity(),IToolbarTitle
 {
+
     private val ui by lazy{
         ActivityAccountSettingBinding.inflate(layoutInflater)
     }
@@ -31,7 +32,7 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
     {
         super.onCreate(savedInstanceState)
 
-       Language.setLanguageNew(this, Constants.LANG)
+        Language.setLanguageNew(this, Constants.LANG)
 
         setContentView(ui.root)
 
@@ -58,6 +59,10 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
         }
     }
 
+    /**
+     * Get schedule list for get bills user add to his list before
+     */
+    
     private fun getScheduleList() {
         pDialog.show()
 

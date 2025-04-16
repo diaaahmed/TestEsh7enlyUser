@@ -95,6 +95,8 @@ dependencies {
    // implementation libs.firebase.analytics
 
     testImplementation libs.junit
+//    testImplementation libs.mockk
+//    testImplementation libs.google.truth
 
     androidTestImplementation libs.espresso
 

@@ -56,6 +56,8 @@ dependencies {
     implementation libs.roomktx
     implementation libs.roomrxjava
 
+   //  implementation libs.datapppppStore
     implementation libs.dataStore
+    implementation libs.dataStoreProto
     implementation libs.encryptedSharedPref
 }

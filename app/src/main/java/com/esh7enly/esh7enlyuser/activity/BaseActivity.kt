@@ -347,6 +347,7 @@ abstract class BaseActivity : AppCompatActivity()
     }
 
 
+
     fun navigateToParametersActivity(service: ServiceData) {
         val providerName =
             if (Constants.LANG == Constants.AR) {

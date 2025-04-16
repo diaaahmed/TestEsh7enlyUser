@@ -3,6 +3,7 @@ package com.esh7enly.esh7enlyuser.util
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.esh7enlyuser.activity.*
 
@@ -51,6 +52,22 @@ class NavigateToActivity
         {
             val changeUserNameActivity = Intent(activity,ChangeUserNameActivity::class.java)
             activity.startActivity(changeUserNameActivity)
+        }
+
+        fun navigateToPaymentDetailsActivity(
+            activity:Activity,
+            paramsArrayListToSend: ArrayList<TotalAmountPojoModel.Params>,
+            SERVICE_ID: Int,
+            id:Int,
+            amount:String,
+            paymentTransactionId:String,
+            imei:String,
+            externalTransactionId:String,
+            ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS:Int)
+        {
+            val paymentDetailsActivity = Intent(activity,PaymentDetailsActivity::class.java)
+            paymentDetailsActivity.putExtra("params_list",paramsArrayListToSend)
+            activity.startActivity(paymentDetailsActivity)
         }
 
         fun navigateToParametersActivity(activity:Activity, serviceType:Int,

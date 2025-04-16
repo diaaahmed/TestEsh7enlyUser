@@ -5,7 +5,8 @@ import android.content.SharedPreferences
 import android.util.Base64
 import com.esh7enly.data.R
 
-class SharedHelper(var context: Context, var sharedPreferencesEncrypted: SharedPreferences ) {
+class SharedHelper(var context: Context,
+                   var sharedPreferencesEncrypted: SharedPreferences ) {
 
     private val data = "data"
 

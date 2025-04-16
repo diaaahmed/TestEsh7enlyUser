@@ -202,7 +202,6 @@ open class ParametersActivity : BaseActivity() {
             } else {
                 // Getting amount value if this service need it
                 if (serviceViewModel.acceptAmountinput == 1) {
-
                    try{
                        // find amount EdtTxt by id
                        val etAmount: EditText = ui.lytDynamic.findViewWithTag("amount")
@@ -240,9 +239,12 @@ open class ParametersActivity : BaseActivity() {
                         pDialog.show()
                         //  pDialog.show()
 
+
+
                         val totalAmountPojoModel = TotalAmountPojoModel(
                             Constants.IMEI,
-                            serviceViewModel.servicesId, amount, paramsArrayListToSend
+                            serviceViewModel.servicesId, amount,
+                            paramsArrayListToSend
                         )
                         lifecycleScope.launch(Dispatchers.IO)
                         {
@@ -1371,12 +1373,15 @@ open class ParametersActivity : BaseActivity() {
                     }
                 }
             } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
-                if (display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_PAYMENT) {
+                if (display == Constants.DISPLAY_FOR_ALL ||
+                    display == Constants.DISPLAY_FOR_PAYMENT) {
                     when (type) {
                         Constants.Number -> {
                             val etNumber: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
+
                             val valueNumber = Utils.replaceArabicNumbers(etNumber.text.toString())
+
                             if (required == 1 && valueNumber.isEmpty()) {
                                 etNumber.error = getString(R.string.required)
                                 shouldBreak = true
@@ -1626,4 +1631,6 @@ open class ParametersActivity : BaseActivity() {
             Toast.makeText(this, getString(R.string.some_error), Toast.LENGTH_SHORT).show()
         }
     }
+
+
 }

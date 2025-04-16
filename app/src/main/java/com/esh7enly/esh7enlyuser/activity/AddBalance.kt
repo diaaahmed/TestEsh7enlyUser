@@ -144,7 +144,6 @@ class AddBalance : BaseActivity(), IToolbarTitle, CallbackPaymentInterface {
         ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
     }
 
-
     private fun bankWayClicked() {
         paytabsViewModel.setShowNumber(false)
         paytabsViewModel.setShowNumberNew(PayWays.BANk.toString())

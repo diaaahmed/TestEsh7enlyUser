@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:padding="@dimen/_5sdp"
+                app:elevation="@dimen/_20sdp"
+                android:background="@drawable/gradiant_color_normal"
+                android:id="@+id/app_bar"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    app:navigationIcon="@drawable/ic_back"
+                    app:titleTextColor="@color/white"
+                    android:id="@+id/payment_details__toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"/>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginStart="@dimen/_25sdp"
+                app:cardElevation="@dimen/_15sdp"
+                android:id="@+id/materialCardPayInfo"
+                android:layout_marginTop="@dimen/_30sdp"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="0.5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/observeValue"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_30sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_30sdp"
+                    app:hintTextColor="@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+                    <!--this is the actual edit text which takes the input-->
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:fontFamily="@font/readexrromedium"
+                            android:id="@+id/service_value_txt"
+                            android:text="Service Value:"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#606060" />
+
+                        <TextView
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:fontFamily="@font/readexrromedium"
+                            android:id="@+id/service_value"
+                            android:text="2.5 EGP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#606060" />
+
+                        <TextView
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/service_value_txt"
+                            android:fontFamily="@font/readexrromedium"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:id="@+id/service_fee_txt"
+                            android:text="Service Fees:"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#606060" />
+
+                        <TextView
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/service_value_txt"
+                            android:fontFamily="@font/readexrromedium"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:id="@+id/service_fee"
+                            android:text="1.75 EGP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#606060" />
+
+                        <TextView
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/service_fee_txt"
+                            android:fontFamily="@font/readexrromedium"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:id="@+id/total_amount_txt"
+                            android:text="Total Amount:"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary" />
+
+                        <TextView
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/service_fee_txt"
+                            android:fontFamily="@font/readexrromedium"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:id="@+id/total_amount"
+                            android:text="4.25 EGP"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:textSize="@dimen/_18ssp"
+                android:id="@+id/txtPayWith"
+                app:layout_constraintTop_toBottomOf="@id/materialCardPayInfo"
+                android:layout_marginTop="@dimen/_20sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="PAY WITH"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/readexrromedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_marginEnd="@dimen/_25sdp"
+                android:layout_marginStart="@dimen/_25sdp"
+                app:cardElevation="@dimen/_15sdp"
+                android:id="@+id/materialCardBalance"
+                android:layout_marginTop="@dimen/_30sdp"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="0.5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtPayWith">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/observeValueWallet"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_30sdp"
+                    android:padding="@dimen/_15sdp"
+                    android:layout_marginEnd="@dimen/_30sdp"
+                    app:hintTextColor="@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+                    <!--this is the actual edit text which takes the input-->
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:fontFamily="@font/readexrromedium"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:id="@+id/my_balance"
+                            android:text="My Balance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary" />
+
+                        <TextView
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:id="@+id/add_balance"
+                            android:text="Add balance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#8e8e8e" />
+
+                        <TextView
+                            app:layout_constraintTop_toBottomOf="@id/my_balance"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:id="@+id/balance"
+                            android:text="Balance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#8e8e8e" />
+
+                        <Switch
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/my_balance"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:id="@+id/switchBalanceBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:targetApi="ice_cream_sandwich" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:textSize="@dimen/_16ssp"
+                android:id="@+id/chooseMethod"
+                app:layout_constraintTop_toBottomOf="@id/materialCardBalance"
+                android:layout_marginTop="@dimen/_20sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="OR CHOOSE PAYMENT METHOD"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:fontFamily="@font/readexrromedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                app:layout_constraintTop_toBottomOf="@id/chooseMethod"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/_30sdp"
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:padding="@dimen/_1sdp"
+                android:id="@+id/lineWays"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@drawable/payment_way_background"
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:padding="@dimen/_8sdp"
+                    android:id="@+id/bankWay"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:layout_weight="1"
+                    android:text="@string/bank_card"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    app:drawableStartCompat="@drawable/bank" />
+
+                <TextView
+                    android:padding="@dimen/_8sdp"
+                    android:id="@+id/walletWay"
+                    android:layout_weight="1"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:text="@string/digital_wallet"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    app:drawableStartCompat="@drawable/wallet" />
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                app:layout_constraintTop_toBottomOf="@id/lineWays"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/_30sdp"
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:id="@+id/fillPhoneNumber"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:hint="@string/enter_phone_number"
+                app:boxCornerRadiusBottomEnd="@dimen/_10sdp"
+                app:boxCornerRadiusBottomStart="@dimen/_10sdp"
+                app:boxCornerRadiusTopEnd="@dimen/_10sdp"
+                app:boxCornerRadiusTopStart="@dimen/_10sdp"
+                app:hintTextColor="@color/colorPrimary">
+
+                <!--this is the actual edit text which takes the input-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phoneNumber"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_30sdp"
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:backgroundTint="@color/colorPrimary"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/pay"
+                app:cornerRadius="@dimen/_8sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fillPhoneNumber"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_15sdp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

@@ -27,6 +27,7 @@ import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityInquireBinding
 import com.esh7enly.esh7enlyuser.util.*
+import com.esh7enly.esh7enlyuser.viewModel.PaytabsViewModel
 
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import com.fawry.nfc.NFC.Main.NFCFawry
@@ -45,6 +46,10 @@ private const val TAG = "InquireActivity"
 
 @AndroidEntryPoint
 class InquireActivity : AppCompatActivity() {
+
+    private val paytabsViewModel: PaytabsViewModel by viewModels()
+
+
 
     companion object {
 
@@ -132,6 +137,31 @@ class InquireActivity : AppCompatActivity() {
     private val ui by lazy {
         ActivityInquireBinding.inflate(layoutInflater)
     }
+    private var finalPaymentWay = ""
+
+
+    private fun cashWalletClicked() {
+        //   paytabsViewModel.setShowNumberNew(PayWays.WALLET.toString())
+        paytabsViewModel.setShowNumberNew(PayWays.CASH.toString())
+        paytabsViewModel.setShowNumber(true)
+        paytabsViewModel.buttonClicked.value = PayWays.CASH.toString()
+        ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
+    }
+
+    private fun digitalWalletClicked() {
+        paytabsViewModel.setShowNumberNew(PayWays.WALLET.toString())
+        paytabsViewModel.setShowNumber(false)
+        paytabsViewModel.buttonClicked.value = PayWays.WALLET.toString()
+        ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
+    }
+
+    private fun bankWayClicked() {
+        paytabsViewModel.setShowNumber(false)
+        paytabsViewModel.setShowNumberNew(PayWays.BANk.toString())
+        paytabsViewModel.buttonClicked.value = PayWays.BANk.toString()
+        ui.lineWays.setBackgroundResource(R.drawable.payment_way_background)
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @SuppressLint("SetTextI18n")
@@ -140,6 +170,25 @@ class InquireActivity : AppCompatActivity() {
         setContentView(ui.root)
 
         Language.setLanguageNew(this, Constants.LANG)
+
+        ui.viewModel = paytabsViewModel
+        ui.lifecycleOwner = this
+
+        paytabsViewModel._buttonClicked.observe(this) { buttonClicked ->
+            finalPaymentWay = buttonClicked
+        }
+
+        ui.bankWay.setOnClickListener {
+            bankWayClicked()
+        }
+
+        ui.digitalWalletWay.setOnClickListener {
+            cashWalletClicked()
+        }
+
+        ui.digitalWay.setOnClickListener{
+            digitalWalletClicked()
+        }
 
 
         initToolBar()
@@ -667,11 +716,36 @@ class InquireActivity : AppCompatActivity() {
 
     private fun submitBtn()
     {
+
+//        if(getParamsData())
+//        {
+//            NavigateToActivity.navigateToPaymentDetailsActivity(
+//                activity = this,
+//                paramsArrayListToSend = paramsArrayListToSend,
+//                SERVICE_ID = SERVICE_ID,
+//                id = DATA_ENTITY?.id ?: 0,
+//                amount = DATA_ENTITY?.amount.toString(),
+//                paymentTransactionId = "",
+//                imei = Constants.IMEI,
+//                externalTransactionId = "",
+//                ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS = ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS
+//            )
+//        }
+//        else
+//        {
+//            dialog.showWarningDialog(
+//                resources.getString(R.string.no_internet_error),
+//                resources.getString(R.string.app__ok)
+//            )
+//            dialog.show()
+//        }
+
         if (connectivity?.isConnected == true)
         {
             dialog.showSuccessDialogWithAction(
                 resources.getString(R.string.confirmation_title),
-                resources.getString(R.string.msg_confirm_pay) +"\n"+ DATA_ENTITY?.totalAmount +
+                resources.getString(R.string.msg_confirm_pay)
+                        +"\n"+ DATA_ENTITY?.totalAmount +
                         " EGP  ?",
                 resources.getString(R.string.app__ok), resources.getString(R.string.app__cancel)
             ) {
@@ -702,8 +776,7 @@ class InquireActivity : AppCompatActivity() {
         }
     }
 
-    private fun pay(paymentPojoModel: PaymentPojoModel)
-    {
+    private fun pay(paymentPojoModel: PaymentPojoModel) {
         pDialog.show()
 
         lifecycleScope.launch(Dispatchers.IO)
@@ -781,7 +854,6 @@ class InquireActivity : AppCompatActivity() {
                 })
         }
     }
-
 
     private fun scheduleInquire(result: PaymentEntity.DataEntity) {
         serviceViewModel.scheduleInquire(sharedHelper?.getUserToken().toString(),

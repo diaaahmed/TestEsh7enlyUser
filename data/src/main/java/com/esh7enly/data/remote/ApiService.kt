@@ -59,13 +59,17 @@ import com.esh7enly.domain.entity.totalamountxpayresponse.GetTotalAmountXPayResp
 import com.esh7enly.domain.entity.userwallet.UserWalletResponse
 import com.esh7enly.domain.entity.verifyotp.VerifyOtpResponse
 import com.google.gson.JsonElement
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Multipart
 
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.Url
@@ -114,6 +118,13 @@ interface ApiService
     @POST(REGISTER)
     suspend fun registerNewAccount(
         @Body registerModel: RegisterModel
+    ): RegisterResponse
+
+    @Multipart
+    @POST(REGISTER)
+    suspend fun registerNewAccountWithFiles(
+        @Part registerModel: RequestBody,
+        @Part frontImage: MultipartBody.Part,
     ): RegisterResponse
 
     @FormUrlEncoded
