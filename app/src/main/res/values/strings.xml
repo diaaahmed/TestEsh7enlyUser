@@ -85,6 +85,7 @@
     <string name="enter_phone_number">Enter your phone number</string>
     <string name="bank_card">Bank card</string>
     <string name="digital_wallet">Electronic wallets</string>
+    <string name="esh7enly_wallet">Esh7enly wallet</string>
     <string name="support">Support</string>
     <string name="enter_old_password">Enter old password</string>
     <string name="enter_new_mobile">Enter new mobile</string>

@@ -24,8 +24,6 @@ object Url {
     const val CATEGORIES = "service/categories"
 
     const val UPDATE_PROFILE = "misc/update-profile"
-    const val GET_DEPOSITS = "visa/list-wallet"
-
 
     const val SCHEDULE_INVOICE = "schedule/add"
     const val SCHEDULE_INQUIRE = "schedule/check"
@@ -43,14 +41,14 @@ object Url {
     const val INQUIRY = "service/inquiry"
 
     const val PAYMENT = "service/payment"
-    const val VISA_WALLET = "visa/check-complete"
+    const val VISA_WALLET = "newvisa/check-complete"
 
     const val TOTAL_AMOUNT = "service/total-amount"
 
     const val START_SESSION = "newvisa/start-session-wallet"
-
     const val TOTAL_XPAY = "newvisa/get-amount-wallet"
-
+   // const val GET_DEPOSITS = "test-visa/list-wallet"
+    const val DEPOSITS = "newvisa/list-wallet"
 
     const val CANCEL_SERVICE = "service/cancel"
 

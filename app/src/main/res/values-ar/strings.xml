@@ -71,8 +71,10 @@
     <string name="insert_card_please">من فضلك اضغط استعلام ثم ضع الكارت</string>
 
     <string name="email">البريد الإلكترونى</string>
-    <string name="bank_card">كارت البنكى</string>
-    <string name="digital_wallet">محافظ الالكترونية</string>
+    <string name="bank_card">كارت بنكى</string>
+    <string name="digital_wallet">محفظة الكترونية</string>
+    <string name="esh7enly_wallet">محفظة اشحنلى</string>
+
     <string name="support">الدعم والتواصل</string>
     <string name="call_us">تواصل معنا</string>
     <string name="chatting">تواصل على واتساب</string>

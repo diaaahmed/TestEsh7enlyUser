@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import com.esh7enly.data.url.Url.CANCEL_SERVICE
 import com.esh7enly.data.url.Url.CATEGORIES
 import com.esh7enly.data.url.Url.CHECK_INTEGRATION_PROVIDER_STATUS
+import com.esh7enly.data.url.Url.DEPOSITS
 import com.esh7enly.data.url.Url.FORGET_PASSWORD
-import com.esh7enly.data.url.Url.GET_DEPOSITS
 import com.esh7enly.data.url.Url.IMAGE_ADS
 import com.esh7enly.data.url.Url.INQUIRY
 import com.esh7enly.data.url.Url.LOGIN
@@ -239,7 +239,7 @@ interface ApiService
         @Field("email") email:String
     ): Response<ChargeBalanceResponse>
 
-    @POST(GET_DEPOSITS)
+    @POST(DEPOSITS)
     suspend fun getDeposits(
         @Query("page") page:Int
     ): Response<DepositResponse>

@@ -237,19 +237,23 @@ open class ParametersActivity : BaseActivity() {
                     } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
 
                         pDialog.show()
-                        //  pDialog.show()
-
-
 
                         val totalAmountPojoModel = TotalAmountPojoModel(
                             Constants.IMEI,
                             serviceViewModel.servicesId, amount,
                             paramsArrayListToSend
                         )
+
                         lifecycleScope.launch(Dispatchers.IO)
                         {
-                            getTotalAmount(totalAmountPojoModel)
+                            getTotalAmount(
+                                totalAmountPojoModel = totalAmountPojoModel,
+                                serviceName = serviceViewModel.serviceName.toString(),
+                                providerName = serviceViewModel.providerName.toString(),
+                                serviceIcon = serviceViewModel.image.toString(),
+                                isParameter = true)
                         }
+
                     }
                 }
 
@@ -341,78 +345,95 @@ open class ParametersActivity : BaseActivity() {
         }
     }
 
-    override fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel) {
-        serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
-            totalAmountPojoModel,
-            object : OnResponseListener {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                    // pDialog.cancel()
-                    pDialog.cancel()
-
-                    val data = obj as TotalAmountEntity.DataEntity
-
-                    val amount = java.lang.String.format(
-                        " • %s %s %s",
-                        getString(R.string.dialog_amount),
-                        Utils.format(data.amount),
-                        getString(R.string.egp)
-                    )
-
-                    val totalAmount = java.lang.String.format(
-                        " • %s %s %s",
-                        getString(R.string.dialog_total_amount),
-                        Utils.format(data.totalAmount),
-                        getString(R.string.egp)
-                    )
-
-                    val paidAmount = ""
-
-                    dialog.showSuccessDialogWithAction(
-                        resources.getString(R.string.confirmation_title),
-                        String.format(
-                            "%s \n %s \n %s",
-                            amount,
-                            totalAmount,
-                            paidAmount
-                        ),
-                        resources.getString(R.string.app__ok),
-                        resources.getString(R.string.app__cancel)
-                    ) {
-                        dialog.cancel()
-
-                        val paymentPojoModel =
-                            PaymentPojoModel(
-                                Constants.IMEI,
-                                "",
-                                totalAmountPojoModel.serviceId,
-                                totalAmountPojoModel.amount,
-                                totalAmountPojoModel.attributes
-                            )
-
-                        pay(paymentPojoModel)
-
-                    }.show()
-                }
-
-                override fun onFailed(code: Int, msg: String?) {
-                    pDialog.cancel()
+//    override fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel,
+//                                serviceName:String ,
+//                                providerName:String,
+//                                serviceIcon:String ) {
+//
+//        serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+//            totalAmountPojoModel,
+//            object : OnResponseListener {
+//                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
 //                    pDialog.cancel()
-                    dialog.showErrorDialogWithAction(
-                        msg,
-                        resources.getString(R.string.app__ok)
-                    ) {
-                        dialog.cancel()
-                        if (code  == Constants.CODE_UNAUTH_NEW
-                            || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
-                            NavigateToActivity.navigateToAuthActivity(this@ParametersActivity)
-                        }
+//
+//                    val data = obj as TotalAmountEntity.DataEntity
+//
+//                    println("Diaa paid amount is ${data.paidAmount}")
+//                    println("Diaa total amount is ${data.totalAmount}")
+//
+//                    NavigateToActivity.navigateToParametersPayActivity(
+//                        activity = this@ParametersActivity,
+//                        amount = data.amount.toString(),
+//                        totalAmount = data.totalAmount.toString(),
+//                        totalAmountPojoModel = totalAmountPojoModel,
+//                        serviceName = serviceName,
+//                        providerName = providerName,
+//                        serviceIcon = serviceIcon,
+//                        serviceCharge = data.serviceCharge.toString(),
+//                        paidAmount = data.paidAmount.toString(),
+//                    )
+//
+//                    val amount = java.lang.String.format(
+//                        " • %s %s %s",
+//                        getString(R.string.dialog_amount),
+//                        Utils.format(data.amount),
+//                        getString(R.string.egp)
+//                    )
+//
+//                    val totalAmount = java.lang.String.format(
+//                        " • %s %s %s",
+//                        getString(R.string.dialog_total_amount),
+//                        Utils.format(data.totalAmount),
+//                        getString(R.string.egp)
+//                    )
+//
+////                    val paidAmount = ""
+////
+////                    dialog.showSuccessDialogWithAction(
+////                        resources.getString(R.string.confirmation_title),
+////                        String.format(
+////                            "%s \n %s \n %s",
+////                            amount,
+////                            totalAmount,
+////                            paidAmount
+////                        ),
+////                        resources.getString(R.string.app__ok),
+////                        resources.getString(R.string.app__cancel)
+////                    ) {
+////                        dialog.cancel()
+////
+////                        val paymentPojoModel =
+////                            PaymentPojoModel(
+////                                Constants.IMEI,
+////                                "",
+////                                totalAmountPojoModel.serviceId,
+////                                totalAmountPojoModel.amount,
+////                                totalAmountPojoModel.attributes
+////                            )
+////
+////                        pay(paymentPojoModel)
+////
+////                    }.show()
+//                }
+//
+//                override fun onFailed(code: Int, msg: String?) {
+//                    pDialog.cancel()
+//                    dialog.showErrorDialogWithAction(
+//                        msg,
+//                        resources.getString(R.string.app__ok)
+//                    ) {
+//                        dialog.cancel()
+//                        if (code  == Constants.CODE_UNAUTH_NEW
+//                            || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
+//                            NavigateToActivity.navigateToAuthActivity(this@ParametersActivity)
+//                        }
+//
+//                    }.show()
+//                }
+//            })
+//    }
 
-                    }.show()
-                }
-            })
-    }
-
-    private fun pay(paymentPojoModel: PaymentPojoModel) {
+    override fun pay(paymentPojoModel: PaymentPojoModel) {
         pDialog.show()
 
         serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
@@ -432,9 +453,7 @@ open class ParametersActivity : BaseActivity() {
                 }
 
                 override fun onFailed(code: Int, msg: String?) {
-//                    pDialog.cancel()
                     pDialog.cancel()
-
 
                     clearParamsData()
 
@@ -1228,7 +1247,6 @@ open class ParametersActivity : BaseActivity() {
 //        )
     }
 
-
     private fun getParamsData(): Boolean {
 
         for (i in this.parametersList.indices) {
@@ -1631,6 +1649,5 @@ open class ParametersActivity : BaseActivity() {
             Toast.makeText(this, getString(R.string.some_error), Toast.LENGTH_SHORT).show()
         }
     }
-
 
 }

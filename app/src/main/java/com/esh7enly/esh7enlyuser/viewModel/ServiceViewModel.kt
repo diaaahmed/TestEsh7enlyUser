@@ -334,7 +334,10 @@ class ServiceViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 servicesRepo.getTotalAmount(token, totalAmountPojoModel)
-                    .catch { Log.d(TAG, "diaa getTotalAmount: catch ${it.message}") }
+                    .catch {
+                        Log.d(TAG, "diaa getTotalAmount: catch ${it.message}")
+                        listner.onFailed(Constants.CODE_UNAUTH_NEW,it.message)
+                    }
                     .buffer()
                     .collect { response ->
                         if (!response.status) {

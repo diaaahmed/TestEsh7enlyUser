@@ -54,9 +54,9 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding,BalanceViewModel>()
             }.show()
         }
 
-        binding.addBalance.setOnClickListener{
-            NavigateToActivity.navigateToAddBalanceActivity(requireActivity())
-        }
+//        binding.addBalance.setOnClickListener{
+//            NavigateToActivity.navigateToAddBalanceActivity(requireActivity())
+//        }
 
 
         binding.reload.setOnClickListener {

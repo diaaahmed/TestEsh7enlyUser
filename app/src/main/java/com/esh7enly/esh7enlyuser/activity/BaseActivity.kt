@@ -1,7 +1,6 @@
 package com.esh7enly.esh7enlyuser.activity
 
 import android.app.AlertDialog
-
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -21,9 +20,7 @@ import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Decryptor
 import com.esh7enly.esh7enlyuser.util.Encryptor
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.util.Utils
 import com.esh7enly.esh7enlyuser.viewModel.ParametersViewModel
-import com.esh7enly.esh7enlyuser.viewModel.PhoneViewModel
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
@@ -34,15 +31,15 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @AndroidEntryPoint
-abstract class BaseActivity : AppCompatActivity()
-{
+abstract class BaseActivity : AppCompatActivity() {
+
     val serviceViewModel: ServiceViewModel by viewModels()
+
     val parametersViewModel: ParametersViewModel by viewModels()
 
     val transactionsViewModel: TransactionsViewModel by viewModels()
 
     val userViewModel: UserViewModel by viewModels()
-
 
     var sharedHelper: SharedHelper? = null
         @Inject set
@@ -54,7 +51,7 @@ abstract class BaseActivity : AppCompatActivity()
         @Inject set
 
     var decryptor: Decryptor? = null
-    @Inject set
+        @Inject set
 
 
     val pDialog by lazy {
@@ -69,72 +66,102 @@ abstract class BaseActivity : AppCompatActivity()
 
     private var isBulk = false
 
-    open fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel)
-    {
+    open fun getTotalAmount(
+        totalAmountPojoModel: TotalAmountPojoModel,
+        serviceName: String = "",
+        providerName: String = "",
+        serviceIcon: String = "",
+        isParameter: Boolean = false
+    ) {
 
         serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
             totalAmountPojoModel, object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
 
-                    val confirmation: String
-                    val amount:String
-                    val totalAmount: String
-                    val ok: String
-                    val cancel: String
-                    val egp: String
-                    val quantity: String
-
-                    if (Constants.LANG == Constants.AR)
-                    {
-                        confirmation = "تأكيد"
-                        amount = "المبلغ : "
-                        totalAmount = "المبلغ الإجمالي : "
-                        ok = "موافق"
-                        cancel = "إلغاء"
-                        egp = "ج.م"
-                        quantity = "الكمية"
-
-                    } else {
-                        confirmation = "Confirmation"
-                        amount = "Amount : "
-                        totalAmount = "Total Amount : "
-                        ok = "OK"
-                        cancel = "Cancel"
-                        egp = "EGP"
-                        quantity = "quantity"
-                    }
-
                     pDialog.cancel()
 
-                    val data: TotalAmountEntity.DataEntity = obj as TotalAmountEntity.DataEntity
+                    val data = obj as TotalAmountEntity.DataEntity
 
-                    val paidAmount = ""
+                    NavigateToActivity.navigateToParametersPayActivity(
+                        activity = this@BaseActivity,
+                        amount = data.amount.toString(),
+                        totalAmount = data.totalAmount.toString(),
+                        totalAmountPojoModel = totalAmountPojoModel,
+                        serviceName = serviceName,
+                        providerName = providerName,
+                        serviceIcon = serviceIcon,
+                        serviceCharge = data.serviceCharge.toString(),
+                        paidAmount = data.paidAmount.toString(),
+                        isParameter = isParameter
+                    )
 
-                    dialog.showSuccessDialogWithActionAndBulkCards(
-                        confirmation,
-                        " • " + amount +
-                                " " + Utils.format(data.amount) + egp + " \n " +
-                                "• " + totalAmount + " " +
-                                Utils.format(data.totalAmount) + egp +
-                                paidAmount,
-                        ok,
-                        cancel,
-                        quantity
-                    ) { quantity ->
-                        dialog.cancel()
 
-                        bulkNumber = Integer.parseInt(quantity)
+//                    navigateToPrepaidCardActivity(
+//                        data.amount.toString(),
+//                        data.totalAmount.toString(),
+//                        data.serviceCharge.toString(),
+//                        data.paidAmount.toString(),
+//                        serviceName,
+//                        providerName,
+//                        serviceIcon,
+//                        totalAmountPojoModel
+//                    )
 
-                        isBulk = bulkNumber > 1
-
-                        val paymentPojoModel = PaymentPojoModel(
-                            Constants.IMEI, "",
-                            totalAmountPojoModel.serviceId, totalAmountPojoModel.amount
-                        )
-
-                        pay(paymentPojoModel)
-
-                    }.show()
+//                    val confirmation: String
+//                    val amount: String
+//                    val totalAmount: String
+//                    val ok: String
+//                    val cancel: String
+//                    val egp: String
+//                    val quantity: String
+//
+//                    if (Constants.LANG == Constants.AR) {
+//                        confirmation = "تأكيد"
+//                        amount = "المبلغ : "
+//                        totalAmount = "المبلغ الإجمالي : "
+//                        ok = "موافق"
+//                        cancel = "إلغاء"
+//                        egp = "ج.م"
+//                        quantity = "الكمية"
+//
+//                    } else {
+//                        confirmation = "Confirmation"
+//                        amount = "Amount : "
+//                        totalAmount = "Total Amount : "
+//                        ok = "OK"
+//                        cancel = "Cancel"
+//                        egp = "EGP"
+//                        quantity = "quantity"
+//                    }
+//
+//
+//                    val paidAmount = ""
+//
+//                    dialog.showSuccessDialogWithActionAndBulkCards(
+//                        confirmation,
+//                        " • " + amount +
+//                                " " + Utils.format(data.amount) + egp + " \n " +
+//                                "• " + totalAmount + " " +
+//                                Utils.format(data.totalAmount) + egp +
+//                                paidAmount,
+//                        ok,
+//                        cancel,
+//                        quantity
+//                    ) { quantity ->
+//                        dialog.cancel()
+//
+//                        bulkNumber = Integer.parseInt(quantity)
+//
+//                        isBulk = bulkNumber > 1
+//
+//                        val paymentPojoModel = PaymentPojoModel(
+//                            Constants.IMEI, "",
+//                            totalAmountPojoModel.serviceId, totalAmountPojoModel.amount
+//                        )
+//
+//                        pay(paymentPojoModel)
+//
+//                    }.show()
 
 
                 }
@@ -160,7 +187,7 @@ abstract class BaseActivity : AppCompatActivity()
 
     open lateinit var dataPay: PaymentEntity.DataEntity
 
-    private fun pay(paymentPojoModel: PaymentPojoModel) {
+    open fun pay(paymentPojoModel: PaymentPojoModel) {
 
         pDialog.show()
 
@@ -189,7 +216,8 @@ abstract class BaseActivity : AppCompatActivity()
                         dialog.cancel()
 
                         if (code == Constants.CODE_UNAUTH_NEW ||
-                            code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
+                            code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+                        ) {
                             lifecycleScope.launch(Dispatchers.Main)
                             {
                                 NavigateToActivity.navigateToAuthActivity(this@BaseActivity)
@@ -200,7 +228,10 @@ abstract class BaseActivity : AppCompatActivity()
             })
     }
 
-    open fun scheduleInquire(result: PaymentEntity.DataEntity, paymentPojoModel: PaymentPojoModel) {
+    open fun scheduleInquire(
+        result: PaymentEntity.DataEntity,
+        paymentPojoModel: PaymentPojoModel
+    ) {
         Log.d("TAG", "diaa scheduleInquire:start ")
 
         val clientNumber = result.clientNumber ?: "clientNumber"
@@ -236,14 +267,15 @@ abstract class BaseActivity : AppCompatActivity()
                                 // Move to print with bulk
                                 ReceiptActivity.getIntent(
                                     this@BaseActivity,
-                                    isBulk, bulkNumber, dataPay, paymentPojoModel,
-                                    serviceViewModel.serviceType
+                                    isBulk, bulkNumber, result, paymentPojoModel,
+                                    Constants.SERVICE_TYPE_TEST
                                 )
                             } else {
                                 // move to print without bulk
                                 ReceiptActivity.getIntent(
                                     this@BaseActivity,
-                                    dataPay, serviceViewModel.serviceType
+                                    result, Constants.SERVICE_TYPE_TEST
+
                                 )
                             }
                         }
@@ -302,22 +334,21 @@ abstract class BaseActivity : AppCompatActivity()
                             // Move to print with bulk
                             ReceiptActivity.getIntent(
                                 this@BaseActivity,
-                                isBulk, bulkNumber, dataPay, paymentPojoModel,
+                                isBulk, bulkNumber, result, paymentPojoModel,
                                 serviceViewModel.serviceType
                             )
                         } else {
                             // move to print without bulk
                             ReceiptActivity.getIntent(
                                 this@BaseActivity,
-                                dataPay, serviceViewModel.serviceType
+                                result, serviceViewModel.serviceType
                             )
                         }
                     }
                     dialog.show()
                 }
 
-                override fun onFailed(code: Int, msg: String?)
-                {
+                override fun onFailed(code: Int, msg: String?) {
                     pDialog.cancel()
 
                     dialog.showErrorDialogWithAction(
@@ -329,14 +360,14 @@ abstract class BaseActivity : AppCompatActivity()
                             // Move to print with bulk
                             ReceiptActivity.getIntent(
                                 this@BaseActivity,
-                                isBulk, bulkNumber, dataPay, paymentPojoModel,
+                                isBulk, bulkNumber, result, paymentPojoModel,
                                 serviceViewModel.serviceType
                             )
                         } else {
                             // move to print without bulk
                             ReceiptActivity.getIntent(
                                 this@BaseActivity,
-                                dataPay, serviceViewModel.serviceType
+                                result, serviceViewModel.serviceType
                             )
                         }
 
@@ -345,7 +376,6 @@ abstract class BaseActivity : AppCompatActivity()
 
             })
     }
-
 
 
     fun navigateToParametersActivity(service: ServiceData) {

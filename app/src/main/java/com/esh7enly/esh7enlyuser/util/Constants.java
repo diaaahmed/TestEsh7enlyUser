@@ -34,9 +34,15 @@ public class Constants {
     public static final String PROVIDER_NAME = "provider_name";
     public static final String SERVICE_ID = "service_id";
     public static final String SERVICE_NAME = "service_name";
+    public static final String SERVICE_ICON = "service_icon";
     public static  String SERVICE_NAME_AR = "service_name";
     public static  String SERVICE_NAME_EN = "service_name";
     public static final String SERVICE_TYPE_CODE = "service_type_code";
+    public static final String SERVICE_AMOUNT = "amount";
+    public static final String SERVICE_TOTAL_AMOUNT = "total_amount";
+    public static final String SERVICE_MODEL = "service_model";
+    public static final String SERVICE_CHARGE = "service_charge";
+    public static final String SERVICE_PAID_AMOUNT = "paid_amount";
 
 
     //endregion
@@ -118,6 +124,7 @@ public class Constants {
     //endregion
 
     public static final String SERVICE_TYPE = "service_type";
+    public static  int SERVICE_TYPE_TEST = 0;
     public static final String ACCEPT_AMOUNT_INPUT = "accept_amount_input";
     public static final String PRICE_TYPE = "price_type";
     public static final String ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS = "accept_check_integration_provider_status";

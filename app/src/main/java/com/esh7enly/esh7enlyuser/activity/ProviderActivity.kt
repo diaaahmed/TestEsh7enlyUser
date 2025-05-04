@@ -42,7 +42,6 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
-
         Language.setLanguageNew(this, Constants.LANG)
 
         initToolBar()
@@ -65,15 +64,13 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
         }
     }
 
-    override fun initToolBar()
-    {
+    override fun initToolBar() {
         ui.providerToolbar.title = intent.getStringExtra(Constants.CATEGORY_NAME)?: ""
 
         ui.providerToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed()}
     }
 
-    private fun getData()
-    {
+    private fun getData() {
         pDialog.show()
 
         serviceViewModel.getProvidersNew(sharedHelper?.getUserToken().toString(),categoryID.toString(),
@@ -120,6 +117,7 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
         {
             serviceActivity.putExtra(Constants.PROVIDER_NAME,provider.name_ar)
         }
+
         else
         {
             serviceActivity.putExtra(Constants.PROVIDER_NAME,provider.name_en)

@@ -6,36 +6,37 @@ import android.util.Log
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.esh7enlyuser.activity.*
+import com.esh7enly.esh7enlyuser.util.Constants.PROVIDER_NAME
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_AMOUNT
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_CHARGE
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_ICON
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_MODEL
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_NAME
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_PAID_AMOUNT
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_TOTAL_AMOUNT
 
 class NavigateToActivity
 {
     companion object{
 
-
-        fun navigateToAuthActivity(activity:Activity)
-        {
+        fun navigateToAuthActivity(activity:Activity) {
             val toMain = Intent(activity,AuthActivity::class.java)
             activity.startActivity(toMain)
             activity.finish()
         }
 
-        fun navigateToIntroCreateAccountActivity(activity:Activity)
-        {
+        fun navigateToIntroCreateAccountActivity(activity:Activity) {
             val toCreateAccount = Intent(activity,IntroCreateAccount::class.java)
             activity.startActivity(toCreateAccount)
             activity.finish()
         }
 
-
-        fun navigateToAddBalanceActivity(activity:Activity)
-        {
+        fun navigateToAddBalanceActivity(activity:Activity) {
             val toAddBalance = Intent(activity,AddBalance::class.java)
             activity.startActivity(toAddBalance)
         }
 
-
-        fun navigateToTransactionsActivity(activity:Activity)
-        {
+        fun navigateToTransactionsActivity(activity:Activity) {
             val toTransactions = Intent(activity,TransactionsActivity::class.java)
             activity.startActivity(toTransactions)
           //  activity.finish()
@@ -54,20 +55,57 @@ class NavigateToActivity
             activity.startActivity(changeUserNameActivity)
         }
 
-        fun navigateToPaymentDetailsActivity(
-            activity:Activity,
-            paramsArrayListToSend: ArrayList<TotalAmountPojoModel.Params>,
-            SERVICE_ID: Int,
-            id:Int,
-            amount:String,
-            paymentTransactionId:String,
-            imei:String,
-            externalTransactionId:String,
-            ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS:Int)
+        fun navigateToParametersPayActivity(
+            activity:Activity,amount:String,totalAmount:String,
+            serviceCharge:String,
+            serviceName: String,
+            providerName: String,
+            serviceIcon:String,
+            paidAmount: String,
+            totalAmountPojoModel: TotalAmountPojoModel,
+            isParameter: Boolean = false
+        )
         {
-            val paymentDetailsActivity = Intent(activity,PaymentDetailsActivity::class.java)
-            paymentDetailsActivity.putExtra("params_list",paramsArrayListToSend)
-            activity.startActivity(paymentDetailsActivity)
+//            val intent = if (isParameter) {
+//                Intent(activity, ParametersPayActivity::class.java)
+//            } else {
+//                Intent(activity, PrepaidCardActivity::class.java)
+//            }
+            val intent = Intent(activity,PrepaidCardActivity::class.java)
+
+            intent.putExtra(SERVICE_AMOUNT,amount)
+            intent.putExtra(SERVICE_TOTAL_AMOUNT,totalAmount)
+            intent.putExtra(SERVICE_PAID_AMOUNT,paidAmount)
+            intent.putExtra(SERVICE_MODEL, totalAmountPojoModel)
+            intent.putExtra(SERVICE_CHARGE,serviceCharge)
+            intent.putExtra(SERVICE_NAME,serviceName)
+            intent.putExtra(PROVIDER_NAME,providerName)
+            intent.putExtra(SERVICE_ICON,serviceIcon)
+            activity.startActivity(intent)
+        }
+
+        fun navigateToPrepaidCardActivity(
+            activity:Activity,amount:String,totalAmount:String,
+            serviceCharge:String,
+            paidAmount:String,
+            serviceName: String,
+            providerName: String,
+            serviceIcon:String,
+            totalAmountPojoModel: TotalAmountPojoModel,
+            isParameter: Boolean = false
+        )
+        {
+            val prepaidActivity = Intent(activity,PrepaidCardActivity::class.java)
+
+            prepaidActivity.putExtra(SERVICE_AMOUNT,amount)
+            prepaidActivity.putExtra(SERVICE_TOTAL_AMOUNT,totalAmount)
+            prepaidActivity.putExtra(SERVICE_PAID_AMOUNT,paidAmount)
+            prepaidActivity.putExtra(SERVICE_MODEL, totalAmountPojoModel)
+            prepaidActivity.putExtra(SERVICE_CHARGE,serviceCharge)
+            prepaidActivity.putExtra(SERVICE_NAME,serviceName)
+            prepaidActivity.putExtra(PROVIDER_NAME,providerName)
+            prepaidActivity.putExtra(SERVICE_ICON,serviceIcon)
+            activity.startActivity(prepaidActivity)
         }
 
         fun navigateToParametersActivity(activity:Activity, serviceType:Int,
@@ -80,7 +118,7 @@ class NavigateToActivity
             val parametersActivity = Intent(activity,ParametersActivity::class.java)
 
             parametersActivity.putExtra(Constants.SERVICE_TYPE,serviceType)
-            parametersActivity.putExtra(Constants.PROVIDER_NAME,providerName)
+            parametersActivity.putExtra(PROVIDER_NAME,providerName)
 
             Constants.SERVICE_NAME_AR = nameAr
             Constants.SERVICE_NAME_EN = nameEn

@@ -85,6 +85,32 @@ fun digitalWalletColor(textView: TextView,type:String) {
     }
 }
 
+@BindingAdapter(value = ["appWalletColor"])
+fun appWalletColor(textView: TextView,type:String) {
+
+    if(type != PayWays.Esh7enly.toString())
+    {
+        textView.setTextColor(ContextCompat.getColor(textView.context,R.color.grey_100_))
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.white
+            )
+        )
+    }
+    else
+    {
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.colorPrimary
+            )
+        )
+        textView.setTextColor(ContextCompat.getColor(textView.context, R.color.white))
+
+    }
+}
+
 @BindingAdapter(value = ["visaColorNew"])
 fun visaColorNew(textView: TextView,type:String)
 {

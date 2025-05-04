@@ -53,15 +53,14 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
         AppDialogMsg(this, false)
     }
 
-
     private var providerID = 0
-    lateinit var providerName: String
+
+    private lateinit var providerName: String
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
-
 
         Language.setLanguageNew(this, Constants.LANG)
 
@@ -70,6 +69,7 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
         ui.serviceRv.setHasFixedSize(true)
 
         providerID = intent.getIntExtra(Constants.PROVIDER_ID, 0)
+
         providerName = intent.getStringExtra(Constants.PROVIDER_NAME).toString()
 
         getServices()
@@ -114,7 +114,6 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
                 }
             })
 
-
     }
 
     private fun addDataStore() {
@@ -148,10 +147,14 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
         serviceViewModel.serviceType = service.type
 
+        Constants.SERVICE_TYPE_TEST = service.type
+
         Log.d(TAG, "diaa test type: ${service.type}")
 
         if (service.type == Constants.PREPAID_CARD) {
+
             if (connectivity?.isConnected == true) {
+
                 pDialog.show()
 
                 val totalAmountPojoModel =
@@ -159,7 +162,12 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
                 lifecycleScope.launch(Dispatchers.IO) {
 
-                    getTotalAmount(totalAmountPojoModel)
+                    getTotalAmount(
+                        totalAmountPojoModel,
+                        service.nameAr,
+                        providerName,
+                        service.icon)
+
                 }
             } else {
                 dialog.showWarningDialog(
