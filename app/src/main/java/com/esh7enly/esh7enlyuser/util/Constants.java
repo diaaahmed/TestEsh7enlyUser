@@ -43,6 +43,7 @@ public class Constants {
     public static final String SERVICE_MODEL = "service_model";
     public static final String SERVICE_CHARGE = "service_charge";
     public static final String SERVICE_PAID_AMOUNT = "paid_amount";
+    public static final String SERVICE_TO_PARAMETER_MODEL = "service_parameter_model";
 
 
     //endregion

@@ -13,6 +13,7 @@ android {
     namespace 'com.esh7enly.esh7enlyuser'
     compileSdk libs.versions.targetSdk.get().toInteger()
 
+
     defaultConfig {
         applicationId "com.esh7enly.esh7enlyuser"
         minSdk libs.versions.minSdk.get().toInteger()

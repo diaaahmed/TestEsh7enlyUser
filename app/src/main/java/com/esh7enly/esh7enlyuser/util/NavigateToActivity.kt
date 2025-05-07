@@ -2,9 +2,10 @@ package com.esh7enly.esh7enlyuser.util
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.categoriesNew.CategoryData
+import com.esh7enly.domain.entity.searchresponse.SearchData
+import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.esh7enlyuser.activity.*
 import com.esh7enly.esh7enlyuser.util.Constants.PROVIDER_NAME
 import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_AMOUNT
@@ -14,6 +15,7 @@ import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_MODEL
 import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_NAME
 import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_PAID_AMOUNT
 import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_TOTAL_AMOUNT
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_TO_PARAMETER_MODEL
 
 class NavigateToActivity
 {
@@ -31,26 +33,19 @@ class NavigateToActivity
             activity.finish()
         }
 
-        fun navigateToAddBalanceActivity(activity:Activity) {
-            val toAddBalance = Intent(activity,AddBalance::class.java)
-            activity.startActivity(toAddBalance)
-        }
-
         fun navigateToTransactionsActivity(activity:Activity) {
             val toTransactions = Intent(activity,TransactionsActivity::class.java)
             activity.startActivity(toTransactions)
           //  activity.finish()
         }
 
-        fun navigateToAccountSettingActivity(activity:Activity)
-        {
+        fun navigateToAccountSettingActivity(activity:Activity) {
             val accountSetting = Intent(activity,AccountSettingActivity::class.java)
             activity.startActivity(accountSetting)
            // activity.finish()
         }
 
-        fun navigateToChangeUserNameActivity(activity:Activity)
-        {
+        fun navigateToChangeUserNameActivity(activity:Activity) {
             val changeUserNameActivity = Intent(activity,ChangeUserNameActivity::class.java)
             activity.startActivity(changeUserNameActivity)
         }
@@ -63,14 +58,8 @@ class NavigateToActivity
             serviceIcon:String,
             paidAmount: String,
             totalAmountPojoModel: TotalAmountPojoModel,
-            isParameter: Boolean = false
         )
         {
-//            val intent = if (isParameter) {
-//                Intent(activity, ParametersPayActivity::class.java)
-//            } else {
-//                Intent(activity, PrepaidCardActivity::class.java)
-//            }
             val intent = Intent(activity,PrepaidCardActivity::class.java)
 
             intent.putExtra(SERVICE_AMOUNT,amount)
@@ -84,58 +73,44 @@ class NavigateToActivity
             activity.startActivity(intent)
         }
 
-        fun navigateToPrepaidCardActivity(
-            activity:Activity,amount:String,totalAmount:String,
-            serviceCharge:String,
-            paidAmount:String,
-            serviceName: String,
-            providerName: String,
-            serviceIcon:String,
-            totalAmountPojoModel: TotalAmountPojoModel,
-            isParameter: Boolean = false
+        fun navigateToParametersActivityFromSearch(activity:Activity,
+                                         providerName:String,
+                                                   searchData:SearchData
         )
-        {
-            val prepaidActivity = Intent(activity,PrepaidCardActivity::class.java)
-
-            prepaidActivity.putExtra(SERVICE_AMOUNT,amount)
-            prepaidActivity.putExtra(SERVICE_TOTAL_AMOUNT,totalAmount)
-            prepaidActivity.putExtra(SERVICE_PAID_AMOUNT,paidAmount)
-            prepaidActivity.putExtra(SERVICE_MODEL, totalAmountPojoModel)
-            prepaidActivity.putExtra(SERVICE_CHARGE,serviceCharge)
-            prepaidActivity.putExtra(SERVICE_NAME,serviceName)
-            prepaidActivity.putExtra(PROVIDER_NAME,providerName)
-            prepaidActivity.putExtra(SERVICE_ICON,serviceIcon)
-            activity.startActivity(prepaidActivity)
-        }
-
-        fun navigateToParametersActivity(activity:Activity, serviceType:Int,
-                                         providerName:String, serviceId:Int,
-                                         nameAr:String, nameEn:String, acceptAmountInput:Int, priceType:Int,
-                                         acceptCheckIntegrationProviderStatus:Int,
-                                         priceValue:String, acceptChangePaidAmount:Int,
-                                         icon:String, typeCode:String)
         {
             val parametersActivity = Intent(activity,ParametersActivity::class.java)
 
-            parametersActivity.putExtra(Constants.SERVICE_TYPE,serviceType)
+            parametersActivity.putExtra(Constants.SERVICE_TYPE,searchData.type)
             parametersActivity.putExtra(PROVIDER_NAME,providerName)
 
-            Constants.SERVICE_NAME_AR = nameAr
-            Constants.SERVICE_NAME_EN = nameEn
+            Constants.SERVICE_NAME_AR = searchData.name_ar
+            Constants.SERVICE_NAME_EN = searchData.name_en
 
-            parametersActivity.putExtra(Constants.SERVICE_ID,serviceId)
-            parametersActivity.putExtra(Constants.SERVICE_NAME_AR,nameAr)
-            parametersActivity.putExtra(Constants.SERVICE_NAME_EN,nameEn)
+            parametersActivity.putExtra(Constants.SERVICE_ID,searchData.id)
+            parametersActivity.putExtra(Constants.SERVICE_NAME_AR,searchData.name_ar)
+            parametersActivity.putExtra(Constants.SERVICE_NAME_EN,searchData.name_en)
 
-            Log.d("TAG", "diaa service navigate again: english $nameEn arabic $nameAr")
-            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_INPUT, acceptAmountInput)
-            parametersActivity.putExtra(Constants.PRICE_TYPE,priceType)
-            parametersActivity.putExtra(Constants.ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS,acceptCheckIntegrationProviderStatus)
-            parametersActivity.putExtra(Constants.PRICE_VALUE,priceValue)
-            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_CHANGE,acceptChangePaidAmount)
-            parametersActivity.putExtra(Constants.IMAGE,icon)
-            parametersActivity.putExtra(Constants.SERVICE_TYPE_CODE,typeCode)
+            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_INPUT, searchData.accept_amount_input)
+            parametersActivity.putExtra(Constants.PRICE_TYPE,searchData.price_type)
+            parametersActivity.putExtra(Constants.ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS,searchData.accept_check_integration_provider_status)
+            parametersActivity.putExtra(Constants.PRICE_VALUE,searchData.price_value)
+            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_CHANGE,searchData.accept_change_paid_amount)
+            parametersActivity.putExtra(Constants.IMAGE,searchData.icon)
+            parametersActivity.putExtra(Constants.SERVICE_TYPE_CODE,searchData.type_code)
 
+            activity.startActivity(parametersActivity)
+        }
+
+        fun navigateToParametersActivity(activity:Activity,
+                                         providerName:String,
+                                         service:ServiceData
+        )
+        {
+            val parametersActivity = Intent(activity,ParametersActivity::class.java)
+            parametersActivity.putExtra(PROVIDER_NAME,providerName)
+            parametersActivity.putExtra(SERVICE_TO_PARAMETER_MODEL,service)
+            Constants.SERVICE_NAME_AR = service.nameAr
+            Constants.SERVICE_NAME_EN = service.nameEn
             activity.startActivity(parametersActivity)
         }
 

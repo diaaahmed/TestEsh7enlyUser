@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -13,7 +12,6 @@ import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.totalamountxpayresponse.Data
-
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityPrepaidCardBinding
@@ -36,7 +34,6 @@ import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.PaymentStatus
 import com.esh7enly.esh7enlyuser.util.Utils
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
-import com.esh7enly.esh7enlyuser.viewModel.PaytabsViewModel
 import com.payment.paymentsdk.PaymentSdkActivity
 import com.payment.paymentsdk.PaymentSdkConfigBuilder
 import com.payment.paymentsdk.integrationmodels.PaymentSdkApms
@@ -52,8 +49,6 @@ import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
 import kotlinx.coroutines.launch
 
 class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
-
-    private val paytabsViewModel: PaytabsViewModel by viewModels()
 
     private val dialog by lazy {
         AppDialogMsg(this, false)
@@ -445,7 +440,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     private external fun profileKey(): String
     private external fun aliasString(): String
 
-
     @RequiresApi(Build.VERSION_CODES.M)
     private fun generatePaytabsConfigurationDetails(
         value: String,
@@ -522,22 +516,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
         return configData.build()
     }
 
-    private fun showFailedPay(msg: String?, code: Int) {
-        pDialog.cancel()
-
-        dialog.showErrorDialogWithAction(
-            msg, resources.getString(R.string.app__ok)
-        ) {
-            dialog.cancel()
-
-            if (code == Constants.CODE_UNAUTH_NEW ||
-                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
-            ) {
-                NavigateToActivity.navigateToAuthActivity(this@PrepaidCardActivity)
-            }
-        }.show()
-    }
-
     private fun cashWalletClicked() {
         paytabsViewModel.setShowNumberNew(PayWays.CASH.toString())
         paytabsViewModel.setShowNumber(true)
@@ -574,8 +552,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
 
     override fun onError(error: PaymentSdkError) {
 
-        println("Diaa onError ")
-
         val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
             status = PaymentStatus.FAILED.toString(),
             id = Constants.START_SESSION_ID,
@@ -593,8 +569,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
 
     override fun onPaymentCancel() {
 
-        println("Diaa onPaymentCancel ")
-
         if (finalPaymentWay == PayWays.WALLET.toString()) {
             // Call query by cart_id
             val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
@@ -608,7 +582,14 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                 hash_id = Constants.HASH_ID
             )
 
-            requestChargeWalletCancelled(chargeBalanceRequest)
+            val paymentPojoModel = PaymentPojoModel(
+                Constants.IMEI, "",
+                totalAmountPojoModel?.serviceId!!, totalAmountPojoModel?.amount,
+                totalAmountPojoModel?.attributes
+
+            )
+
+            requestChargeWalletCancelled(paymentPojoModel, chargeBalanceRequest)
 
         } else {
 
@@ -629,7 +610,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     }
 
     override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
-        println("Diaa onPaymentFinish ${paymentSdkTransactionDetails.isSuccess}")
 
         var chargeBalanceRequest = ChargeBalanceRequestPaytabs(
             id = Constants.START_SESSION_ID,
@@ -668,83 +648,17 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                 status = PaymentStatus.FAILED.toString()
             )
         }
+        val paymentPojoModel = PaymentPojoModel(
+            Constants.IMEI, "",
+            totalAmountPojoModel?.serviceId!!,
+            totalAmountPojoModel?.amount,
+            totalAmountPojoModel?.attributes
+        )
 
-        requestToChargeBalance(chargeBalanceRequest)
+        requestToChargeBalance(
+            chargeBalanceRequest = chargeBalanceRequest,
+            paymentPojoModel = paymentPojoModel
+        )
     }
 
-    private fun requestToChargeBalance(chargeBalanceRequest: ChargeBalanceRequestPaytabs) {
-        lifecycleScope.launch {
-            paytabsViewModel.chargeBalanceWithPaytabs(
-                sharedHelper?.getUserToken().toString(),
-                chargeBalanceRequest,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        pDialog.cancel()
-
-                        val paymentPojoModel = PaymentPojoModel(
-                            Constants.IMEI, "",
-                            totalAmountPojoModel?.serviceId!!,
-                            totalAmountPojoModel?.amount,
-                            totalAmountPojoModel?.attributes
-                        )
-
-                        pay(paymentPojoModel)
-
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        showFailedPay(msg, code)
-                    }
-                })
-        }
-    }
-
-    private fun requestChargeWalletCancelled(
-        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
-    ) {
-        lifecycleScope.launch {
-            paytabsViewModel.checkWalletStatus(chargeBalanceRequest,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-
-                        pDialog.cancel()
-
-                        val paymentPojoModel = PaymentPojoModel(
-                            Constants.IMEI, "",
-                            totalAmountPojoModel?.serviceId!!, totalAmountPojoModel?.amount,
-                            totalAmountPojoModel?.attributes
-
-                        )
-
-                        pay(paymentPojoModel)
-
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        showFailedPay(msg, code)
-                    }
-                })
-        }
-    }
-
-
-    private fun requestChargeFailed(
-        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
-    ) {
-        lifecycleScope.launch {
-            paytabsViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                chargeBalanceRequest,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        pDialog.cancel()
-                        showFailedPay(chargeBalanceRequest.errorMsg, code)
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        pDialog.cancel()
-                        showFailedPay(msg, code)
-                    }
-                })
-        }
-    }
 }

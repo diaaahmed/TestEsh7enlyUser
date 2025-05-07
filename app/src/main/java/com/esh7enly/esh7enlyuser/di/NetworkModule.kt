@@ -17,6 +17,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.CertificatePinner
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -97,6 +98,13 @@ object NetworkModule {
 
     }
 
+    private fun createCertificatePinning():CertificatePinner
+    {
+        return CertificatePinner.Builder()
+            .add("diaa.com","sha256/OEuKLd1BnD0ailSGdeSgHT8GtHyJoyz6k4WczlaAdkM=")
+            .build()
+    }
+
     @Provides
     @Singleton
     fun provideOkhttp(
@@ -107,11 +115,10 @@ object NetworkModule {
 
         return OkHttpClient.Builder()
             .retryOnConnectionFailure(true)
-            // .followSslRedirects(false)
-            // .followRedirects(false)
             .addInterceptor(loggingInterceptor)
+           // .certificatePinner(createCertificatePinning())
             .addInterceptor(headerInterceptor)
-           // .addSSLSocketFactory(context)
+            .addSSLSocketFactory(context)
             //.addNetworkInterceptor(chuckerInterceptor)
             .connectTimeout(3, TimeUnit.MINUTES)
             .readTimeout(3, TimeUnit.MINUTES)
@@ -123,6 +130,7 @@ object NetworkModule {
         context: Context
     ) = apply {
         val certificateFactory = CertificateFactory.getInstance("X.509")
+
         val keyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
             load(null, null)
         }

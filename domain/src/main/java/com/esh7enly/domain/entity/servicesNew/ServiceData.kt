@@ -1,5 +1,7 @@
 package com.esh7enly.domain.entity.servicesNew
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class ServiceData(
@@ -91,4 +93,130 @@ data class ServiceData(
     val visible: Int,
     @SerializedName("wallet_type_id")
     val walletTypeId: Int
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readParcelable(Any::class.java.classLoader),
+        mutableListOf<ChargeTier>().apply {
+            parcel.readArrayList(ChargeTier::class.java.classLoader)
+                ?.let { addAll(it as List<ChargeTier>) }
+        },
+        parcel.readInt(),
+        parcel.readInt(),
+        mutableListOf<CommissionTier>().apply {
+            parcel.readArrayList(CommissionTier::class.java.classLoader)
+                ?.let { addAll(it as List<CommissionTier>) }
+        },
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readParcelable(Any::class.java.classLoader),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        mutableListOf<ExtraCommissionTier>().apply {
+            parcel.readArrayList(ExtraCommissionTier::class.java.classLoader)
+                ?.let { addAll(it as List<ExtraCommissionTier>) }
+        },
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        parcel.readInt(),
+        parcel.readInt(),
+        mutableListOf<IntegrationProviderTier>().apply {
+            parcel.readArrayList(IntegrationProviderTier::class.java.classLoader)
+                ?.let { addAll(it as List<IntegrationProviderTier>) }
+        },
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.createStringArrayList() ?: emptyList(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readParcelable(Any::class.java.classLoader),
+        parcel.readParcelable(Any::class.java.classLoader),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        parcel.readString()?: "",
+        parcel.readInt(),
+        parcel.readInt()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(acceptAmountInput)
+        parcel.writeInt(acceptCancel)
+        parcel.writeInt(acceptChangePaidAmount)
+        parcel.writeInt(acceptCheckIntegrationProviderStatus)
+        parcel.writeParcelable(alternativeServiceId as? Parcelable, flags)
+        parcel.writeList(chargeTierList)
+        parcel.writeInt(chargeType)
+        parcel.writeInt(commissionCategoryId)
+        parcel.writeList(commissionTierList)
+        parcel.writeString(connectorPath)
+        parcel.writeString(convertServices)
+        parcel.writeString(createdAt)
+        parcel.writeParcelable(deletedAt as? Parcelable, flags)
+        parcel.writeString(descriptionAr)
+        parcel.writeString(descriptionEn)
+        parcel.writeInt(displayTotalAmount)
+        parcel.writeString(externalId)
+        parcel.writeList(extraCommissionTierList)
+        parcel.writeString(footerDescriptionAr)
+        parcel.writeString(footerDescriptionEn)
+        parcel.writeInt(gracePeriod)
+        parcel.writeString(icon)
+        parcel.writeInt(id)
+        parcel.writeInt(integrationProviderId)
+        parcel.writeList(integrationProviderTierList)
+        parcel.writeString(nameAr)
+        parcel.writeString(nameEn)
+        parcel.writeStringList(platformIds)
+        parcel.writeString(poweredByAr)
+        parcel.writeString(poweredByEn)
+        parcel.writeString(priceMaxValue)
+        parcel.writeString(priceMinValue)
+        parcel.writeInt(priceType)
+        parcel.writeString(priceValue)
+        parcel.writeString(priceValueList)
+        parcel.writeParcelable(rulePath as? Parcelable, flags)
+        parcel.writeParcelable(ruleSettings as? Parcelable, flags)
+        parcel.writeInt(ruleStatus)
+        parcel.writeInt(serviceProviderId)
+        parcel.writeInt(sort)
+        parcel.writeInt(staffId)
+        parcel.writeInt(status)
+        parcel.writeInt(type)
+        parcel.writeString(typeCode)
+        parcel.writeString(updatedAt)
+        parcel.writeInt(visible)
+        parcel.writeInt(walletTypeId)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ServiceData> {
+        override fun createFromParcel(parcel: Parcel): ServiceData {
+            return ServiceData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ServiceData?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

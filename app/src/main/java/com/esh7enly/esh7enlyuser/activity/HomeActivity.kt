@@ -10,6 +10,8 @@ import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.databinding.ActivityHomeBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Language
+import com.esh7enly.esh7enlyuser.util.checkIfDeviceIsRooted
+import com.google.firebase.crashlytics.internal.common.CommonUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -21,8 +23,7 @@ class HomeActivity : BaseActivity() {
     private lateinit var navController: NavController
 
     @RequiresApi(Build.VERSION_CODES.R)
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Language.setLanguageNew(this, Constants.LANG)
@@ -37,5 +38,13 @@ class HomeActivity : BaseActivity() {
         // For connect between bottom navigation and navgraph
         NavigationUI.setupWithNavController(ui.bottomNav, navController)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (checkIfDeviceIsRooted() || CommonUtils.isRooted() || CommonUtils.isEmulator()) {
+            finish()
+        }
     }
 }

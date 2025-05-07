@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.recreate
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.esh7enly.data.datastore.UserDataStore
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.esh7enlyuser.R
@@ -18,6 +18,8 @@ import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.databinding.FragmentLoginBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.CrashlyticsUtils
+import com.esh7enly.esh7enlyuser.util.CryptoData
+import com.esh7enly.esh7enlyuser.util.EncryptionUtils
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.LoginException
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
@@ -85,8 +87,34 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
 
         binding.btnLogin.setOnClickListener {
+            testEncrypt()
             login()
         }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun testEncrypt() {
+
+        val crypto_data = CryptoData()
+        val key_test = crypto_data.getKey()
+        Log.e("key_test", "key_test ${key_test.encoded}")
+
+        val alias = "test"
+        val actualData = "Akash"
+
+        // getPublicKey will call generateKey internally and return the public key
+        val publicKey = EncryptionUtils.getPublicKey(alias)
+        // base64 encoded publicKey, decodePublicKey will decode the value
+        val decodedPublicKey = EncryptionUtils.decodePublicKey(publicKey)
+        //encrypt data with public key
+        val encryptedData = EncryptionUtils.encrypt(actualData, decodedPublicKey)
+        // decrypt data with private key
+        val decryptedData = EncryptionUtils.decrypt(encryptedData, EncryptionUtils.getPrivateKey(alias))
+        Log.e("diaa", "actualData $actualData")
+        Log.e("diaa", "encryptedData $encryptedData")
+        Log.e("diaa", "decryptedData $decryptedData")
+
     }
 
     override fun onResume() {
@@ -94,10 +122,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
         if (updateType == AppUpdateType.IMMEDIATE) {
             appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
                 if (info.updateAvailability() ==
-                    UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                ) {
 
-                    if(isAdded)
-                    {
+                    if (isAdded) {
                         appUpdateManager.startUpdateFlowForResult(
                             info,
                             updateType,
@@ -132,8 +160,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
             if (isUpdateAvailable && isUpdateAllowed) {
 
-                if(isAdded)
-                {
+                if (isAdded) {
                     appUpdateManager.startUpdateFlowForResult(
                         info,
                         updateType,
@@ -211,13 +238,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
     private fun userLogin(token: String) {
         try {
-            lifecycleScope.launch{
+            lifecycleScope.launch {
 
                 viewModel.loginWithState(token, imei)
 
                 viewModel.loginStateSharedFlow.collect {
-                    when(it)
-                    {
+                    when (it) {
                         is NetworkResult.Error -> {
                             pDialog.cancel()
                             logAuthIssueToCrashlytics(it.message!!)
@@ -229,8 +255,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
                             }
                         }
+
                         is NetworkResult.Loading -> {
                         }
+
                         is NetworkResult.Success -> {
                             pDialog.cancel()
                             successLoginNavigateToHome(it.data!!)

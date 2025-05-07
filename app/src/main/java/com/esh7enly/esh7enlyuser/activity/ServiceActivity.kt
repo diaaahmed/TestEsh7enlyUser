@@ -1,18 +1,9 @@
 package com.esh7enly.esh7enlyuser.activity
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
-
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.esh7enlyuser.R
@@ -23,23 +14,10 @@ import com.esh7enly.esh7enlyuser.databinding.ActivityServiceBinding
 import com.esh7enly.esh7enlyuser.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-
-private const val TAG = "ServiceActivity"
-
-val Context.dataStoreProto by dataStore("setting.json",StringSer)
-
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore("language")
-
 
 @AndroidEntryPoint
 class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
-
-    val TOKEN_KEY = stringPreferencesKey("TOKEN_KEY")
 
     private val ui by lazy {
         ActivityServiceBinding.inflate(layoutInflater)
@@ -116,40 +94,10 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
     }
 
-    private fun addDataStore() {
-
-        lifecycleScope.launch {
-
-            dataStoreProto.updateData {
-                it.copy(id = 5, name = "", password = "")
-            }
-            // Save data
-            dataStore.edit {
-                it[TOKEN_KEY] = "dasdsadasdgsdlrerweb"
-            }
-
-            dataStoreProto.data.onEach {
-                it.password
-            }
-            // Read data
-            dataStore.data.map {
-                it[TOKEN_KEY]
-            }.catch {
-
-            }.launchIn(lifecycleScope)
-        }
-
-
-    }
-
-
     override fun click(service: ServiceData) {
-
         serviceViewModel.serviceType = service.type
 
         Constants.SERVICE_TYPE_TEST = service.type
-
-        Log.d(TAG, "diaa test type: ${service.type}")
 
         if (service.type == Constants.PREPAID_CARD) {
 
@@ -178,8 +126,19 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
             }
 
         } else {
-            navigateToParametersActivity(service)
+
+            val providerName =
+                if (Constants.LANG == Constants.AR) {
+                    service.nameAr
+                } else {
+                    service.nameEn
+                }
+
+            NavigateToActivity.navigateToParametersActivity(
+                activity = this,
+                service = service,
+                providerName = providerName,
+            )
         }
     }
-
 }

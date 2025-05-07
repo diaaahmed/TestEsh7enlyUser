@@ -68,7 +68,8 @@ object ActivityModule
     @Provides
     fun provideDataStoreHelper(
         @ApplicationContext context: Context,
-        cryptoData: CryptoData): DataStoreHelper = DataStoreHelper(context,cryptoData)
+        cryptoData: CryptoData
+    ): DataStoreHelper = DataStoreHelper(context,cryptoData)
 
 
     @RequiresApi(Build.VERSION_CODES.M)

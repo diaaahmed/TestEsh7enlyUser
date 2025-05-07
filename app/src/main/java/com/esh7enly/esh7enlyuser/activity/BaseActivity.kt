@@ -10,9 +10,9 @@ import com.esh7enly.domain.entity.PaymentEntity
 import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.TotalAmountEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel
-import com.esh7enly.domain.entity.searchresponse.SearchData
-import com.esh7enly.domain.entity.servicesNew.ServiceData
+import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.esh7enlyuser.R
+
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Connectivity
@@ -20,7 +20,7 @@ import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Decryptor
 import com.esh7enly.esh7enlyuser.util.Encryptor
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.viewModel.ParametersViewModel
+import com.esh7enly.esh7enlyuser.viewModel.PaytabsViewModel
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
@@ -31,11 +31,11 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @AndroidEntryPoint
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(){
 
     val serviceViewModel: ServiceViewModel by viewModels()
 
-    val parametersViewModel: ParametersViewModel by viewModels()
+    val paytabsViewModel: PaytabsViewModel by viewModels()
 
     val transactionsViewModel: TransactionsViewModel by viewModels()
 
@@ -52,7 +52,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     var decryptor: Decryptor? = null
         @Inject set
-
 
     val pDialog by lazy {
         com.esh7enly.esh7enlyuser.util.ProgressDialog.createProgressDialog(this)
@@ -71,7 +70,6 @@ abstract class BaseActivity : AppCompatActivity() {
         serviceName: String = "",
         providerName: String = "",
         serviceIcon: String = "",
-        isParameter: Boolean = false
     ) {
 
         serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
@@ -92,78 +90,7 @@ abstract class BaseActivity : AppCompatActivity() {
                         serviceIcon = serviceIcon,
                         serviceCharge = data.serviceCharge.toString(),
                         paidAmount = data.paidAmount.toString(),
-                        isParameter = isParameter
                     )
-
-
-//                    navigateToPrepaidCardActivity(
-//                        data.amount.toString(),
-//                        data.totalAmount.toString(),
-//                        data.serviceCharge.toString(),
-//                        data.paidAmount.toString(),
-//                        serviceName,
-//                        providerName,
-//                        serviceIcon,
-//                        totalAmountPojoModel
-//                    )
-
-//                    val confirmation: String
-//                    val amount: String
-//                    val totalAmount: String
-//                    val ok: String
-//                    val cancel: String
-//                    val egp: String
-//                    val quantity: String
-//
-//                    if (Constants.LANG == Constants.AR) {
-//                        confirmation = "تأكيد"
-//                        amount = "المبلغ : "
-//                        totalAmount = "المبلغ الإجمالي : "
-//                        ok = "موافق"
-//                        cancel = "إلغاء"
-//                        egp = "ج.م"
-//                        quantity = "الكمية"
-//
-//                    } else {
-//                        confirmation = "Confirmation"
-//                        amount = "Amount : "
-//                        totalAmount = "Total Amount : "
-//                        ok = "OK"
-//                        cancel = "Cancel"
-//                        egp = "EGP"
-//                        quantity = "quantity"
-//                    }
-//
-//
-//                    val paidAmount = ""
-//
-//                    dialog.showSuccessDialogWithActionAndBulkCards(
-//                        confirmation,
-//                        " • " + amount +
-//                                " " + Utils.format(data.amount) + egp + " \n " +
-//                                "• " + totalAmount + " " +
-//                                Utils.format(data.totalAmount) + egp +
-//                                paidAmount,
-//                        ok,
-//                        cancel,
-//                        quantity
-//                    ) { quantity ->
-//                        dialog.cancel()
-//
-//                        bulkNumber = Integer.parseInt(quantity)
-//
-//                        isBulk = bulkNumber > 1
-//
-//                        val paymentPojoModel = PaymentPojoModel(
-//                            Constants.IMEI, "",
-//                            totalAmountPojoModel.serviceId, totalAmountPojoModel.amount
-//                        )
-//
-//                        pay(paymentPojoModel)
-//
-//                    }.show()
-
-
                 }
 
                 override fun onFailed(code: Int, msg: String?) {
@@ -377,58 +304,83 @@ abstract class BaseActivity : AppCompatActivity() {
             })
     }
 
+     fun requestChargeFailed(
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+    ) {
+        lifecycleScope.launch {
+            paytabsViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
+                chargeBalanceRequest,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        pDialog.cancel()
+                        showFailedPay(msg, code)
+                    }
 
-    fun navigateToParametersActivity(service: ServiceData) {
-        val providerName =
-            if (Constants.LANG == Constants.AR) {
-                service.nameAr
-            } else {
-                service.nameEn
-            }
+                    override fun onFailed(code: Int, msg: String?) {
+                        pDialog.cancel()
+                        showFailedPay(msg, code)
+                    }
+                })
+        }
 
-        Log.d(
-            "TAG",
-            "diaa service from navigate: english  ${service.nameEn} arabic ${service.nameAr}"
-        )
-        NavigateToActivity.navigateToParametersActivity(
-            this,
-            service.type,
-            providerName,
-            service.id,
-            service.nameAr,
-            service.nameEn,
-            service.acceptAmountInput,
-            service.priceType,
-            service.acceptCheckIntegrationProviderStatus,
-            service.priceValue,
-            service.acceptChangePaidAmount,
-            service.icon,
-            service.typeCode
-        )
     }
 
-    fun navigateToParametersActivity(service: SearchData) {
-        val providerName =
-            if (Constants.LANG == Constants.AR) {
-                service.name_ar
-            } else {
-                service.name_en
-            }
+     fun showFailedPay(msg: String?, code: Int) {
+        pDialog.cancel()
 
-        NavigateToActivity.navigateToParametersActivity(
-            this,
-            service.type,
-            providerName,
-            service.id,
-            service.name_ar,
-            service.name_en,
-            service.accept_amount_input,
-            service.price_type,
-            service.accept_check_integration_provider_status,
-            service.price_value,
-            service.accept_change_paid_amount,
-            service.icon,
-            service.type_code
-        )
+        dialog.showErrorDialogWithAction(
+            msg, resources.getString(R.string.app__ok)
+        ) {
+            dialog.cancel()
+
+            if (code == Constants.CODE_UNAUTH_NEW ||
+                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+            ) {
+                NavigateToActivity.navigateToAuthActivity(this@BaseActivity)
+            }
+        }.show()
     }
+
+     fun requestToChargeBalance(paymentPojoModel: PaymentPojoModel,
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs) {
+        lifecycleScope.launch {
+            paytabsViewModel.chargeBalanceWithPaytabs(
+                sharedHelper?.getUserToken().toString(),
+                chargeBalanceRequest,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        pDialog.cancel()
+                        pay(paymentPojoModel)
+
+                    }
+
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
+                    }
+                })
+        }
+    }
+
+     fun requestChargeWalletCancelled(
+        paymentPojoModel : PaymentPojoModel,
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
+    ) {
+        lifecycleScope.launch {
+            paytabsViewModel.checkWalletStatus(chargeBalanceRequest,
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+
+                        pDialog.cancel()
+
+                        pay(paymentPojoModel)
+
+                    }
+
+                    override fun onFailed(code: Int, msg: String?) {
+                        showFailedPay(msg, code)
+                    }
+                })
+        }
+    }
+
 }

@@ -7,6 +7,10 @@
         <item>English</item>
     </string-array>
 
+
+    <string name="website_domain">google.com</string>
+
+
     <string name="jan">JAN</string>
     <string name="feb">FEB</string>
     <string name="mar">MAR</string>

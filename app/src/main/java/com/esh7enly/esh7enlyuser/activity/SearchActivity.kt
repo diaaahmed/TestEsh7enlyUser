@@ -8,7 +8,6 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.searchresponse.SearchData
-import com.esh7enly.domain.entity.userservices.*
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.adapter.SearchAdapter
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -27,7 +26,6 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
 {
-
     private val ui by lazy{ ActivitySearchBinding.inflate(layoutInflater) }
 
     private var page = 1
@@ -97,8 +95,7 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
             })
     }
 
-    private fun serviceSearchRemotely(serviceName:String)
-    {
+    private fun serviceSearchRemotely(serviceName:String) {
         lifecycleScope.launch {
 
             serviceViewModel.serviceSearch(sharedHelper?.getUserToken().toString(),
@@ -138,45 +135,7 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
                         }.show()
                     }
                 })
-
-
-
-//            serviceViewModel.serviceSearch(sharedHelper?.getUserToken().toString(),
-//                serviceSearch!!)
-//                .observe(this@SearchActivity)
-//                {
-//                    if (it.isEmpty()) {
-//                        ui.animationView.visibility = View.VISIBLE
-//                        ui.searchRv.visibility = View.GONE
-//                    } else {
-//                        ui.animationView.visibility = View.GONE
-//                        ui.searchRv.visibility = View.VISIBLE
-//                        adapter.submitList(it)
-//                        ui.searchRv.adapter = adapter
-//                    }
-//                }
         }
-    }
-    private fun serviceSearchFromDB()
-    {
-        //        lifecycleScope.launch {
-//            serviceViewModel.searchService(serviceSearch!!)
-//                .observe(this@SearchActivity)
-//                {
-//                    if(it.isEmpty())
-//                    {
-//                        ui.animationView.visibility = View.VISIBLE
-//                        ui.searchRv.visibility = View.GONE
-//                    }
-//                    else
-//                    {
-//                        ui.animationView.visibility = View.GONE
-//                        ui.searchRv.visibility = View.VISIBLE
-//                        adapter.submitList(it)
-//                        ui.searchRv.adapter = adapter
-//                    }
-//                }
-//        }
     }
 
     override fun initToolBar() {
@@ -184,35 +143,59 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
         ui.resultsToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    override fun click(service: SearchData)
-    {
+    override fun click(service: SearchData) {
+
         serviceViewModel.serviceType = service.type
 
-        if(service.type == Constants.PREPAID_CARD)
-        {
-            if(connectivity?.isConnected == true)
-            {
+        Constants.SERVICE_TYPE_TEST = service.type
+
+        if (service.type == Constants.PREPAID_CARD) {
+
+            if (connectivity?.isConnected == true) {
+
                 pDialog.show()
 
-                val totalAmountPojoModel = TotalAmountPojoModel(Constants.IMEI,service.id,service.price_value)
+                val totalAmountPojoModel =
+                    TotalAmountPojoModel(
+                        Constants.IMEI,
+                        service.id,
+                        service.price_value
+                    )
 
                 lifecycleScope.launch(Dispatchers.IO) {
 
-                    getTotalAmount(totalAmountPojoModel)
+                    getTotalAmount(
+                        totalAmountPojoModel = totalAmountPojoModel,
+                        serviceName = service.name_ar,
+                        providerName = service.name_ar,
+                        serviceIcon = service.icon)
+
+
+
                 }
-            }
-            else
-            {
-                dialog.showWarningDialog(resources.getString(R.string.no_internet_error),
-                    resources.getString(R.string.app__ok))
+            } else {
+                dialog.showWarningDialog(
+                    resources.getString(R.string.no_internet_error),
+                    resources.getString(R.string.app__ok)
+                )
                 dialog.show()
             }
-        }
 
-        else
-        {
-            navigateToParametersActivity(service)
+        } else {
+            val providerName =
+                if (Constants.LANG == Constants.AR) {
+                    service.name_ar
+                } else {
+                    service.name_en
+                }
+
+            NavigateToActivity.navigateToParametersActivityFromSearch(
+                activity = this,
+                providerName = providerName,
+                searchData = service
+            )
         }
     }
+
 
 }

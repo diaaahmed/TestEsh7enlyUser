@@ -15,7 +15,7 @@ class CryptoData {
         load(null)
     }
 
-    private fun getKey(): SecretKey {
+    fun getKey(): SecretKey {
         val existingKey = keyStore.getEntry("secret", null) as? KeyStore.SecretKeyEntry
         return existingKey?.secretKey ?: createKey()
     }

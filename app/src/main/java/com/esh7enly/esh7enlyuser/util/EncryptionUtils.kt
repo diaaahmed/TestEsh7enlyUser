@@ -5,7 +5,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
-import com.esh7enly.esh7enlyuser.util.EncryptionUtils.generateKey
 import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.KeyPairGenerator
@@ -25,6 +24,7 @@ object EncryptionUtils {
         val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply {
             load(null)
         }
+
         val aliases: Enumeration<String> = keyStore.aliases()
         val keyPair: KeyPair?
 
@@ -48,41 +48,45 @@ object EncryptionUtils {
         }
         return keyPair
     }
-}
-@RequiresApi(Build.VERSION_CODES.M)
-fun getPublicKey(KEY_ALIAS:String): String? {
-    val keyPair = generateKey(KEY_ALIAS)
-    val publicKey = keyPair?.public ?: return null
-    return String(Base64.encode(publicKey.encoded, Base64.DEFAULT))
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun getPublicKey(KEY_ALIAS:String): String? {
+        val keyPair = generateKey(KEY_ALIAS)
+        val publicKey = keyPair?.public ?: return null
+        return String(Base64.encode(publicKey.encoded, Base64.DEFAULT))
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun getPrivateKey(KEY_ALIAS:String): PrivateKey? {
+        val keyPair = generateKey(KEY_ALIAS)
+        return keyPair?.private
+    }
+
+    fun encrypt(data: String, publicKey: PublicKey): String {
+        val cipher: Cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey)
+        val bytes = cipher.doFinal(data.toByteArray())
+        return Base64.encodeToString(bytes, Base64.DEFAULT)
+    }
+
+    fun decrypt(data: String, privateKey: PrivateKey?): String {
+        val cipher: Cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+        cipher.init(Cipher.DECRYPT_MODE, privateKey)
+        val encryptedData = Base64.decode(data, Base64.DEFAULT)
+        val decodedData = cipher.doFinal(encryptedData)
+        return String(decodedData)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun decodePublicKey(publicKey: String?): PublicKey {
+        val decodedKey = Base64.decode(publicKey, Base64.DEFAULT)
+        // Convert the byte array back to PublicKey object
+        val keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
+        val keySpec = X509EncodedKeySpec(decodedKey)
+        return keyFactory.generatePublic(keySpec)
+    }
 }
 
 
-@RequiresApi(Build.VERSION_CODES.M)
-fun getPrivateKey(KEY_ALIAS:String): PrivateKey? {
-    val keyPair = generateKey(KEY_ALIAS)
-    return keyPair?.private
-}
 
-fun encrypt(data: String, publicKey: PublicKey): String {
-    val cipher: Cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    cipher.init(Cipher.ENCRYPT_MODE, publicKey)
-    val bytes = cipher.doFinal(data.toByteArray())
-    return Base64.encodeToString(bytes, Base64.DEFAULT)
-}
-
-fun decrypt(data: String, privateKey: PrivateKey?): String {
-    val cipher: Cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    cipher.init(Cipher.DECRYPT_MODE, privateKey)
-    val encryptedData = Base64.decode(data, Base64.DEFAULT)
-    val decodedData = cipher.doFinal(encryptedData)
-    return String(decodedData)
-}
-
-@RequiresApi(Build.VERSION_CODES.M)
-fun decodePublicKey(publicKey: String?): PublicKey {
-    val decodedKey = Base64.decode(publicKey, Base64.DEFAULT)
-    // Convert the byte array back to PublicKey object
-    val keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_RSA)
-    val keySpec = X509EncodedKeySpec(decodedKey)
-    return keyFactory.generatePublic(keySpec)
-}

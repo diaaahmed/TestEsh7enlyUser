@@ -21,7 +21,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -52,7 +51,6 @@ import com.esh7enly.esh7enlyuser.util.ServicesCard
 import com.esh7enly.esh7enlyuser.util.TimeDialogs
 import com.esh7enly.esh7enlyuser.util.Utils
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
-import com.esh7enly.esh7enlyuser.viewModel.PaytabsViewModel
 import com.fawry.nfc.NFC.Main.NFCFawry
 import com.fawry.nfc.NFC.interfaces.NFCWriteCallback
 import com.fawry.nfc.NFC.models.FawryWapperStatus
@@ -77,13 +75,10 @@ import java.util.Locale
 import java.util.Objects
 import javax.inject.Inject
 
-
 private const val TAG = "InquireActivity"
 
 @AndroidEntryPoint
 class InquireActivity : BaseActivity(), CallbackPaymentInterface {
-
-    private val paytabsViewModel: PaytabsViewModel by viewModels()
 
     companion object {
 
@@ -676,20 +671,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 //        )
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (resultCode == -1) {
-//            when (requestCode) {
-//                RESULT_PICK_CONTACT -> {
-//                    data?.let { contactPicked(it) }
-//                    return
-//                }
-//
-//            }
-//        }
-//
-//    }
-
     private fun contactPicked(data: Intent) {
         try {
             val cursor = Objects.requireNonNull(data.data?.let {
@@ -991,23 +972,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         return configData.build()
     }
 
-
-    private fun showFailedPay(msg: String?, code: Int) {
-        pDialog.cancel()
-
-        dialog.showErrorDialogWithAction(
-            msg, resources.getString(R.string.app__ok)
-        ) {
-            dialog.cancel()
-
-            if (code == Constants.CODE_UNAUTH_NEW ||
-                code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
-            ) {
-                NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
-            }
-        }.show()
-    }
-
     private fun extractNumber(input: String): String? {
         val regex = Regex("(\\d+\\.?\\d*)")
         val matchResult = regex.find(input)
@@ -1018,8 +982,8 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
         if (connectivity?.isConnected == true) {
 
-             finalTotalAmount = extractNumber(ui.tvTotalAmou.text.toString()).toString()
-             finalAmount = extractNumber(ui.tvAmount.text.toString()).toString()
+            finalTotalAmount = extractNumber(ui.tvTotalAmou.text.toString()).toString()
+            finalAmount = extractNumber(ui.tvAmount.text.toString()).toString()
 
             when (finalPaymentWay) {
                 PayWays.CASH.toString() -> {
@@ -1198,11 +1162,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
 
-//                        val paymentPojoModel = PaymentPojoModel(
-//                            Constants.IMEI, "",
-//                            SERVICE_ID, amount
-//                        )
-
                         val paymentPojoModel = PaymentPojoModel(
                             Constants.IMEI,
                             "",
@@ -1253,8 +1212,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
                         serviceViewModel.deleteFawryOperations(paymentPojoModel.paymentTransactionId.toInt())
 
-                        // scheduleInquire(result)
-
                         if (ServicesCard.ELECTRICITY_BTC.contains(SERVICE_ID) ||
                             ServicesCard.WATER_BTC.contains(SERVICE_ID) ||
                             ServicesCard.GAS_BTC.contains(SERVICE_ID)
@@ -1267,24 +1224,10 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                                 )
                             )
 
-                            //  pDialog.show()
-
                             writeOnCard(result)
 
                         } else {
-                            // serviceViewModel.deleteFawryOperations(paymentPojoModel.paymentTransactionId.toInt())
-                            // move to print without bulk
-
-                            //     pDialog.show()
-
                             lifecycleScope.launch { scheduleInquire(result) }
-
-//                            ReceiptActivity.getIntent(
-//                                this@InquireActivity,
-//                                result, serviceViewModel.serviceType
-//                            )
-
-                            //  finish()
                         }
 
                     }
@@ -1471,20 +1414,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                         cancelTransaction(result)
                         message(response.status.toString())
                     }
-
-
-                    // Move to receipt and finish this activity
-//                    ReceiptActivity.getIntent(
-//                        this@InquireActivity,
-//                        PaymentEntity.DataEntity(
-//                            result.parameters,
-//                            result.createdAt, result.description, result.paidAmount,
-//                            result.totalAmount, result.serviceCharge, result.amount,
-//                            result.clientNumber, "",
-//                            result.type, result.service, result.id
-//                        ),
-//                        serviceViewModel.serviceType
-//                    )
                 }
             })
     }
@@ -1754,59 +1683,17 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
                         val data = obj as TotalAmountEntity.DataEntity
 
-                        val amount = java.lang.String.format(
-                            " • %s %s %s",
-                            getString(R.string.dialog_amount),
-                            Utils.format(data.amount),
-                            getString(R.string.egp)
-                        )
-                        val totalAmount = java.lang.String.format(
-                            " • %s %s %s",
-                            getString(R.string.dialog_total_amount),
-                            Utils.format(data.totalAmount),
-                            getString(R.string.egp)
-                        )
                         val paidAmount = ""
 
-                        //  ui.tvAmount.text = amount
                         ui.tvAmount.text =
                             Utils.format(data.amount) + resources.getString(R.string.egp)
-                        //  ui.tvPaidAmou.text = paidAmount
                         ui.tvPaidAmou.text = paidAmount
 
-                        //        ui.tvTotalAmou.text = totalAmount
                         ui.tvTotalAmou.text =
                             Utils.format(data.totalAmount) + resources.getString(R.string.egp)
 
                         ui.tvFee.text =
                             Utils.format(data.serviceCharge) + resources.getString(R.string.egp)
-
-//                        dialog.showSuccessDialogWithAction(
-//                            resources.getString(R.string.confirmation_title),
-//                            String.format(
-//                                "%s \n %s \n %s",
-//                                amount,
-//                                totalAmount,
-//                                paidAmount
-//                            ),
-//                            resources.getString(R.string.app__ok),
-//                            resources.getString(R.string.app__cancel)
-//                        ) {
-//                            dialog.cancel()
-
-//                            val paymentPojoModel = PaymentPojoModel(
-//                                Constants.IMEI,
-//                                "",
-//                                totalAmountPojoModel.serviceId,
-//                                totalAmountPojoModel.amount,
-//                                DATA_ENTITY!!.id.toString(),
-//                                "",
-//                                PAYMENTPOJOMODEL!!.params
-//                            )
-//
-//                            pay(paymentPojoModel)
-//
-//                        }.show()
 
                     }
 
@@ -1864,7 +1751,18 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 hash_id = Constants.HASH_ID
             )
 
-            requestChargeWalletCancelled(chargeBalanceRequest)
+            val paymentPojoModel = PaymentPojoModel(
+                Constants.IMEI,
+                "",
+                SERVICE_ID,
+                finalAmount,
+                DATA_ENTITY!!.id.toString(),
+                "",
+                PAYMENTPOJOMODEL!!.params
+            )
+
+            requestChargeWalletCancelled(paymentPojoModel, chargeBalanceRequest)
+
         } else {
             val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
                 status = PaymentStatus.CANCELLED.toString(),
@@ -1886,7 +1784,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
         var chargeBalanceRequest = ChargeBalanceRequestPaytabs(
             id = Constants.START_SESSION_ID,
-           // amount = DATA_ENTITY?.totalAmount.toString(),
+            // amount = DATA_ENTITY?.totalAmount.toString(),
             amount = finalTotalAmount,
             card_id = paymentSdkTransactionDetails.cartID,
             total_amount = paymentSdkTransactionDetails.cartAmount,
@@ -1923,89 +1821,20 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
             )
         }
 
-        requestToChargeBalance(chargeBalanceRequest)
-    }
+        val paymentPojoModel = PaymentPojoModel(
+            Constants.IMEI,
+            "",
+            SERVICE_ID,
+            finalAmount,
+            DATA_ENTITY!!.id.toString(),
+            "",
+            PAYMENTPOJOMODEL!!.params
+        )
 
-    private fun requestChargeFailed(
-        chargeBalanceRequest: ChargeBalanceRequestPaytabs
-    ) {
-        lifecycleScope.launch {
-            paytabsViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
-                chargeBalanceRequest,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        pDialog.cancel()
-                        showFailedPay(msg, code)
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        pDialog.cancel()
-                        showFailedPay(msg, code)
-                    }
-                })
-        }
-    }
-
-    private fun requestToChargeBalance(chargeBalanceRequest: ChargeBalanceRequestPaytabs) {
-        lifecycleScope.launch {
-            paytabsViewModel.chargeBalanceWithPaytabs(
-                sharedHelper?.getUserToken().toString(),
-                chargeBalanceRequest,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-                        pDialog.cancel()
-
-                        val paymentPojoModel = PaymentPojoModel(
-                            Constants.IMEI,
-                            "",
-                            SERVICE_ID,
-                            finalAmount,
-                            DATA_ENTITY!!.id.toString(),
-                            "",
-                            PAYMENTPOJOMODEL!!.params
-                        )
-
-                        pay(paymentPojoModel)
-
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        showFailedPay(msg, code)
-                    }
-                })
-        }
-    }
-
-    private fun requestChargeWalletCancelled(
-        chargeBalanceRequest: ChargeBalanceRequestPaytabs,
-    ) {
-        lifecycleScope.launch {
-            paytabsViewModel.checkWalletStatus(chargeBalanceRequest,
-                object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-
-                        pDialog.cancel()
-
-
-                        val paymentPojoModel = PaymentPojoModel(
-                            Constants.IMEI,
-                            "",
-                            SERVICE_ID,
-                            finalAmount,
-                            DATA_ENTITY!!.id.toString(),
-                            "",
-                            PAYMENTPOJOMODEL!!.params
-                        )
-
-                        pay(paymentPojoModel)
-
-                    }
-
-                    override fun onFailed(code: Int, msg: String?) {
-                        showFailedPay(msg, code)
-                    }
-                })
-        }
+        requestToChargeBalance(
+            paymentPojoModel = paymentPojoModel,
+            chargeBalanceRequest = chargeBalanceRequest
+        )
     }
 
 }

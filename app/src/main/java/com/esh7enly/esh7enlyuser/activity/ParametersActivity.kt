@@ -23,10 +23,12 @@ import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.PaymentEntity.DataEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel.Params
 import com.esh7enly.domain.entity.parametersNew.ParametersData
+import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityParametersBinding
 import com.esh7enly.esh7enlyuser.util.*
+import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_TO_PARAMETER_MODEL
 import com.fawry.nfc.NFC.Main.NFCFawry
 import com.fawry.nfc.NFC.Shared.NFCConstants
 import com.fawry.nfc.NFC.interfaces.NFCReadCallback
@@ -73,6 +75,8 @@ open class ParametersActivity : BaseActivity() {
         AppDialogMsg(this, false)
     }
 
+    private var serviceData:ServiceData?= null
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +87,8 @@ open class ParametersActivity : BaseActivity() {
         manager = getSystemService(Context.NFC_SERVICE) as NfcManager
 
         nfcAdapter = manager!!.defaultAdapter
+
+        serviceData = intent.getParcelableExtra<ServiceData>(SERVICE_TO_PARAMETER_MODEL)
 
         ui.btnSubmit.setOnClickListener { pushSubmitBtn() }
 
@@ -250,8 +256,7 @@ open class ParametersActivity : BaseActivity() {
                                 totalAmountPojoModel = totalAmountPojoModel,
                                 serviceName = serviceViewModel.serviceName.toString(),
                                 providerName = serviceViewModel.providerName.toString(),
-                                serviceIcon = serviceViewModel.image.toString(),
-                                isParameter = true)
+                                serviceIcon = serviceViewModel.image.toString())
                         }
 
                     }
@@ -345,93 +350,6 @@ open class ParametersActivity : BaseActivity() {
         }
     }
 
-//    override fun getTotalAmount(totalAmountPojoModel: TotalAmountPojoModel,
-//                                serviceName:String ,
-//                                providerName:String,
-//                                serviceIcon:String ) {
-//
-//        serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
-//            totalAmountPojoModel,
-//            object : OnResponseListener {
-//                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-//                    pDialog.cancel()
-//
-//                    val data = obj as TotalAmountEntity.DataEntity
-//
-//                    println("Diaa paid amount is ${data.paidAmount}")
-//                    println("Diaa total amount is ${data.totalAmount}")
-//
-//                    NavigateToActivity.navigateToParametersPayActivity(
-//                        activity = this@ParametersActivity,
-//                        amount = data.amount.toString(),
-//                        totalAmount = data.totalAmount.toString(),
-//                        totalAmountPojoModel = totalAmountPojoModel,
-//                        serviceName = serviceName,
-//                        providerName = providerName,
-//                        serviceIcon = serviceIcon,
-//                        serviceCharge = data.serviceCharge.toString(),
-//                        paidAmount = data.paidAmount.toString(),
-//                    )
-//
-//                    val amount = java.lang.String.format(
-//                        " • %s %s %s",
-//                        getString(R.string.dialog_amount),
-//                        Utils.format(data.amount),
-//                        getString(R.string.egp)
-//                    )
-//
-//                    val totalAmount = java.lang.String.format(
-//                        " • %s %s %s",
-//                        getString(R.string.dialog_total_amount),
-//                        Utils.format(data.totalAmount),
-//                        getString(R.string.egp)
-//                    )
-//
-////                    val paidAmount = ""
-////
-////                    dialog.showSuccessDialogWithAction(
-////                        resources.getString(R.string.confirmation_title),
-////                        String.format(
-////                            "%s \n %s \n %s",
-////                            amount,
-////                            totalAmount,
-////                            paidAmount
-////                        ),
-////                        resources.getString(R.string.app__ok),
-////                        resources.getString(R.string.app__cancel)
-////                    ) {
-////                        dialog.cancel()
-////
-////                        val paymentPojoModel =
-////                            PaymentPojoModel(
-////                                Constants.IMEI,
-////                                "",
-////                                totalAmountPojoModel.serviceId,
-////                                totalAmountPojoModel.amount,
-////                                totalAmountPojoModel.attributes
-////                            )
-////
-////                        pay(paymentPojoModel)
-////
-////                    }.show()
-//                }
-//
-//                override fun onFailed(code: Int, msg: String?) {
-//                    pDialog.cancel()
-//                    dialog.showErrorDialogWithAction(
-//                        msg,
-//                        resources.getString(R.string.app__ok)
-//                    ) {
-//                        dialog.cancel()
-//                        if (code  == Constants.CODE_UNAUTH_NEW
-//                            || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
-//                            NavigateToActivity.navigateToAuthActivity(this@ParametersActivity)
-//                        }
-//
-//                    }.show()
-//                }
-//            })
-//    }
 
     override fun pay(paymentPojoModel: PaymentPojoModel) {
         pDialog.show()
@@ -1210,18 +1128,16 @@ open class ParametersActivity : BaseActivity() {
 
         try {
             if (intent.extras != null) {
-                serviceViewModel.servicesId = intent.getIntExtra(Constants.SERVICE_ID, 0)
-                serviceViewModel.serviceType = intent.getIntExtra(Constants.SERVICE_TYPE, 0)
-                serviceViewModel.serviceName = intent.getStringExtra(Constants.SERVICE_NAME_AR)
-                serviceViewModel.serviceNameEN = intent.getStringExtra(Constants.SERVICE_NAME_EN)
+                serviceViewModel.servicesId = serviceData?.id!!
+                serviceViewModel.serviceType = serviceData?.type!!
+                serviceViewModel.serviceName = serviceData?.nameAr
+                serviceViewModel.serviceNameEN = serviceData?.nameEn
                 serviceViewModel.providerName = intent.getStringExtra(Constants.PROVIDER_NAME)
-                serviceViewModel.priceType = intent.getIntExtra(Constants.PRICE_TYPE, 0)
-                serviceViewModel.priceValue = intent.getStringExtra(Constants.PRICE_VALUE)
-                serviceViewModel.acceptAmountChange =
-                    intent.getIntExtra(Constants.ACCEPT_AMOUNT_CHANGE, 0)
-                serviceViewModel.image = intent.getStringExtra(Constants.IMAGE)
-                serviceViewModel.acceptAmountinput =
-                    intent.getIntExtra(Constants.ACCEPT_AMOUNT_INPUT, 0)
+                serviceViewModel.priceType = serviceData?.priceType!!
+                serviceViewModel.priceValue = serviceData?.priceValue!!
+                serviceViewModel.acceptAmountChange = serviceData?.acceptChangePaidAmount!!
+                serviceViewModel.image = serviceData?.icon!!
+                serviceViewModel.acceptAmountinput = serviceData?.acceptAmountInput!!
 
             }
         } catch (e: Exception) {
