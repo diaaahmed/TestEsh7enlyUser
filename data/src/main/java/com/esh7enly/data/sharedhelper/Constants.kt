@@ -5,6 +5,10 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 object Constants
 {
     val token_key = stringPreferencesKey("token_key")
+    val name_key = stringPreferencesKey("name_key")
+    val email_key = stringPreferencesKey("email_key")
+    val language_key = stringPreferencesKey("language_key")
+    val phone_key = stringPreferencesKey("phone_key")
 
     const val STORE_NAME = "store_name"
 

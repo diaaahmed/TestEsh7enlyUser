@@ -2,7 +2,6 @@ package com.esh7enly.data.datastore
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
@@ -24,7 +23,7 @@ import kotlin.text.toByteArray
 
 
 class DataStoreHelper(var context: Context,
-                      var cryptoData: CryptoData
+                      private var cryptoData: CryptoData
 ) {
 
     private val Context.dataStore: DataStore<Preferences> by

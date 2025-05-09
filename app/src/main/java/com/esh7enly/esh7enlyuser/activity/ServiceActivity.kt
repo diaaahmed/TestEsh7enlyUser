@@ -101,28 +101,19 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
         if (service.type == Constants.PREPAID_CARD) {
 
-            if (connectivity?.isConnected == true) {
+            pDialog.show()
 
-                pDialog.show()
+            val totalAmountPojoModel =
+                TotalAmountPojoModel(Constants.IMEI, service.id, service.priceValue)
 
-                val totalAmountPojoModel =
-                    TotalAmountPojoModel(Constants.IMEI, service.id, service.priceValue)
+            lifecycleScope.launch(Dispatchers.IO) {
 
-                lifecycleScope.launch(Dispatchers.IO) {
-
-                    getTotalAmount(
-                        totalAmountPojoModel,
-                        service.nameAr,
-                        providerName,
-                        service.icon)
-
-                }
-            } else {
-                dialog.showWarningDialog(
-                    resources.getString(R.string.no_internet_error),
-                    resources.getString(R.string.app__ok)
+                getTotalAmount(
+                    totalAmountPojoModel,
+                    service.nameAr,
+                    providerName,
+                    service.icon
                 )
-                dialog.show()
             }
 
         } else {

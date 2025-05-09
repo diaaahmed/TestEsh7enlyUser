@@ -3,7 +3,6 @@ package com.esh7enly.esh7enlyuser.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.esh7enly.domain.entity.providersNew.ProviderData
 import com.esh7enly.esh7enlyuser.R
@@ -72,7 +71,6 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
 
     private fun getData() {
         pDialog.show()
-
         serviceViewModel.getProvidersNew(sharedHelper?.getUserToken().toString(),categoryID.toString(),
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
@@ -90,8 +88,6 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
                 override fun onFailed(code: Int, msg: String?)
                 {
                     pDialog.cancel()
-
-                    Log.d("TAG", "diaa onFailed: $msg")
 
                     dialog.showErrorDialogWithAction(
                         msg, resources.getString(R.string.app__ok)

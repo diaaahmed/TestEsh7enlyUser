@@ -2,12 +2,10 @@ package com.esh7enly.esh7enlyuser.fragment.auth
 
 import android.os.Build
 import android.util.Log
-
 import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.esh7enly.domain.entity.forgetpasswordotp.Data
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -17,7 +15,6 @@ import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.showErrorDialogWithAction
 import com.esh7enly.esh7enlyuser.viewModel.PhoneViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
 
 
 @AndroidEntryPoint
@@ -42,16 +39,13 @@ class PhoneFragment : BaseFragment<FragmentPhoneBinding, PhoneViewModel>() {
     }
 
     private fun sendOtpClicked() {
-        if (connectivity?.isConnected == true) {
-            pDialog.show()
-            Log.d("TAG", "diaa sendOtpClicked: ")
+        pDialog.show()
+        Log.d("TAG", "diaa sendOtpClicked: ")
 
-            arguments?.getString(Constants.FORGET_PASSWORD)?.let {
-                forgetPasswordSendOtp()
-            } ?: createAccountSendOtp()
-        } else {
-            showErrorDialogWithAction()
-        }
+        arguments?.getString(Constants.FORGET_PASSWORD)?.let {
+            forgetPasswordSendOtp()
+        } ?: createAccountSendOtp()
+
     }
 
     private fun forgetPasswordSendOtp() {
@@ -67,7 +61,8 @@ class PhoneFragment : BaseFragment<FragmentPhoneBinding, PhoneViewModel>() {
 
                     findNavController().navigate(
                         R.id.action_phoneFragment_to_otpFragment,
-                        bundle)
+                        bundle
+                    )
                 }
 
                 override fun onFailed(code: Int, msg: String?) {
@@ -85,17 +80,17 @@ class PhoneFragment : BaseFragment<FragmentPhoneBinding, PhoneViewModel>() {
     }
 
 
-    private fun createAccountSendOtp()
-    {
+    private fun createAccountSendOtp() {
         viewModel.sendOtp(object : OnResponseListener {
             override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                 pDialog.cancel()
 
                 val bundle = bundleOf(
                     Constants.PHONE to binding.userPhoneNumber.text.toString(),
-                    Constants.OTP to 33)
+                    Constants.OTP to 33
+                )
 
-                findNavController().navigate(R.id.action_phoneFragment_to_otpFragment,bundle)
+                findNavController().navigate(R.id.action_phoneFragment_to_otpFragment, bundle)
 
             }
 
@@ -112,17 +107,4 @@ class PhoneFragment : BaseFragment<FragmentPhoneBinding, PhoneViewModel>() {
             }
         })
     }
-
-
-    private fun showErrorDialogWithAction() {
-
-        showErrorDialogWithAction(
-            activity = requireActivity(),
-            dialog = dialog,
-            msg = resources.getString(R.string.no_internet_error),
-            okTitle = resources.getString(R.string.app__ok),
-            code = 0
-        )
-    }
-
 }

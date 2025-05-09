@@ -4,14 +4,14 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
-import com.esh7enly.esh7enlyuser.LoggingInterceptorLevel
-
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.data.remote.NotificationService
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.LiveDataCallAdapterFactory
 import com.esh7enly.esh7enlyuser.BuildConfig
-
+import com.esh7enly.esh7enlyuser.LoggingInterceptorLevel
+import com.esh7enly.esh7enlyuser.util.InternetAvailabilityRepository
+import com.esh7enly.esh7enlyuser.util.NoInternetInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,7 +59,7 @@ object NetworkModule {
 
         val loggingInterceptor = HttpLoggingInterceptor()
 
-         loggingInterceptor.level = LoggingInterceptorLevel.level
+        loggingInterceptor.level = LoggingInterceptorLevel.level
 
         if (!BuildConfig.DEBUG) {
             loggingInterceptor.redactHeader("Authorization")
@@ -98,10 +98,9 @@ object NetworkModule {
 
     }
 
-    private fun createCertificatePinning():CertificatePinner
-    {
+    private fun createCertificatePinning(): CertificatePinner {
         return CertificatePinner.Builder()
-            .add("diaa.com","sha256/OEuKLd1BnD0ailSGdeSgHT8GtHyJoyz6k4WczlaAdkM=")
+            .add("diaa.com", "sha256/OEuKLd1BnD0ailSGdeSgHT8GtHyJoyz6k4WczlaAdkM=")
             .build()
     }
 
@@ -110,13 +109,15 @@ object NetworkModule {
     fun provideOkhttp(
         @Named("Logging-interceptor") loggingInterceptor: Interceptor,
         @Named("Header-Interceptor") headerInterceptor: Interceptor,
+        internetRepo: InternetAvailabilityRepository,
         @ApplicationContext context: Context
     ): OkHttpClient {
 
         return OkHttpClient.Builder()
             .retryOnConnectionFailure(true)
             .addInterceptor(loggingInterceptor)
-           // .certificatePinner(createCertificatePinning())
+            // .certificatePinner(createCertificatePinning())
+            .addInterceptor(NoInternetInterceptor(internetRepo))
             .addInterceptor(headerInterceptor)
             .addSSLSocketFactory(context)
             //.addNetworkInterceptor(chuckerInterceptor)

@@ -12,15 +12,13 @@ import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.adapter.DepositsAdapter
 import com.esh7enly.esh7enlyuser.databinding.FragmentBalanceBinding
 
-import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.viewModel.BalanceViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class BalanceFragment : BaseFragment<FragmentBalanceBinding,BalanceViewModel>()
-{
+class BalanceFragment : BaseFragment<FragmentBalanceBinding, BalanceViewModel>() {
 
-    private val depositAdapter by lazy{
+    private val depositAdapter by lazy {
         DepositsAdapter()
     }
 
@@ -28,31 +26,27 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding,BalanceViewModel>()
     override val viewModel: BalanceViewModel by viewModels()
 
     override fun getLayoutResID() = R.layout.fragment_balance
-    override fun init() {
 
+    override fun init() {
 
         binding.txtBalance.text = resources.getString(R.string.balance)
 
-        if(connectivity?.isConnected == true)
+        viewModel.balance.observe(requireActivity())
         {
-            viewModel.balance.observe(requireActivity())
+            if(it.contains("No internet"))
+            {
+                binding.userBalance.text = ""
+            }
+            else
             {
                 binding.userBalance.text = "$it ${resources.getString(R.string.egp)}"
+
             }
-
-            getBalance()
-            initRecyclerView()
-            getDeposits()
         }
-        else
-        {
-            dialog.showErrorDialogWithAction(resources.getString(R.string.no_internet_error),
-                resources.getString(R.string.app__ok))
-            {
-                dialog.cancel()
 
-            }.show()
-        }
+        getBalance()
+        initRecyclerView()
+        getDeposits()
 
 //        binding.addBalance.setOnClickListener{
 //            NavigateToActivity.navigateToAddBalanceActivity(requireActivity())
@@ -64,8 +58,7 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding,BalanceViewModel>()
         }
     }
 
-    private fun getBalance()
-    {
+    private fun getBalance() {
         sharedHelper!!.getUserToken().let {
             viewModel.getWalletsUser(it)
         }
@@ -74,13 +67,11 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding,BalanceViewModel>()
 
     private fun getDeposits() {
 
-        viewModel.getNewDeposits(sharedHelper?.getUserToken().toString(),page)
+        viewModel.getNewDeposits(sharedHelper?.getUserToken().toString(), page)
 
         viewModel.responseDeposits.observe(viewLifecycleOwner)
-        {
-                response->
-            when(response)
-            {
+        { response ->
+            when (response) {
                 is NetworkResult.Success -> {
                     pDialog.cancel()
                     response.data?.data?.data?.let { depositAdapter.setTransactionEntity(it) }
@@ -90,6 +81,7 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding,BalanceViewModel>()
                 is NetworkResult.Loading -> {
                     pDialog.show()
                 }
+
                 is NetworkResult.Error -> {
                     pDialog.cancel()
                     Log.d("", "diaa getTransactions: ${response.message}")
@@ -100,25 +92,25 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding,BalanceViewModel>()
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun initRecyclerView()
-    {
+    private fun initRecyclerView() {
         binding.depositsRv.setHasFixedSize(true)
 
         binding.nestedScrollView.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener
-        { v, _, scrollY, _, _ ->
-            if(scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                page++
-                viewModel.getNewDeposits(sharedHelper?.getUserToken().toString(),
-                page)
-            }
-        })
+            { v, _, scrollY, _, _ ->
+                if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
+                    page++
+                    viewModel.getNewDeposits(
+                        sharedHelper?.getUserToken().toString(),
+                        page
+                    )
+                }
+            })
 
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    override fun onResume()
-    {
+    override fun onResume() {
         super.onResume()
 
 //        if(connectivity?.isConnected == true)

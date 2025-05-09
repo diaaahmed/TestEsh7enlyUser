@@ -980,29 +980,27 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
     private fun submitBtn() {
 
-        if (connectivity?.isConnected == true) {
+        finalTotalAmount = extractNumber(ui.tvTotalAmou.text.toString()).toString()
+        finalAmount = extractNumber(ui.tvAmount.text.toString()).toString()
 
-            finalTotalAmount = extractNumber(ui.tvTotalAmou.text.toString()).toString()
-            finalAmount = extractNumber(ui.tvAmount.text.toString()).toString()
+        when (finalPaymentWay) {
+            PayWays.CASH.toString() -> {
+                pDialog.show()
+                getTotalWithCash()
+            }
 
-            when (finalPaymentWay) {
-                PayWays.CASH.toString() -> {
-                    pDialog.show()
-                    getTotalWithCash()
-                }
+            PayWays.Esh7enly.toString() -> {
 
-                PayWays.Esh7enly.toString() -> {
-
-                    dialog.showSuccessDialogWithAction(
-                        resources.getString(R.string.confirmation_title),
-                        resources.getString(R.string.msg_confirm_pay)
-                                + "\n" + finalTotalAmount +
-                                " EGP  ?",
-                        resources.getString(R.string.app__ok),
-                        resources.getString(R.string.app__cancel)
-                    ) {
-                        if (getParamsData()) {
-                            dialog.cancel()
+                dialog.showSuccessDialogWithAction(
+                    resources.getString(R.string.confirmation_title),
+                    resources.getString(R.string.msg_confirm_pay)
+                            + "\n" + finalTotalAmount +
+                            " EGP  ?",
+                    resources.getString(R.string.app__ok),
+                    resources.getString(R.string.app__cancel)
+                ) {
+                    if (getParamsData()) {
+                        dialog.cancel()
 
 //                            val paymentPojoModel = PaymentPojoModel(
 //                                Constants.IMEI,
@@ -1015,69 +1013,69 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 //                            )
 
 
-                            val paymentPojoModel = PaymentPojoModel(
-                                Constants.IMEI,
-                                "",
-                                SERVICE_ID,
-                                finalAmount,
-                                DATA_ENTITY!!.id.toString(),
-                                "",
-                                PAYMENTPOJOMODEL!!.params
-                            )
+                        val paymentPojoModel = PaymentPojoModel(
+                            Constants.IMEI,
+                            "",
+                            SERVICE_ID,
+                            finalAmount,
+                            DATA_ENTITY!!.id.toString(),
+                            "",
+                            PAYMENTPOJOMODEL!!.params
+                        )
 
-                            if (ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS == 1) {
-                                // check integration
-                                checkIntegration(paymentPojoModel)
-                            } else {
-                                // pay
-                                pay(paymentPojoModel)
-                            }
+                        if (ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS == 1) {
+                            // check integration
+                            checkIntegration(paymentPojoModel)
+                        } else {
+                            // pay
+                            pay(paymentPojoModel)
                         }
-                    }.show()
-                }
-
-                PayWays.WALLET.toString() -> {
-                    dialog.showWarningDialogWithAction(
-                        resources.getString(R.string.payment_warning),
-                        resources.getString(R.string.app__ok)
-                    )
-                    {
-                        dialog.cancel()
-
-                        pDialog.show()
-
-                        getTotalAmountForPay(
-                            transactionType = GatewayTransactionType.wallet.toString(),
-                            amountForPay = finalTotalAmount
-                        )
-
-                    }.show()
-                }
-
-                PayWays.BANk.toString() -> {
-
-                    dialog.showWarningDialogWithAction(
-                        resources.getString(R.string.payment_warning),
-                        resources.getString(R.string.app__ok)
-                    )
-                    {
-                        dialog.cancel()
-
-                        pDialog.show()
-
-                        getTotalAmountForPay(
-                            transactionType = GatewayTransactionType.visa.toString(),
-                            amountForPay = finalTotalAmount
-                        )
-
-                    }.show()
-
-                }
-
-                else -> {
-                    Toast.makeText(this, "Please select way", Toast.LENGTH_SHORT).show()
-                }
+                    }
+                }.show()
             }
+
+            PayWays.WALLET.toString() -> {
+                dialog.showWarningDialogWithAction(
+                    resources.getString(R.string.payment_warning),
+                    resources.getString(R.string.app__ok)
+                )
+                {
+                    dialog.cancel()
+
+                    pDialog.show()
+
+                    getTotalAmountForPay(
+                        transactionType = GatewayTransactionType.wallet.toString(),
+                        amountForPay = finalTotalAmount
+                    )
+
+                }.show()
+            }
+
+            PayWays.BANk.toString() -> {
+
+                dialog.showWarningDialogWithAction(
+                    resources.getString(R.string.payment_warning),
+                    resources.getString(R.string.app__ok)
+                )
+                {
+                    dialog.cancel()
+
+                    pDialog.show()
+
+                    getTotalAmountForPay(
+                        transactionType = GatewayTransactionType.visa.toString(),
+                        amountForPay = finalTotalAmount
+                    )
+
+                }.show()
+
+            }
+
+            else -> {
+                Toast.makeText(this, "Please select way", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 //            dialog.showSuccessDialogWithAction(
 //                resources.getString(R.string.confirmation_title),
@@ -1105,13 +1103,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 //                }
 //            }.show()
 
-        } else {
-            dialog.showWarningDialog(
-                resources.getString(R.string.no_internet_error),
-                resources.getString(R.string.app__ok)
-            )
-            dialog.show()
-        }
     }
 
     private fun getTotalWithCash() {
@@ -1196,11 +1187,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                     paymentPojoModel.paymentTransactionId.toInt(),
                     paymentPojoModel.imei, Calendar.getInstance().timeInMillis
                 )
-            )
-
-            Log.d(
-                TAG,
-                "diaa transaction number to cancel ${paymentPojoModel.paymentTransactionId.toInt()}: "
             )
 
             serviceViewModel.pay(sharedHelper?.getUserToken().toString(),

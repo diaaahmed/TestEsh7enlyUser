@@ -42,7 +42,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(providers?.code!!, providers.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"Get providers new Method serviceViewModel")
             }
         }
@@ -64,7 +64,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(serviceSearch?.code!!, serviceSearch.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"Service search Method serviceViewModel")
 
             }
@@ -134,7 +134,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(services?.code!!, services.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "Nod service found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(
                     e.message.toString(),
                     "Get services new serviceViewModel")
@@ -201,7 +201,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(parameters?.code!!, parameters.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"Get parameters new serviceViewModel")
 
             }
@@ -278,7 +278,7 @@ class ServiceViewModel @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"Schedule inquire Method serviceViewModel")
 
             }
@@ -348,7 +348,7 @@ class ServiceViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
-                listner.onFailed(Constants.CODE_UNAUTH_NEW, "No data found")
+                listner.onFailed(Constants.CODE_UNAUTH_NEW, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"getTotalAmount serviceViewModel")
             }
 
@@ -378,7 +378,7 @@ class ServiceViewModel @Inject constructor(
 
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"pay Method serviceViewModel")
 
 
@@ -521,7 +521,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(scheduleListResponse.code(), scheduleListResponse.message())
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"getScheduleList")
 
 
@@ -629,7 +629,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(replaceResponse.code(), replaceResponse.message())
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"replaceUserPoints")
 
             }

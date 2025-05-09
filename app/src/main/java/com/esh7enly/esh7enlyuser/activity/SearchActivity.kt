@@ -24,21 +24,19 @@ import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
-{
-    private val ui by lazy{ ActivitySearchBinding.inflate(layoutInflater) }
+class SearchActivity : BaseActivity(), SearchClick, IToolbarTitle {
+    private val ui by lazy { ActivitySearchBinding.inflate(layoutInflater) }
 
     private var page = 1
 
-    private val dialog by lazy { AppDialogMsg(this,false) }
+    private val dialog by lazy { AppDialogMsg(this, false) }
 
     private val adapter by lazy { SearchAdapter(this) }
 
-    private var serviceSearch:String?= null
+    private var serviceSearch: String? = null
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ui.root)
 
@@ -50,7 +48,7 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
 
         pDialog.show()
 
-       // initRecyclerView()
+        // initRecyclerView()
         serviceSearchRemotely(serviceSearch!!)
 
     }
@@ -62,15 +60,14 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
         ui.nestedScrollView.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener
             { v, _, scrollY, _, _ ->
-                if(scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight)
-                {
+                if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
                     pDialog.show()
 
                     Language.setLanguageNew(this, Constants.LANG)
 
                     page++
                     serviceViewModel.serviceSearch(sharedHelper?.getUserToken().toString(),
-                        serviceSearch!!,page, object : OnResponseListener {
+                        serviceSearch!!, page, object : OnResponseListener {
                             override fun onSuccess(code: Int, msg: String?, obj: Any?) {
 
                                 pDialog.cancel()
@@ -95,13 +92,12 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
             })
     }
 
-    private fun serviceSearchRemotely(serviceName:String) {
+    private fun serviceSearchRemotely(serviceName: String) {
         lifecycleScope.launch {
 
             serviceViewModel.serviceSearch(sharedHelper?.getUserToken().toString(),
-            serviceName,1, object : OnResponseListener {
-                    override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                    {
+                serviceName, 1, object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
 
                         val serviceData = obj as List<SearchData>
@@ -118,8 +114,7 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
 
                     }
 
-                    override fun onFailed(code: Int, msg: String?)
-                    {
+                    override fun onFailed(code: Int, msg: String?) {
                         pDialog.cancel()
 
                         dialog.showErrorDialogWithAction(
@@ -151,35 +146,27 @@ class SearchActivity : BaseActivity(),SearchClick,IToolbarTitle
 
         if (service.type == Constants.PREPAID_CARD) {
 
-            if (connectivity?.isConnected == true) {
+            pDialog.show()
 
-                pDialog.show()
-
-                val totalAmountPojoModel =
-                    TotalAmountPojoModel(
-                        Constants.IMEI,
-                        service.id,
-                        service.price_value
-                    )
-
-                lifecycleScope.launch(Dispatchers.IO) {
-
-                    getTotalAmount(
-                        totalAmountPojoModel = totalAmountPojoModel,
-                        serviceName = service.name_ar,
-                        providerName = service.name_ar,
-                        serviceIcon = service.icon)
-
-
-
-                }
-            } else {
-                dialog.showWarningDialog(
-                    resources.getString(R.string.no_internet_error),
-                    resources.getString(R.string.app__ok)
+            val totalAmountPojoModel =
+                TotalAmountPojoModel(
+                    Constants.IMEI,
+                    service.id,
+                    service.price_value
                 )
-                dialog.show()
+
+            lifecycleScope.launch(Dispatchers.IO) {
+
+                getTotalAmount(
+                    totalAmountPojoModel = totalAmountPojoModel,
+                    serviceName = service.name_ar,
+                    providerName = service.name_ar,
+                    serviceIcon = service.icon
+                )
+
+
             }
+
 
         } else {
             val providerName =

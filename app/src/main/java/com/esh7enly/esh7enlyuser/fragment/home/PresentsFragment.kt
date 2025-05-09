@@ -1,6 +1,7 @@
 package com.esh7enly.esh7enlyuser.fragment.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class PresentsFragment : BaseFragment<FragmentPresentsBinding,ServiceViewModel>() {
+class PresentsFragment : BaseFragment<FragmentPresentsBinding, ServiceViewModel>() {
 
 
     override val viewModel: ServiceViewModel by viewModels()
@@ -25,47 +26,47 @@ class PresentsFragment : BaseFragment<FragmentPresentsBinding,ServiceViewModel>(
         binding.presentsToolbar.title = resources.getString(R.string.presents)
         binding.btnReplacePoints.text = resources.getString(R.string.replace_points)
 
-        if(connectivity?.isConnected == true)
-        {
-            getData()
-        }
-        else
-        {
-            showErrorDialogWithAction(
-                activity = requireActivity(),
-                dialog = dialog,
-                msg = resources.getString(R.string.no_internet_error),
-                okTitle = resources.getString(R.string.app__ok),
-                code = 0
-            )
+        getData()
 
-        }
         listenPoints()
 
         binding.btnReplacePoints.setOnClickListener {
             replaceUserPoints()
-        }    }
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     private fun listenPoints() {
         lifecycleScope.launch {
-            viewModel.userPointsState.collect{result->
-                when(result)
-                {
+            viewModel.userPointsState.collect { result ->
+                when (result) {
                     is NetworkResult.Error -> {
-                        binding.userPoints.text = "Error ${result.message}"
 
+                        binding.userPoints.text = result.parseError()
+                        Log.d("diaa", "listenPoints: error ${result.parseError()}")
                     }
+
                     is NetworkResult.Loading -> {
-                        binding.userPoints.text = "${resources.getString(R.string.user_points)} 0.00 ${resources.getString(R.string.points)}"
+                        binding.userPoints.text =
+                            "${resources.getString(R.string.user_points)} 0.00 ${
+                                resources.getString(R.string.points)
+                            }"
 
                     }
+
                     is NetworkResult.Success -> {
-                        binding.userPoints.text = "${resources.getString(R.string.user_points)} ${result.data} ${resources.getString(R.string.points)}"
+                        binding.userPoints.text =
+                            "${resources.getString(R.string.user_points)} ${result.data} ${
+                                resources.getString(R.string.points)
+                            }"
 
                     }
+
                     null -> {
-                        binding.userPoints.text = "${resources.getString(R.string.user_points)} 0.0 ${resources.getString(R.string.points)}"
+                        binding.userPoints.text =
+                            "${resources.getString(R.string.user_points)} 0.0 ${
+                                resources.getString(R.string.points)
+                            }"
 
                     }
                 }
@@ -74,61 +75,44 @@ class PresentsFragment : BaseFragment<FragmentPresentsBinding,ServiceViewModel>(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getData()
-    {
+    private fun getData() {
         sharedHelper!!.getUserToken().let {
             viewModel.getUserPointsFlow(it)
         }
     }
 
-    private fun replaceUserPoints()
-    {
+    private fun replaceUserPoints() {
         pDialog.show()
 
-        if(connectivity?.isConnected == true)
-        {
-            lifecycleScope.launch {
-                viewModel.replaceUserPoints(sharedHelper?.getUserToken().toString(),
-                    object : OnResponseListener {
-                        override fun onSuccess(code: Int, msg: String?, obj: Any?)
+        lifecycleScope.launch {
+            viewModel.replaceUserPoints(sharedHelper?.getUserToken().toString(),
+                object : OnResponseListener {
+                    override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                        pDialog.cancel()
+
+                        dialog.showSuccessDialog(
+                            resources.getString(R.string.balance_added),
+                            resources.getString(R.string.app__ok)
+                        )
                         {
-                            pDialog.cancel()
+                            dialog.cancel()
 
-                            dialog.showSuccessDialog(resources.getString(R.string.balance_added),resources.getString(R.string.app__ok))
-                            {
-                                dialog.cancel()
-
-                            }
-                            dialog.show()
                         }
+                        dialog.show()
+                    }
 
-                        override fun onFailed(code: Int, msg: String?)
-                        {
-                            pDialog.cancel()
+                    override fun onFailed(code: Int, msg: String?) {
+                        pDialog.cancel()
 
-                            showErrorDialogWithAction(
-                                activity = requireActivity(),
-                                dialog = dialog,
-                                msg = msg.toString(),
-                                okTitle = resources.getString(R.string.app__ok),
-                                code = code
-                            )
-                        }
-                    })
-            }
-
-        }
-        else
-        {
-            pDialog.cancel()
-
-            showErrorDialogWithAction(
-                activity = requireActivity(),
-                dialog = dialog,
-                msg = resources.getString(R.string.no_internet_error),
-                okTitle = resources.getString(R.string.app__ok),
-                code = 0
-            )
+                        showErrorDialogWithAction(
+                            activity = requireActivity(),
+                            dialog = dialog,
+                            msg = msg.toString(),
+                            okTitle = resources.getString(R.string.app__ok),
+                            code = code
+                        )
+                    }
+                })
         }
     }
 }

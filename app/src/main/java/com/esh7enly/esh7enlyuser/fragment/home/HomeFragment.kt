@@ -70,7 +70,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
 
         getData()
 
-      //   binding.searchBtn.setOnClickListener { serviceSearch() }
+        //   binding.searchBtn.setOnClickListener { serviceSearch() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -203,17 +203,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
     private fun getData() {
         getDataFromServer()
 
-        if (connectivity?.isConnected == true) {
-            checkCancelTransactions()
-            addDynamicAdds()
+        checkCancelTransactions()
+        addDynamicAdds()
 
-        }
+
         addFixedAds()
     }
 
     private fun addDynamicAdds() {
 
-      //  viewModel.getImageAds(sharedHelper?.getUserToken().toString())
+        //  viewModel.getImageAds(sharedHelper?.getUserToken().toString())
 
         lifecycleScope.launch {
             viewModel.dynamicAdsState.collect { result ->
@@ -269,7 +268,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
         binding.esh7enlyAds.adapter = flipAdsAdapter
     }
 
-
     private fun getDataFromServer() {
         Log.d(TAG, "diaa getDataFromServer: ")
 
@@ -279,9 +277,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
 
             viewModel.fetchData()
 
-            viewModel.categoriesResponse.collect{response->
-                when(response)
-                {
+            viewModel.categoriesResponse.collect { response ->
+                when (response) {
                     null -> {}
                     is NetworkResult.Error -> {
                         dialog.showErrorDialogWithAction(
@@ -291,6 +288,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
 
                         }.show()
                     }
+
                     is NetworkResult.Loading -> {
                         binding.shimmerViewContainer.startShimmerAnimation()
 

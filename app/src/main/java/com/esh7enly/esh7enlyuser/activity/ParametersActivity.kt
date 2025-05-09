@@ -14,21 +14,37 @@ import android.text.InputType
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
-import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.PaymentEntity.DataEntity
+import com.esh7enly.domain.entity.PaymentPojoModel
+import com.esh7enly.domain.entity.SpinnerModel
+import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.TotalAmountPojoModel.Params
 import com.esh7enly.domain.entity.parametersNew.ParametersData
 import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.databinding.ActivityParametersBinding
-import com.esh7enly.esh7enlyuser.util.*
+import com.esh7enly.esh7enlyuser.util.AppDialogMsg
+import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Constants.SERVICE_TO_PARAMETER_MODEL
+import com.esh7enly.esh7enlyuser.util.DynamicLayout
+import com.esh7enly.esh7enlyuser.util.Language
+import com.esh7enly.esh7enlyuser.util.NavigateToActivity
+import com.esh7enly.esh7enlyuser.util.NetworkUtils
+import com.esh7enly.esh7enlyuser.util.PermissionHelper
+import com.esh7enly.esh7enlyuser.util.ServicesCard
+import com.esh7enly.esh7enlyuser.util.TimeDialogs
+import com.esh7enly.esh7enlyuser.util.Utils
+import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import com.fawry.nfc.NFC.Main.NFCFawry
 import com.fawry.nfc.NFC.Shared.NFCConstants
 import com.fawry.nfc.NFC.interfaces.NFCReadCallback
@@ -36,8 +52,9 @@ import com.fawry.nfc.NFC.interfaces.NFCReadCallbackResponse
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
+import java.util.Objects
 import javax.inject.Inject
 
 private const val TAG = "ParametersActivity"
@@ -75,7 +92,7 @@ open class ParametersActivity : BaseActivity() {
         AppDialogMsg(this, false)
     }
 
-    private var serviceData:ServiceData?= null
+    private var serviceData: ServiceData? = null
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,15 +151,13 @@ open class ParametersActivity : BaseActivity() {
 
 
     // Done
-    private fun getParametersFromRemote()
-    {
+    private fun getParametersFromRemote() {
 
         pDialog.show()
 
         serviceViewModel.getParametersNew(
             serviceViewModel.servicesId.toString(), object : OnResponseListener {
-                override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                {
+                override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     pDialog.cancel()
 
                     val parameters = obj as List<ParametersData>
@@ -191,85 +206,75 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun pushSubmitBtn() {
-        if (connectivity?.isConnected == true) {
-            if (ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId)) {
-                // Electricity card
-                initializeNFCCard(NFCConstants.CardType.ELECT)
-                Constants.nfcCard = NFCConstants.CardType.ELECT
-            } else if (ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId)) {
-                // Water card
-                initializeNFCCard(NFCConstants.CardType.WSC)
-                Constants.nfcCard = NFCConstants.CardType.WSC
+        if (ServicesCard.ELECTRICITY_BTC.contains(serviceViewModel.servicesId)) {
+            // Electricity card
+            initializeNFCCard(NFCConstants.CardType.ELECT)
+            Constants.nfcCard = NFCConstants.CardType.ELECT
+        } else if (ServicesCard.WATER_BTC.contains(serviceViewModel.servicesId)) {
+            // Water card
+            initializeNFCCard(NFCConstants.CardType.WSC)
+            Constants.nfcCard = NFCConstants.CardType.WSC
 
-            } else if (ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId)) {
-                // Gas card
-                initializeNFCCard(NFCConstants.CardType.GAS)
-                Constants.nfcCard = NFCConstants.CardType.GAS
-            } else {
-                // Getting amount value if this service need it
-                if (serviceViewModel.acceptAmountinput == 1) {
-                   try{
-                       // find amount EdtTxt by id
-                       val etAmount: EditText = ui.lytDynamic.findViewWithTag("amount")
-                       // get Amount By User
-                       amount = Utils.replaceArabicNumbers(etAmount.text.toString())
-                   }
-                   catch (e: Exception)
-                   {
-                       sendIssueToCrashlytics(
-                           msg = e.message.toString(),
-                           functionName = "Push submit in parameters activity serviceViewModel.acceptAmountinput == 1",
-                           provider = "service name${serviceViewModel.serviceName} ",
-                           key = "service id ${serviceViewModel.servicesId} provider ${serviceViewModel.providerName}"
-                       )
-                   }
-
-                } else {
-                    if (serviceViewModel.priceType == 2) {
-                        // get Specific Amount from DB
-                        amount = serviceViewModel.priceValue.toString()
-                    }
-
+        } else if (ServicesCard.GAS_BTC.contains(serviceViewModel.servicesId)) {
+            // Gas card
+            initializeNFCCard(NFCConstants.CardType.GAS)
+            Constants.nfcCard = NFCConstants.CardType.GAS
+        } else {
+            // Getting amount value if this service need it
+            if (serviceViewModel.acceptAmountinput == 1) {
+                try {
+                    // find amount EdtTxt by id
+                    val etAmount: EditText = ui.lytDynamic.findViewWithTag("amount")
+                    // get Amount By User
+                    amount = Utils.replaceArabicNumbers(etAmount.text.toString())
+                } catch (e: Exception) {
+                    sendIssueToCrashlytics(
+                        msg = e.message.toString(),
+                        functionName = "Push submit in parameters activity serviceViewModel.acceptAmountinput == 1",
+                        provider = "service name${serviceViewModel.serviceName} ",
+                        key = "service id ${serviceViewModel.servicesId} provider ${serviceViewModel.providerName}"
+                    )
                 }
 
-                //Clear list from old data before fill it
-                paramsArrayListToSend.clear()
-
-                // collect Params data before Make inquiry
-                // use this boolean check to make dynamic inputs required Validations
-                if (getParamsData()) {
-                    if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
-                        sendParametersToAPI()
-                    } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
-
-                        pDialog.show()
-
-                        val totalAmountPojoModel = TotalAmountPojoModel(
-                            Constants.IMEI,
-                            serviceViewModel.servicesId, amount,
-                            paramsArrayListToSend
-                        )
-
-                        lifecycleScope.launch(Dispatchers.IO)
-                        {
-                            getTotalAmount(
-                                totalAmountPojoModel = totalAmountPojoModel,
-                                serviceName = serviceViewModel.serviceName.toString(),
-                                providerName = serviceViewModel.providerName.toString(),
-                                serviceIcon = serviceViewModel.image.toString())
-                        }
-
-                    }
+            } else {
+                if (serviceViewModel.priceType == 2) {
+                    // get Specific Amount from DB
+                    amount = serviceViewModel.priceValue.toString()
                 }
 
             }
-        } else {
-            // Show dialog
-            dialog.showWarningDialog(
-                resources.getString(R.string.no_internet_error),
-                resources.getString(R.string.app__ok)
-            )
-            dialog.show()
+
+            //Clear list from old data before fill it
+            paramsArrayListToSend.clear()
+
+            // collect Params data before Make inquiry
+            // use this boolean check to make dynamic inputs required Validations
+            if (getParamsData()) {
+                if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
+                    sendParametersToAPI()
+                } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
+
+                    pDialog.show()
+
+                    val totalAmountPojoModel = TotalAmountPojoModel(
+                        Constants.IMEI,
+                        serviceViewModel.servicesId, amount,
+                        paramsArrayListToSend
+                    )
+
+                    lifecycleScope.launch(Dispatchers.IO)
+                    {
+                        getTotalAmount(
+                            totalAmountPojoModel = totalAmountPojoModel,
+                            serviceName = serviceViewModel.serviceName.toString(),
+                            providerName = serviceViewModel.providerName.toString(),
+                            serviceIcon = serviceViewModel.image.toString()
+                        )
+                    }
+
+                }
+            }
+
         }
     }
 
@@ -381,7 +386,8 @@ open class ParametersActivity : BaseActivity() {
                     ) {
                         dialog.cancel()
                         if (code == Constants.CODE_UNAUTH_NEW
-                            || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED) {
+                            || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
+                        ) {
                             NavigateToActivity.navigateToAuthActivity(this@ParametersActivity)
                         }
                     }.show()
@@ -622,14 +628,12 @@ open class ParametersActivity : BaseActivity() {
 
     // Done
     @SuppressLint("ClickableViewAccessibility")
-    private fun replaceData(parameters: List<ParametersData>)
-    {
+    private fun replaceData(parameters: List<ParametersData>) {
         ui.lytDynamic.removeAllViewsInLayout()
 
         this.parametersList = parameters
 
-        for (i in parametersList.indices)
-        {
+        for (i in parametersList.indices) {
             // Parameter details
             val internalId: String = this.parametersList[i].internal_id
             val type: Int = this.parametersList[i].type
@@ -652,11 +656,10 @@ open class ParametersActivity : BaseActivity() {
                 )
             }
 
-            if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT)
-            {
+            if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
                 if (display == Constants.DISPLAY_FOR_ALL ||
-                    display == Constants.DISPLAY_FOR_INQUIRY)
-                {
+                    display == Constants.DISPLAY_FOR_INQUIRY
+                ) {
                     when (type) {
                         Constants.Number -> {
                             // adding title
@@ -852,9 +855,7 @@ open class ParametersActivity : BaseActivity() {
                         }
                     }
                 }
-            }
-
-            else if (serviceViewModel.serviceType == Constants.PAYMENT) {
+            } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
                 Log.d(TAG, "diaa replace data type $type")
 
                 if (display == Constants.DISPLAY_FOR_ALL
@@ -1094,8 +1095,7 @@ open class ParametersActivity : BaseActivity() {
 
         Log.d("diaa", "serviceViewModel.acceptAmountinput ${serviceViewModel.acceptAmountinput}")
 
-        if (serviceViewModel.acceptAmountinput == 1)
-        {
+        if (serviceViewModel.acceptAmountinput == 1) {
             // adding title
             dynamicLayout?.addTextViews(
                 ui.lytDynamic,  /*"\u2022 " +*/
@@ -1143,7 +1143,7 @@ open class ParametersActivity : BaseActivity() {
         } catch (e: Exception) {
             Log.d(TAG, "getIntentData catch: ${e.message}")
             sendIssueToCrashlytics(
-                msg =  e.message.toString(),
+                msg = e.message.toString(),
                 functionName = "getIntentData",
                 provider = "Parameters activity",
                 key = "Get intent data"
@@ -1151,8 +1151,7 @@ open class ParametersActivity : BaseActivity() {
         }
     }
 
-    private fun startActivity(internalId: String)
-    {
+    private fun startActivity(internalId: String) {
         val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
         intent.putExtra(Constants.INTERNAL_ID, internalId)
         this.internalId = internalId
@@ -1184,17 +1183,14 @@ open class ParametersActivity : BaseActivity() {
                     )
                 )
             }
-            if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT)
-            {
-                if (display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_INQUIRY)
-                {
+            if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
+                if (display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_INQUIRY) {
                     when (type) {
                         Constants.Number -> {
                             val etNumber: EditText =
                                 ui.lytDynamic.findViewWithTag(internalId)
                             val valueNumber = Utils.replaceArabicNumbers(etNumber.text.toString())
-                            if (required == 1 && valueNumber.isEmpty())
-                            {
+                            if (required == 1 && valueNumber.isEmpty()) {
                                 etNumber.error = getString(R.string.required)
                                 shouldBreak = true
                             } else if (
@@ -1264,8 +1260,11 @@ open class ParametersActivity : BaseActivity() {
                                 if (spinnerSelectedName == values[iii].getaName() ||
                                     spinnerSelectedName == values[iii].geteName()
                                 ) {
-                                    paramsArrayListToSend.add(Params(
-                                        internalId, values[iii].id))
+                                    paramsArrayListToSend.add(
+                                        Params(
+                                            internalId, values[iii].id
+                                        )
+                                    )
                                 }
                                 iii++
                             }
@@ -1308,7 +1307,8 @@ open class ParametersActivity : BaseActivity() {
                 }
             } else if (serviceViewModel.serviceType == Constants.PAYMENT) {
                 if (display == Constants.DISPLAY_FOR_ALL ||
-                    display == Constants.DISPLAY_FOR_PAYMENT) {
+                    display == Constants.DISPLAY_FOR_PAYMENT
+                ) {
                     when (type) {
                         Constants.Number -> {
                             val etNumber: EditText =
