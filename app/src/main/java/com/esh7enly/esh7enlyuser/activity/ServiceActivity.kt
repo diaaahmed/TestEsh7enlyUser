@@ -63,7 +63,7 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
         pDialog.show()
 
-        serviceViewModel.getServicesNew(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.getServicesNew(
             providerID.toString(), object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     pDialog.cancel()

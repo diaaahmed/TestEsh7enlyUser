@@ -66,7 +66,7 @@ class SearchActivity : BaseActivity(), SearchClick, IToolbarTitle {
                     Language.setLanguageNew(this, Constants.LANG)
 
                     page++
-                    serviceViewModel.serviceSearch(sharedHelper?.getUserToken().toString(),
+                    serviceViewModel.serviceSearch(
                         serviceSearch!!, page, object : OnResponseListener {
                             override fun onSuccess(code: Int, msg: String?, obj: Any?) {
 
@@ -95,7 +95,7 @@ class SearchActivity : BaseActivity(), SearchClick, IToolbarTitle {
     private fun serviceSearchRemotely(serviceName: String) {
         lifecycleScope.launch {
 
-            serviceViewModel.serviceSearch(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.serviceSearch(
                 serviceName, 1, object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()

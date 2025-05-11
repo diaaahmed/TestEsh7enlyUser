@@ -29,13 +29,12 @@ class TransactionsViewModel @Inject constructor(
     var responseTransactions: LiveData<NetworkResult<TransactionApiResponse>> = _responseTransactions
 
 
-    fun getTransactions(token: String, page: Int)
-    {
+    fun getTransactions(page: Int) {
         _responseTransactions.value = NetworkResult.Loading()
 
         viewModelScope.launch{
             try {
-                val response = transactionsRepo.getTransactions(token, page)
+                val response = transactionsRepo.getTransactions(page)
 
                 if (!response.status)
                 {
@@ -55,11 +54,11 @@ class TransactionsViewModel @Inject constructor(
         MutableStateFlow(null)
     val transactionDetails: StateFlow<TransactionDetailsEntity?> = _transactionDetails
 
-    fun getTransactionDetails(token: String, transactionId: String)
+    fun getTransactionDetails(transactionId: String)
     {
         viewModelScope.launch {
             try {
-                transactionsRepo.getTransactionDetails(token, transactionId)
+                transactionsRepo.getTransactionDetails(transactionId)
                     .collectLatest {
                         _transactionDetails.value = it
                     }

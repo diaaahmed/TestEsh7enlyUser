@@ -361,10 +361,7 @@ class TransactionDetails : BaseActivity()
 
 
     private fun loadData() {
-        transactionsViewModel.getTransactionDetails(
-            sharedHelper?.getUserToken().toString(),
-            transactionId
-        )
+        transactionsViewModel.getTransactionDetails(transactionId)
         lifecycleScope.launch {
             transactionsViewModel.transactionDetails.collect {
                 replaceData(it)

@@ -739,7 +739,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
         lifecycleScope.launch {
 
-            paytabsViewModel.getTotalPay(sharedHelper?.getUserToken().toString(),
+            paytabsViewModel.getTotalPay(
                 paymentMethodType = GatewayMethod.paytabs.toString(),
                 transactionType = transactionType,
                 amount = amountForPay, object : OnResponseListener {
@@ -825,8 +825,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 finalAmount = amount,
                 paymentMethodType = GatewayMethod.paytabs.toString(),
                 transactionType = transactionType,
-                sharedHelper?.getUserToken()
-                    .toString(),
+
                 totalAmount,
                 "69",
                 object : OnResponseListener {
@@ -1120,7 +1119,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 finalTotalAmount, mutableListOf(params)
             )
 
-            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.getTotalAmount(
                 totalAmountPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -1148,7 +1147,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
     private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
 
         lifecycleScope.launch {
-            serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
+            serviceViewModel.pay(paymentPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
@@ -1189,19 +1188,19 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 )
             )
 
-            serviceViewModel.pay(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.pay(
                 paymentPojoModel, object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         // pDialog.cancel()
+                        serviceViewModel.deleteFawryOperations(paymentPojoModel.paymentTransactionId.toInt())
 
                         val result = obj as PaymentEntity.DataEntity
-
-                        serviceViewModel.deleteFawryOperations(paymentPojoModel.paymentTransactionId.toInt())
 
                         if (ServicesCard.ELECTRICITY_BTC.contains(SERVICE_ID) ||
                             ServicesCard.WATER_BTC.contains(SERVICE_ID) ||
                             ServicesCard.GAS_BTC.contains(SERVICE_ID)
                         ) {
+                            pDialog.cancel()
                             // Add to database for cancelling if write on card not success
                             serviceViewModel.insertToFawryDao(
                                 FawryEntity(
@@ -1210,10 +1209,23 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                                 )
                             )
 
-                            writeOnCard(result)
+                            val builder = AlertDialog.Builder(this@InquireActivity)
+                                .setMessage(resources.getString(R.string.write_charge))
+                                .setTitle(resources.getString(R.string.alert))
+                                .setCancelable(false)
+                                .setPositiveButton(resources.getString(R.string.write_on_card))
+                                { alertDialog, _ ->
+                                    alertDialog.cancel()
+                                    pDialog.show()
+                                    writeOnCard(result)
+                                }
+
+                            val alertDialog = builder.create()
+                            alertDialog.show()
 
                         } else {
-                            lifecycleScope.launch { scheduleInquire(result) }
+
+                             lifecycleScope.launch { scheduleInquire(result) }
                         }
 
                     }
@@ -1240,7 +1252,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
     }
 
     private fun scheduleInquire(result: PaymentEntity.DataEntity) {
-        serviceViewModel.scheduleInquire(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.scheduleInquire(
             result.service.id.toString(), result.clientNumber,
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -1289,7 +1301,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
     }
 
     private fun scheduleInvoice(result: PaymentEntity.DataEntity, day: String) {
-        serviceViewModel.scheduleInvoice(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.scheduleInvoice(
             result.service.id.toString(),
             day, result.clientNumber,
             object : OnResponseListener {
@@ -1378,8 +1390,8 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 }
 
                 override fun onMismatchNFCCard() {
-//                     pDialog.cancel()
-//                     cancelTransaction(result)
+                     pDialog.cancel()
+                    cancelTransaction(result)
 //                     message("Missmatch")
 
                 }
@@ -1388,9 +1400,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                     //  pDialog.cancel()
 
                     if (response.status == FawryWapperStatus.Status.SUCCESSFUL) {
-                        Log.d(TAG, "diaa on success write: ${response.data}")
-                        Log.d(TAG, "diaa on success message: ${response.message}")
-                        Log.d(TAG, "diaa on success status: ${response.status}")
                         message("Success write")
                         serviceViewModel.deleteFawryOperations(result.id)
 
@@ -1406,7 +1415,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
     private fun cancelTransaction(result: PaymentEntity.DataEntity) {
 
-        serviceViewModel.cancelTransaction(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.cancelTransaction(
             result.id.toString(),
             result.imei, object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -1437,7 +1446,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         pDialog.show()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            serviceViewModel.checkIntegration(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.checkIntegration(
                 DATA_ENTITY?.id.toString(), "", object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
@@ -1660,7 +1669,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 DATA_ENTITY!!.id, PAYMENTPOJOMODEL!!.params
             )
 
-            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.getTotalAmount(
                 totalAmountPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {

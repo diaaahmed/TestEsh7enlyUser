@@ -67,7 +67,7 @@ class AccountSettingActivity : BaseActivity(),IToolbarTitle
         pDialog.show()
 
         lifecycleScope.launch {
-            serviceViewModel.getScheduleList(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.getScheduleList(
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?)
                     {

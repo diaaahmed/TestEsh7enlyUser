@@ -359,7 +359,7 @@ open class ParametersActivity : BaseActivity() {
     override fun pay(paymentPojoModel: PaymentPojoModel) {
         pDialog.show()
 
-        serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
+        serviceViewModel.pay(paymentPojoModel,
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     //  pDialog.cancel()
@@ -396,7 +396,7 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun scheduleInquire(result: DataEntity) {
-        serviceViewModel.scheduleInquire(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.scheduleInquire(
             result.service.id.toString(), result.clientNumber,
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -464,7 +464,7 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun scheduleInvoice(result: DataEntity, day: String) {
-        serviceViewModel.scheduleInvoice(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.scheduleInvoice(
             result.service.id.toString(),
             day, result.clientNumber,
             object : OnResponseListener {
@@ -538,7 +538,7 @@ open class ParametersActivity : BaseActivity() {
     private fun inquire(paymentPojoModel: PaymentPojoModel) {
         pDialog.show()
 
-        serviceViewModel.inquire(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.inquire(
             paymentPojoModel, object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     pDialog.cancel()

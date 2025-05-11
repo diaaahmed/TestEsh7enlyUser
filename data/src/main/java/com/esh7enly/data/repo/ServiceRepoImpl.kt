@@ -55,58 +55,50 @@ class ServiceRepoImpl(
     }
 
     override suspend fun checkIntegration(
-        token: String,
         id: String,
         imei: String
     ): Response<JsonElement> = apiService.checkIntegration(id, imei)
 
     override suspend fun cancelTransaction(
-        token: String,
         transactionId: String,
         imei: String
     ): Response<JsonElement> = apiService.cancelTransaction(transactionId, imei)
 
     override suspend fun inquire(
-        token: String,
         paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity> = apiService.inquire(paymentPojoModel)
 
     override suspend fun pay(
-        token: String,
         paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity> = apiService.pay(paymentPojoModel)
 
 
-    override suspend fun replaceUserPoints(token: String): Response<ReplacePointsResponse> =
+    override suspend fun replaceUserPoints(): Response<ReplacePointsResponse> =
         apiService.replaceUserPoints()
 
     override suspend fun getTotalAmount(
-        token: String,
         totalAmountPojoModel: TotalAmountPojoModel
     ): Flow<TotalAmountEntity> = flow {
         val response = apiService.getTotalAmount(totalAmountPojoModel)
         emit(response)
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun scheduleInquire(
-        token: String,
-        serviceId: String,
+    override suspend fun scheduleInquire(serviceId: String,
         invoiceNumber: String
     ): Response<ScheduleInquireResponse> =
         apiService.scheduleInquire(serviceId, invoiceNumber)
 
-    override suspend fun getScheduleList(token: String): Response<ScheduleListResponse> =
+    override suspend fun getScheduleList(): Response<ScheduleListResponse> =
         apiService.getScheduleList()
 
     override suspend fun scheduleInvoice(
-        token: String,
         serviceId: String,
         scheduleDay: String,
         invoiceNumber: String
     ): Response<ScheduleInvoiceResponse> =
         apiService.scheduleInvoice(serviceId, scheduleDay, invoiceNumber)
 
-    override suspend fun getProviders(token: String, categoryId: String): ProviderResponse? {
+    override suspend fun getProviders(categoryId: String): ProviderResponse? {
 
         val providers = apiService.getProviders(categoryId)
 
@@ -144,7 +136,7 @@ class ServiceRepoImpl(
             }
         }
 
-    override suspend fun getServices(token: String, providerId: String): ServiceResponse? {
+    override suspend fun getServices(providerId: String): ServiceResponse? {
         val services = apiService.getServices(providerId)
 
         return if (services.isSuccessful) {
@@ -165,7 +157,6 @@ class ServiceRepoImpl(
     }
 
     override suspend fun serviceSearch(
-        token: String,
         serviceName: String,
         page: Int
     ): SearchResponse? {
@@ -178,7 +169,7 @@ class ServiceRepoImpl(
         }
     }
 
-    override suspend fun getUserPointsFlow(token: String): Flow<NetworkResult<PointsResponse>> =
+    override suspend fun getUserPointsFlow(): Flow<NetworkResult<PointsResponse>> =
         flow {
 
             try {

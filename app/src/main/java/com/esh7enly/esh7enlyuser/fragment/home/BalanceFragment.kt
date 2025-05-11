@@ -33,12 +33,9 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding, BalanceViewModel>()
 
         viewModel.balance.observe(requireActivity())
         {
-            if(it.contains("No internet"))
-            {
+            if (it.contains("No internet")) {
                 binding.userBalance.text = ""
-            }
-            else
-            {
+            } else {
                 binding.userBalance.text = "$it ${resources.getString(R.string.egp)}"
 
             }
@@ -59,15 +56,13 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding, BalanceViewModel>()
     }
 
     private fun getBalance() {
-        sharedHelper!!.getUserToken().let {
-            viewModel.getWalletsUser(it)
-        }
+        viewModel.getWalletsUser()
     }
 
 
     private fun getDeposits() {
 
-        viewModel.getNewDeposits(sharedHelper?.getUserToken().toString(), page)
+        viewModel.getNewDeposits(page)
 
         viewModel.responseDeposits.observe(viewLifecycleOwner)
         { response ->
@@ -100,10 +95,7 @@ class BalanceFragment : BaseFragment<FragmentBalanceBinding, BalanceViewModel>()
             { v, _, scrollY, _, _ ->
                 if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
                     page++
-                    viewModel.getNewDeposits(
-                        sharedHelper?.getUserToken().toString(),
-                        page
-                    )
+                    viewModel.getNewDeposits(page)
                 }
             })
 

@@ -75,19 +75,20 @@ class SharedHelper(var context: Context,
             apply()
         }
 
-     //   sharedPref.edit().putString(Constants.USER_TOKEN, encrypt(token)).apply()
     }
 
-   //  fun getUserToken(): String = "Bearer " + decrypt(sharedPref.getString(Constants.USER_TOKEN, ""))
      fun getUserToken(): String = "Bearer " + sharedPreferencesEncrypted.getString(Constants.USER_TOKEN, "")
 
-    fun isRememberPassword(): Boolean = sharedPref.getBoolean(Constants.IS_REMEMBER_ME, false)
+
+    fun getDataToken():String{
+        return getUserToken()
+            .replace("Bearer ","")
+            .take(16)
+    }
 
     fun setUserPassword(password: String) {
         sharedPref.edit().putString(Constants.USER_PASSWORD, encrypt(password)).apply()
     }
-
-    fun getUserPassword(): String = decrypt(sharedPref.getString(Constants.USER_PASSWORD, ""))
 
     fun setStoreName(storeName: String) {
         sharedPref.edit().putString(Constants.STORE_NAME, storeName).apply()

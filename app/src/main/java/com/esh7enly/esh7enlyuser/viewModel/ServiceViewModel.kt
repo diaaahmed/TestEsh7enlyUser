@@ -30,10 +30,10 @@ class ServiceViewModel @Inject constructor(
 
     val categories:StateFlow<NetworkResult<CategoriesResponse>> = _categories.asStateFlow()
 
-    fun getProvidersNew(token: String, categoryId: String, listner: OnResponseListener) {
+    fun getProvidersNew(categoryId: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
-                val providers = servicesRepo.getProviders(token, categoryId)
+                val providers = servicesRepo.getProviders(categoryId)
 
                 if (providers?.data?.isNotEmpty() == true) {
                     listner.onSuccess(providers.code, providers.message, providers.data)
@@ -48,10 +48,10 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    fun serviceSearch(token: String, serviceName: String, page: Int, listner: OnResponseListener) {
+    fun serviceSearch(serviceName: String, page: Int, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
-                val serviceSearch = servicesRepo.serviceSearch(token, serviceName, page)
+                val serviceSearch = servicesRepo.serviceSearch(serviceName, page)
 
                 if (serviceSearch?.data?.data?.isNotEmpty() == true) {
                     listner.onSuccess(
@@ -122,10 +122,10 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    fun getServicesNew(token: String, providerID: String, listner: OnResponseListener) {
+    fun getServicesNew(providerID: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
-                val services = servicesRepo.getServices(token, providerID)
+                val services = servicesRepo.getServices(providerID)
 
                 if (services?.data?.isNotEmpty() == true) {
                     listner.onSuccess(services.code, services.message, services.data)
@@ -248,7 +248,6 @@ class ServiceViewModel @Inject constructor(
     }
 
     fun scheduleInquire(
-        token: String,
         serviceId: String,
         invoiceNumber: String,
         listner: OnResponseListener
@@ -256,7 +255,7 @@ class ServiceViewModel @Inject constructor(
     {
         viewModelScope.launch {
             try {
-                val scheduleInquireResponse = servicesRepo.scheduleInquire(token, serviceId, invoiceNumber)
+                val scheduleInquireResponse = servicesRepo.scheduleInquire(serviceId, invoiceNumber)
 
                 if (scheduleInquireResponse.isSuccessful) {
                     if (scheduleInquireResponse.body()!!.status) {
@@ -327,13 +326,12 @@ class ServiceViewModel @Inject constructor(
     }
 
     fun getTotalAmount(
-        token: String,
         totalAmountPojoModel: TotalAmountPojoModel,
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
             try {
-                servicesRepo.getTotalAmount(token, totalAmountPojoModel)
+                servicesRepo.getTotalAmount(totalAmountPojoModel)
                     .catch {
                         Log.d(TAG, "diaa getTotalAmount: catch ${it.message}")
                         listner.onFailed(Constants.CODE_UNAUTH_NEW,it.message)
@@ -356,11 +354,11 @@ class ServiceViewModel @Inject constructor(
 
     }
 
-    fun pay(token: String, paymentPojoModel: PaymentPojoModel, listner: OnResponseListener) {
+    fun pay(paymentPojoModel: PaymentPojoModel, listner: OnResponseListener) {
         viewModelScope.launch {
 
             try {
-                val response = servicesRepo.pay(token, paymentPojoModel)
+                val response = servicesRepo.pay(paymentPojoModel)
 
                 if (response.isSuccessful) {
                     if (response.body()?.status == false) {
@@ -387,14 +385,13 @@ class ServiceViewModel @Inject constructor(
     }
 
     fun cancelTransaction(
-        token: String,
         transactionId: String,
         imei: String,
         listner: OnResponseListener
     ) {
         viewModelScope.launch(Dispatchers.IO) {
 
-            val response = servicesRepo.cancelTransaction(token, transactionId, imei)
+            val response = servicesRepo.cancelTransaction(transactionId, imei)
 
             if (response.isSuccessful) {
                 val code: String
@@ -428,12 +425,12 @@ class ServiceViewModel @Inject constructor(
     }
 
 
-    fun inquire(token: String, paymentPojoModel: PaymentPojoModel,
+    fun inquire(paymentPojoModel: PaymentPojoModel,
                 listner: OnResponseListener) {
         viewModelScope.launch {
 
             //   try{
-            val inquireResponse = servicesRepo.inquire(token, paymentPojoModel)
+            val inquireResponse = servicesRepo.inquire(paymentPojoModel)
 
             if (inquireResponse.isSuccessful) {
                 if (inquireResponse.body()?.status == false) {
@@ -461,14 +458,13 @@ class ServiceViewModel @Inject constructor(
     }
 
     fun checkIntegration(
-        token: String,
         transactionId1: String,
         imei: String,
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
 
-            val response = servicesRepo.checkIntegration(token, transactionId1, imei)
+            val response = servicesRepo.checkIntegration(transactionId1, imei)
 
             if (response.isSuccessful) {
 
@@ -498,10 +494,10 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    fun getScheduleList(token: String, listner: OnResponseListener) {
+    fun getScheduleList(listner: OnResponseListener) {
         viewModelScope.launch {
             try {
-                val scheduleListResponse = servicesRepo.getScheduleList(token)
+                val scheduleListResponse = servicesRepo.getScheduleList()
 
                 if (scheduleListResponse.isSuccessful) {
                     if (scheduleListResponse.body()?.status == true) {
@@ -532,10 +528,10 @@ class ServiceViewModel @Inject constructor(
 
     var userPointsState: MutableStateFlow<NetworkResult<String>?> = MutableStateFlow(null)
 
-    fun getUserPointsFlow(token: String) {
+    fun getUserPointsFlow() {
         viewModelScope.launch {
             try {
-                servicesRepo.getUserPointsFlow(token)
+                servicesRepo.getUserPointsFlow()
                     .onEach { userPointsResponse ->
                         when (userPointsResponse) {
                             is NetworkResult.Error -> {
@@ -575,7 +571,6 @@ class ServiceViewModel @Inject constructor(
     }
 
     fun scheduleInvoice(
-        token: String,
         serviceId: String,
         scheduleDay: String,
         invoiceNumber: String,
@@ -583,7 +578,7 @@ class ServiceViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val scheduleResponse =
-                servicesRepo.scheduleInvoice(token, serviceId, scheduleDay, invoiceNumber)
+                servicesRepo.scheduleInvoice(serviceId, scheduleDay, invoiceNumber)
 
             if (scheduleResponse.isSuccessful) {
                 if (scheduleResponse.body()!!.status) {
@@ -607,11 +602,11 @@ class ServiceViewModel @Inject constructor(
     }
 
 
-    fun replaceUserPoints(token: String, listner: OnResponseListener) {
+    fun replaceUserPoints(listner: OnResponseListener) {
         viewModelScope.launch {
 
             try {
-                val replaceResponse = servicesRepo.replaceUserPoints(token)
+                val replaceResponse = servicesRepo.replaceUserPoints()
                 if (replaceResponse.isSuccessful) {
                     if (replaceResponse.body()!!.status == true) {
                         listner.onSuccess(

@@ -160,7 +160,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
     }
 
     private fun cancelTransaction(transactionId: String, imei: String) {
-        viewModel.cancelTransaction(sharedHelper?.getUserToken().toString(),
+        viewModel.cancelTransaction(
             transactionId,
             imei, object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {

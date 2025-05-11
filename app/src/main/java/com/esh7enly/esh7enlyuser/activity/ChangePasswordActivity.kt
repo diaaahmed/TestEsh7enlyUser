@@ -64,7 +64,6 @@ class ChangePasswordActivity : AppCompatActivity(), IToolbarTitle {
         pDialog.show()
 
         userViewModel.updatePassword(
-            sharedHelper?.getUserToken().toString(),
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                     pDialog.cancel()

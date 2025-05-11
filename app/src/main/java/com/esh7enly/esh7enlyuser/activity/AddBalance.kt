@@ -192,7 +192,7 @@ class AddBalance : BaseActivity(), IToolbarTitle {
                 ui.amountValue.text.toString(), mutableListOf(params)
             )
 
-            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.getTotalAmount(
                 totalAmountPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -221,7 +221,7 @@ class AddBalance : BaseActivity(), IToolbarTitle {
         pDialog.show()
 
         lifecycleScope.launch {
-            serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
+            serviceViewModel.pay(paymentPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
@@ -255,7 +255,7 @@ class AddBalance : BaseActivity(), IToolbarTitle {
     private fun getTotalAmount(transactionType: String) {
         lifecycleScope.launch {
 
-            paytabsViewModel.getTotalPay(sharedHelper?.getUserToken().toString(),
+            paytabsViewModel.getTotalPay(
                 paymentMethodType = GatewayMethod.paytabs.toString(),
                 transactionType = transactionType,
                 ui.amountValue.text.toString(), object : OnResponseListener {

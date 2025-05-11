@@ -1,5 +1,7 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,6 +15,7 @@ import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.repo.UserRepo
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
+import com.esh7enly.esh7enlyuser.util.KeyPairHandler
 import com.esh7enly.esh7enlyuser.util.isValidPassword
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,16 +44,37 @@ class UserViewModel @Inject constructor(
 
     var token = ""
 
-    fun saveTokenWithDataStore(token: String)
-    {
-        viewModelScope.launch{
+    fun saveTokenWithDataStore(token: String) {
+        viewModelScope.launch {
             dataStoreHelper.saveTokenKey(token)
         }
     }
 
-    fun saveUserDataWithDataStore(userDataStore: UserDataStore)
-    {
-        viewModelScope.launch{
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun testingKey() {
+        viewModelScope.launch {
+
+            KeyPairHandler.generateKeyPair()
+            val publicKeyHandler = KeyPairHandler.getPublicKeyString()
+
+            val public_edited = publicKeyHandler.replace("+",".")
+            val addedData = "$2a$10$${sharedHelper.getDataToken()}${public_edited}"
+
+            val data = userRepo.testingKey(addedData)
+
+            if (data.isSuccessful) {
+                val testDecryptData = KeyPairHandler.decryptTheData(data.body()?.encryptedData!!)
+
+                println("Diaa data done ${data.body()}")
+                println("Diaa data testDecryptData $testDecryptData")
+            } else {
+                println("Diaa data failed ${data.errorBody()}")
+            }
+        }
+    }
+
+    fun saveUserDataWithDataStore(userDataStore: UserDataStore) {
+        viewModelScope.launch {
             dataStoreHelper.saveUserData(userDataStore)
         }
     }
@@ -66,11 +90,11 @@ class UserViewModel @Inject constructor(
     val userPhoneNumber = MutableStateFlow("")
     val userPassword = MutableStateFlow("")
 
-    fun userLogin(deviceToken: String,imei:String):
+    fun userLogin(deviceToken: String, imei: String):
             LiveData<ApiResponse<LoginResponse>> {
 
         return userRepo.login(
-            userPhoneNumber.value, userPassword.value, deviceToken,imei
+            userPhoneNumber.value, userPassword.value, deviceToken, imei
         )
     }
 
@@ -79,24 +103,28 @@ class UserViewModel @Inject constructor(
 
 
     fun loginWithState(
-        deviceToken: String,imei:String
-    )
-    {
-        viewModelScope.launch{
+        deviceToken: String, imei: String
+    ) {
+        viewModelScope.launch {
             userRepo.loginWithState(
                 userPhoneNumber.value, userPassword.value,
-                deviceToken,imei)
-                .collect{
-                    when(it){
+                deviceToken, imei
+            )
+                .collect {
+                    when (it) {
                         is NetworkResult.Error -> {
-                            _loginStateSharedFlow.emit(NetworkResult.Error(
-                                message = it.message,
-                                code = it.code
-                            ))
+                            _loginStateSharedFlow.emit(
+                                NetworkResult.Error(
+                                    message = it.message,
+                                    code = it.code
+                                )
+                            )
                         }
+
                         is NetworkResult.Loading -> {
                             _loginStateSharedFlow.emit(NetworkResult.Loading())
                         }
+
                         is NetworkResult.Success -> {
                             _loginStateSharedFlow.emit(NetworkResult.Success(it.data!!))
                         }
@@ -118,7 +146,8 @@ class UserViewModel @Inject constructor(
                 val forgetPasswordResponse =
                     userRepo.createNewPassword(
                         mobile, password,
-                        confirmationPassword, key,token)
+                        confirmationPassword, key, token
+                    )
 
                 if (forgetPasswordResponse.isSuccessful) {
                     if (!forgetPasswordResponse.body()!!.status) {
@@ -176,7 +205,6 @@ class UserViewModel @Inject constructor(
 //        MutableStateFlow(null)
 
     fun updatePassword(
-        token: String,
         listener: OnResponseListener
     ) {
         viewModelScope.launch {
@@ -190,7 +218,7 @@ class UserViewModel @Inject constructor(
             } else {
                 try {
                     val updateResponse = userRepo.updatePassword(
-                        token, userOldPassword.value, userNewPassword.value
+                         userOldPassword.value, userNewPassword.value
                     )
 
                     if (updateResponse.isSuccessful) {
@@ -223,10 +251,10 @@ class UserViewModel @Inject constructor(
     private val _loginState: MutableLiveData<Boolean?> = MutableLiveData()
     val loginState: LiveData<Boolean?> = _loginState
 
-    fun validateTokenResponseUser(token: String) {
+    fun validateTokenResponseUser() {
         viewModelScope.launch {
             try {
-                val response = userRepo.getUserWallet(token)
+                val response = userRepo.getUserWallet()
 
                 if (response.isSuccessful) {
                     _loginState.value = response.body()!!.status

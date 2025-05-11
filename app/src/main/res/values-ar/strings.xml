@@ -17,6 +17,11 @@
     <string name="dec">ديسمبر</string>
 
     <string name="add">أضف الخدمة</string>
+    <string name="write_on_card">نقل الشحنة الى العداد</string>
+
+    <string name="write_charge">من فضلك قم بوضع الكارت حتى يتم نقل الشحنة</string>
+
+
     <string name="no_add">إلغاء </string>
 
     <string name="add_to_reminder">هل تريد اضافة الخدمة لتذكيرك في وقتها؟</string>

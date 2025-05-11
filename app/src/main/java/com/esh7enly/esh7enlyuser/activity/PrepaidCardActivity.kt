@@ -208,7 +208,7 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
 
         lifecycleScope.launch {
-            serviceViewModel.pay(sharedHelper?.getUserToken().toString(), paymentPojoModel,
+            serviceViewModel.pay(paymentPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
@@ -247,7 +247,7 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                 totalAmount, mutableListOf(params)
             )
 
-            serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+            serviceViewModel.getTotalAmount(
                 totalAmountPojoModel,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -277,7 +277,7 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
         // Amount for pay is balance in user wallet
         lifecycleScope.launch {
 
-            paytabsViewModel.getTotalPay(sharedHelper?.getUserToken().toString(),
+            paytabsViewModel.getTotalPay(
                 paymentMethodType = GatewayMethod.paytabs.toString(),
                 transactionType = transactionType,
                 amount = amountForPay, object : OnResponseListener {
@@ -368,8 +368,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                 finalAmount = amount,
                 paymentMethodType = GatewayMethod.paytabs.toString(),
                 transactionType = transactionType,
-                sharedHelper?.getUserToken()
-                    .toString(),
                 totalAmount,
                 "69",
                 object : OnResponseListener {

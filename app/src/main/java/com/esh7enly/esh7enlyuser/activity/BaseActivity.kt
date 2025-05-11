@@ -31,7 +31,7 @@ import java.util.Calendar
 import javax.inject.Inject
 
 @AndroidEntryPoint
-abstract class BaseActivity : AppCompatActivity(){
+abstract class BaseActivity : AppCompatActivity() {
 
     val serviceViewModel: ServiceViewModel by viewModels()
 
@@ -72,7 +72,7 @@ abstract class BaseActivity : AppCompatActivity(){
         serviceIcon: String = "",
     ) {
 
-        serviceViewModel.getTotalAmount(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.getTotalAmount(
             totalAmountPojoModel, object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
 
@@ -118,7 +118,7 @@ abstract class BaseActivity : AppCompatActivity(){
 
         pDialog.show()
 
-        serviceViewModel.pay(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.pay(
             paymentPojoModel, object : OnResponseListener {
                 override fun onSuccess(
                     code: Int,
@@ -163,7 +163,7 @@ abstract class BaseActivity : AppCompatActivity(){
 
         val clientNumber = result.clientNumber ?: "clientNumber"
 
-        serviceViewModel.scheduleInquire(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.scheduleInquire(
             result.service.id.toString(), clientNumber,
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -243,7 +243,7 @@ abstract class BaseActivity : AppCompatActivity(){
 
         val clientNumber = result.clientNumber ?: "clientNumber"
 
-        serviceViewModel.scheduleInvoice(sharedHelper?.getUserToken().toString(),
+        serviceViewModel.scheduleInvoice(
             result.service.id.toString(),
             day, clientNumber,
             object : OnResponseListener {
@@ -304,11 +304,11 @@ abstract class BaseActivity : AppCompatActivity(){
             })
     }
 
-     fun requestChargeFailed(
+    fun requestChargeFailed(
         chargeBalanceRequest: ChargeBalanceRequestPaytabs,
     ) {
         lifecycleScope.launch {
-            paytabsViewModel.chargeBalanceWithPaytabs(sharedHelper?.getUserToken().toString(),
+            paytabsViewModel.chargeBalanceWithPaytabs(
                 chargeBalanceRequest,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -325,7 +325,7 @@ abstract class BaseActivity : AppCompatActivity(){
 
     }
 
-     fun showFailedPay(msg: String?, code: Int) {
+    fun showFailedPay(msg: String?, code: Int) {
         pDialog.cancel()
 
         dialog.showErrorDialogWithAction(
@@ -341,11 +341,12 @@ abstract class BaseActivity : AppCompatActivity(){
         }.show()
     }
 
-     fun requestToChargeBalance(paymentPojoModel: PaymentPojoModel,
-        chargeBalanceRequest: ChargeBalanceRequestPaytabs) {
+    fun requestToChargeBalance(
+        paymentPojoModel: PaymentPojoModel,
+        chargeBalanceRequest: ChargeBalanceRequestPaytabs
+    ) {
         lifecycleScope.launch {
             paytabsViewModel.chargeBalanceWithPaytabs(
-                sharedHelper?.getUserToken().toString(),
                 chargeBalanceRequest,
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
@@ -361,8 +362,8 @@ abstract class BaseActivity : AppCompatActivity(){
         }
     }
 
-     fun requestChargeWalletCancelled(
-        paymentPojoModel : PaymentPojoModel,
+    fun requestChargeWalletCancelled(
+        paymentPojoModel: PaymentPojoModel,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs,
     ) {
         lifecycleScope.launch {

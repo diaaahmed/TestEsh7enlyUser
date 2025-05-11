@@ -11,6 +11,7 @@ object Url {
     const val OTP = "auth/otp"
     const val REGISTER = "auth/register"
     const val SEND_OTP = "auth/send-otp"
+    const val TESTING_KEY = "testing/test"
 
     // End Auth region
 

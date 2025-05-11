@@ -157,6 +157,8 @@
     <string name="change_language">Change language</string>
     <string name="account_setting">Account setting</string>
     <string name="results">Results</string>
+    <string name="write_on_card">Write on Card</string>
+    <string name="write_charge">Please put the card to write charge</string>
 
     <string name="add_balance">Add Balance</string>
     <string name="transactions">Transactions</string>

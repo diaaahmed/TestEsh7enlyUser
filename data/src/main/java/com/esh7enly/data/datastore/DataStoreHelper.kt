@@ -46,7 +46,6 @@ class DataStoreHelper(var context: Context,
 
     @SuppressLint("NewApi")
     suspend fun getUserData(): UserDataStore? {
-
         return withContext(Dispatchers.IO) {
             val userData = context.dataStoreProto.data.onEach {
                it

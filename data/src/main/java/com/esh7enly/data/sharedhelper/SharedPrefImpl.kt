@@ -1,8 +1,8 @@
 package com.esh7enly.data.sharedhelper
 
-import SaveUserDataRepo
 import android.content.SharedPreferences
 import com.esh7enly.data.R
+import com.esh7enly.domain.repo.SaveUserDataRepo
 
 class SharedPrefImpl(private var sharedPreferencesEncrypted: SharedPreferences): SaveUserDataRepo {
 

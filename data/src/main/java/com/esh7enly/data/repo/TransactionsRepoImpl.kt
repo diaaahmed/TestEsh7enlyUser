@@ -11,11 +11,10 @@ import kotlinx.coroutines.flow.flowOn
 
 class TransactionsRepoImpl(private val apiService: ApiService): TransactionsRepo
 {
-    override suspend fun getTransactions(token: String, page:Int): TransactionApiResponse =
+    override suspend fun getTransactions(page:Int): TransactionApiResponse =
         apiService.getTransactions(page)
 
     override suspend fun getTransactionDetails(
-        token: String,
         transactionId: String
     ): Flow<TransactionDetailsEntity> = flow {
         val response = apiService.getTransactionDetails(transactionId)

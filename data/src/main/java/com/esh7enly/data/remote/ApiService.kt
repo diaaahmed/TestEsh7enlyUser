@@ -23,6 +23,7 @@ import com.esh7enly.data.url.Url.SEND_OTP
 import com.esh7enly.data.url.Url.SERVICES_NEW
 import com.esh7enly.data.url.Url.SERVICE_SEARCH
 import com.esh7enly.data.url.Url.START_SESSION
+import com.esh7enly.data.url.Url.TESTING_KEY
 import com.esh7enly.data.url.Url.TOTAL_AMOUNT
 import com.esh7enly.data.url.Url.TOTAL_XPAY
 import com.esh7enly.data.url.Url.TRANSACTIONS
@@ -315,5 +316,12 @@ interface ApiService
         @Field("transaction_id") transactionId: String,
         @Field("imei") imei: String
     ): Response<JsonElement>
+
+
+    @POST(TESTING_KEY)
+    @FormUrlEncoded
+    suspend fun testingKey(
+        @Field("publicKey") publicKey:String
+    ):Response<EncryptedDataTest>
 
 }

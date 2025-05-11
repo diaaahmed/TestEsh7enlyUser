@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
+import com.esh7enly.domain.entity.EncryptedDataTest
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
@@ -93,14 +94,13 @@ class UserRepoImpl (
 
     override suspend fun verifyAccount(mobile: String, otpCode: String, key: String): VerifyOtpResponse = apiService.verifyAccount(mobile,otpCode,key)
 
-    override suspend fun getDeposits(token: String, page: Int): Response<DepositResponse> =
+    override suspend fun getDeposits(page: Int): Response<DepositResponse> =
         apiService.getDeposits(page)
 
-    override suspend fun getUserWallet(token: String): Response<UserWalletResponse> =
+    override suspend fun getUserWallet(): Response<UserWalletResponse> =
         apiService.getUserWallet()
 
     override suspend fun updatePassword(
-        token: String,
         currentPassword: String,
         newPassword: String
     ): Response<ChargeBalanceResponse> =
@@ -109,7 +109,6 @@ class UserRepoImpl (
             newPassword)
 
     override suspend fun updateProfile(
-        token: String,
         name: String,
         mobile: String,
         email: String
@@ -128,6 +127,10 @@ class UserRepoImpl (
         token: String,
         key: String
     ): Response<VerifyOtpResponse>  = apiService.verifyForgetPassword(mobile,token,key)
+
+    override suspend fun testingKey(key: String): Response<EncryptedDataTest> {
+        return apiService.testingKey(key)
+    }
 
 
 }

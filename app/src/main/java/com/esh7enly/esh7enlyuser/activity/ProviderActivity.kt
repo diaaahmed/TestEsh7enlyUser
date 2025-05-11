@@ -71,7 +71,7 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
 
     private fun getData() {
         pDialog.show()
-        serviceViewModel.getProvidersNew(sharedHelper?.getUserToken().toString(),categoryID.toString(),
+        serviceViewModel.getProvidersNew(categoryID.toString(),
             object : OnResponseListener {
                 override fun onSuccess(code: Int, msg: String?, obj: Any?)
                 {

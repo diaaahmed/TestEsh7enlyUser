@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.recreate
 import androidx.core.os.bundleOf
@@ -18,8 +17,7 @@ import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.databinding.FragmentLoginBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.CrashlyticsUtils
-import com.esh7enly.esh7enlyuser.util.EncryptionUtils
-import com.esh7enly.esh7enlyuser.util.KeyPairHandler
+
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.LoginException
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
@@ -87,38 +85,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
 
         binding.btnLogin.setOnClickListener {
-            testEncrypt()
             login()
+
         }
     }
 
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun testEncrypt() {
-
-        KeyPairHandler.generateKeyPair()
-        val publicKeyHandler = KeyPairHandler.getPublicKeyString()
-        Log.e("diaa", "publicKeyHandler $publicKeyHandler")
-
-        val alias = "test"
-        val actualData = "Akash"
-
-        // getPublicKey will call generateKey internally and return the public key
-        val publicKey = EncryptionUtils.getPublicKey(alias)
-        Log.e("diaa", "publicKey $publicKey")
-        // base64 encoded publicKey, decodePublicKey will decode the value
-        val decodedPublicKey = EncryptionUtils.decodePublicKey(publicKey)
-        Log.e("diaa", "decodedPublicKey $decodedPublicKey")
-        //encrypt data with public key
-        val encryptedData = EncryptionUtils.encrypt(actualData, decodedPublicKey)
-        // decrypt data with private key
-        val decryptedData =
-            EncryptionUtils.decrypt(encryptedData, EncryptionUtils.getPrivateKey(alias))
-        Log.e("diaa", "actualData $actualData")
-        Log.e("diaa", "encryptedData $encryptedData")
-        Log.e("diaa", "decryptedData $decryptedData")
-
-    }
 
     override fun onResume() {
         super.onResume()
@@ -290,6 +261,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
             removeUserPassword()
         }
 
+        viewModel.testingKey()
         NavigateToActivity.navigateToHomeActivity(requireActivity())
     }
 

@@ -10,7 +10,6 @@ interface ChargeBalanceRepo
 {
     suspend fun chargeBalanceWithPaytabs(
         url:String,
-        token: String,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs
     ): Response<ChargeBalanceResponse>
 
@@ -21,14 +20,13 @@ interface ChargeBalanceRepo
     suspend fun startSessionForPay(
         paymentMethodType: String,
         transactionType: String,
-        token: String,
         amount: String,
         total_amount:String,
         ip: String
     ): Response<StartSessionResponse>
 
     suspend fun getTotalXPay(
-        token: String, amount: String,
+        amount: String,
         paymentMethodType: String,
         transactionType: String
     ): Response<GetTotalAmountXPayResponse>

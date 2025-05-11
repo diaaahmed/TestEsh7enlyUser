@@ -22,13 +22,13 @@ class BalanceViewModel @Inject constructor(
 
     var responseDeposits: LiveData<NetworkResult<DepositResponse>> = _responseDeposits
 
-    fun getNewDeposits(token: String, page: Int)
+    fun getNewDeposits(page: Int)
     {
         _responseDeposits.value = NetworkResult.Loading()
 
         viewModelScope.launch {
             try{
-                val deposits = userRepo.getDeposits(token,page)
+                val deposits = userRepo.getDeposits(page)
 
                 if(deposits.isSuccessful)
                 {
@@ -63,10 +63,10 @@ class BalanceViewModel @Inject constructor(
     private val _balance:MutableLiveData<String> = MutableLiveData("")
     val balance:LiveData<String> = _balance
 
-    fun getWalletsUser(token:String) {
+    fun getWalletsUser() {
         viewModelScope.launch {
            try{
-               val response = userRepo.getUserWallet(token)
+               val response = userRepo.getUserWallet()
 
                if(response.isSuccessful && response.body()?.status == true)
                {

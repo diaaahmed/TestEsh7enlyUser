@@ -25,47 +25,42 @@ interface ServicesRepo {
 
     suspend fun getNewImageAdResponse(): Flow<NetworkResult<ImageAdResponse>>
 
-    suspend fun checkIntegration(token: String, id: String, imei: String): Response<JsonElement>
+    suspend fun checkIntegration(id: String, imei: String): Response<JsonElement>
 
     suspend fun cancelTransaction(
-        token: String,
         transactionId: String,
         imei: String
     ): Response<JsonElement>
 
     suspend fun inquire(
-        token: String,
         paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity>
 
-    suspend fun pay(token: String, paymentPojoModel: PaymentPojoModel): Response<PaymentEntity>
+    suspend fun pay(paymentPojoModel: PaymentPojoModel): Response<PaymentEntity>
 
-    suspend fun replaceUserPoints(token: String): Response<ReplacePointsResponse>
+    suspend fun replaceUserPoints(): Response<ReplacePointsResponse>
 
     suspend fun getTotalAmount(
-        token: String,
         totalAmountPojoModel: TotalAmountPojoModel
     ): Flow<TotalAmountEntity>
 
     suspend fun scheduleInquire(
-        token: String,
         serviceId: String,
         invoiceNumber: String
     ): Response<ScheduleInquireResponse>
-    suspend fun getScheduleList(token: String): Response<ScheduleListResponse>
+    suspend fun getScheduleList(): Response<ScheduleListResponse>
 
     suspend fun scheduleInvoice(
-        token: String,
         serviceId: String,
         scheduleDay: String,
         invoiceNumber: String
     ): Response<ScheduleInvoiceResponse>
-    suspend fun getProviders(token: String, categoryId: String): ProviderResponse?
+    suspend fun getProviders(categoryId: String): ProviderResponse?
     suspend fun getCategories(token: String): CategoriesResponse?
     fun getCategoriesFlow(): Flow<NetworkResult<CategoriesResponse>>
-    suspend fun getServices(token: String, providerId: String): ServiceResponse?
+    suspend fun getServices(providerId: String): ServiceResponse?
     suspend fun getParameters(serviceID: String): ParametersResponse?
-    suspend fun serviceSearch(token: String, serviceName: String, page: Int): SearchResponse?
-    suspend fun getUserPointsFlow(token: String): Flow<NetworkResult<PointsResponse>>
+    suspend fun serviceSearch(serviceName: String, page: Int): SearchResponse?
+    suspend fun getUserPointsFlow(): Flow<NetworkResult<PointsResponse>>
 
 }

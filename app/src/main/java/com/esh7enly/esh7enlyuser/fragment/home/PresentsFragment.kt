@@ -76,16 +76,15 @@ class PresentsFragment : BaseFragment<FragmentPresentsBinding, ServiceViewModel>
 
     @SuppressLint("SetTextI18n")
     private fun getData() {
-        sharedHelper!!.getUserToken().let {
-            viewModel.getUserPointsFlow(it)
-        }
+        viewModel.getUserPointsFlow()
+
     }
 
     private fun replaceUserPoints() {
         pDialog.show()
 
         lifecycleScope.launch {
-            viewModel.replaceUserPoints(sharedHelper?.getUserToken().toString(),
+            viewModel.replaceUserPoints(
                 object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()

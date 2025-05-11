@@ -67,7 +67,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
     }
 
     private fun getTransactions() {
-        transactionsViewModel.getTransactions(sharedHelper?.getUserToken().toString(),page)
+        transactionsViewModel.getTransactions(page)
 
         transactionsViewModel.responseTransactions.observe(this)
         {
@@ -117,7 +117,7 @@ class TransactionsActivity : AppCompatActivity(), TransactionClick
                 Language.setLanguageNew(this, Constants.LANG)
 
                 page++
-                transactionsViewModel.getTransactions(sharedHelper?.getUserToken().toString(),page)
+                transactionsViewModel.getTransactions(page)
             }
         })
     }

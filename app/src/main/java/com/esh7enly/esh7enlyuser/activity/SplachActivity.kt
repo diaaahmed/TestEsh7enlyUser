@@ -49,9 +49,7 @@ class SplachActivity : BaseActivity()
 
     private fun validateToken()
     {
-        userViewModel.token = sharedHelper?.getUserToken().toString()
-
-        userViewModel.validateTokenResponseUser(userViewModel.token)
+        userViewModel.validateTokenResponseUser()
 
         lifecycleScope.launch {
             userViewModel.loginState.observe(this@SplachActivity)

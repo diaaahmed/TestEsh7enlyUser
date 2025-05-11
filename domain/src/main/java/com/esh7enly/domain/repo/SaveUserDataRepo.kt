@@ -1,3 +1,5 @@
+package com.esh7enly.domain.repo
+
 interface SaveUserDataRepo{
 
     // Save and Get store name

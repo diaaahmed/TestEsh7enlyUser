@@ -51,7 +51,6 @@ class PaytabsViewModel @Inject constructor(
         finalAmount: String,
         paymentMethodType: String,
         transactionType: String,
-        token: String,
         amount: String,
         ip: String,
         listner: OnResponseListener
@@ -61,7 +60,6 @@ class PaytabsViewModel @Inject constructor(
                 val startSessionResponse = chargeBalanceRepo.startSessionForPay(
                     paymentMethodType = paymentMethodType,
                     transactionType = transactionType,
-                    token = token,
                     amount = finalAmount,
                     total_amount = amount,
                     ip = ip
@@ -130,14 +128,13 @@ class PaytabsViewModel @Inject constructor(
     var amountNumber = MutableStateFlow("")
 
     suspend fun getTotalPay(
-        token: String, paymentMethodType: String,
+        paymentMethodType: String,
         transactionType: String, amount: String, listner: OnResponseListener
     ) {
         viewModelScope.launch {
             try {
                 val xPayTotal =
                     chargeBalanceRepo.getTotalXPay(
-                        token,
                         amount,
                         paymentMethodType,
                         transactionType
@@ -220,15 +217,13 @@ class PaytabsViewModel @Inject constructor(
 
 
     suspend fun chargeBalanceWithPaytabs(
-        token: String,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs,
         listner: OnResponseListener
     ) {
         viewModelScope.launch {
             try {
                 val charge = chargeBalanceRepo.chargeBalanceWithPaytabs(
-                    url = pay(),
-                    token, chargeBalanceRequest
+                    url = pay(), chargeBalanceRequest = chargeBalanceRequest
                 )
 
                 if (charge.isSuccessful) {

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.esh7enly.data.repo.UserRepoImpl
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.NetworkResult
+import com.esh7enly.domain.repo.UserRepo
 import com.esh7enly.esh7enlyuser.util.isValidEmailId
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,9 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpdateProfileViewModel @Inject constructor(
-    private val userRepo: UserRepoImpl,
-    private val sharedHelper: SharedHelper
-
+    private val userRepo: UserRepo,
 ) : ViewModel() {
 
 
@@ -65,7 +64,6 @@ class UpdateProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val updateResponse = userRepo.updateProfile(
-                    token = sharedHelper.getUserToken(),
                     mobile = updatedMobile.value,
                     name = "${updatedFirstName.value} ${updatedLastName.value}",
                     email = updatedEmail.value

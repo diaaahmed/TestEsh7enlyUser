@@ -1,9 +1,9 @@
 package com.esh7enly.domain.repo
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
+import com.esh7enly.domain.entity.EncryptedDataTest
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
@@ -45,18 +45,16 @@ interface UserRepo {
 
     suspend fun verifyAccount(mobile: String, otpCode: String, key: String): VerifyOtpResponse
 
-    suspend fun getDeposits(token: String, page: Int): Response<DepositResponse>
+    suspend fun getDeposits(page: Int): Response<DepositResponse>
 
-    suspend fun getUserWallet(token: String): Response<UserWalletResponse>
+    suspend fun getUserWallet(): Response<UserWalletResponse>
 
     suspend fun updatePassword(
-        token: String,
         currentPassword: String,
         newPassword: String
     ): Response<ChargeBalanceResponse>
 
     suspend fun updateProfile(
-        token: String,
         name: String,
         mobile: String,
         email: String
@@ -72,4 +70,6 @@ interface UserRepo {
         token: String,
         key: String
     ): Response<VerifyOtpResponse>
+
+    suspend fun testingKey(key:String):Response<EncryptedDataTest>
 }
