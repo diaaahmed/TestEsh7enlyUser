@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.recreate
 import androidx.core.os.bundleOf
@@ -21,6 +22,8 @@ import com.esh7enly.esh7enlyuser.util.CrashlyticsUtils
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.LoginException
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
+import com.esh7enly.esh7enlyuser.util.encryptDataLast
+import com.esh7enly.esh7enlyuser.util.getPublicKeyFromPemLast
 import com.esh7enly.esh7enlyuser.util.showErrorDialogWithAction
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -261,7 +264,22 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
             removeUserPassword()
         }
 
-        viewModel.testingKey()
+        val inputStream = requireActivity().assets.open("ca_bundlesss.txt")
+            .use { inputStream->
+                inputStream.bufferedReader().readText()
+            }
+
+        val publicKeyLast = getPublicKeyFromPemLast(inputStream)
+
+        val encryptDataLast = encryptDataLast("esh7enly test encrypt",publicKeyLast)
+
+        println("Diaa read encryptDataLast $encryptDataLast")
+
+        Log.d("diaa read new data", "successLoginNavigateToHome: \n $encryptDataLast ")
+
+
+        //viewModel.testingKey()
+
         NavigateToActivity.navigateToHomeActivity(requireActivity())
     }
 

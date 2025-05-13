@@ -16,6 +16,7 @@ import com.esh7enly.domain.repo.UserRepo
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.KeyPairHandler
+import com.esh7enly.esh7enlyuser.util.encryptDataTestNew
 import com.esh7enly.esh7enlyuser.util.isValidPassword
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,6 +54,7 @@ class UserViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.M)
     fun testingKey() {
         viewModelScope.launch {
+
 
             KeyPairHandler.generateKeyPair()
             val publicKeyHandler = KeyPairHandler.getPublicKeyString()
