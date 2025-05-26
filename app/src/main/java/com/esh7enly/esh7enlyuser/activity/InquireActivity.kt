@@ -1682,6 +1682,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
                         ui.tvAmount.text =
                             Utils.format(data.amount) + resources.getString(R.string.egp)
+
                         ui.tvPaidAmou.text = paidAmount
 
                         ui.tvTotalAmou.text =

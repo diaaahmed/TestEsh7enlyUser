@@ -55,7 +55,6 @@ class UserViewModel @Inject constructor(
     fun testingKey() {
         viewModelScope.launch {
 
-
             KeyPairHandler.generateKeyPair()
             val publicKeyHandler = KeyPairHandler.getPublicKeyString()
 
@@ -65,7 +64,11 @@ class UserViewModel @Inject constructor(
             val data = userRepo.testingKey(addedData)
 
             if (data.isSuccessful) {
-                val testDecryptData = KeyPairHandler.decryptTheData(data.body()?.encryptedData!!)
+           //
+                //     val testDecryptData = KeyPairHandler.decryptTheData(data.body()?.encryptedData!!)
+                val testDecryptData = KeyPairHandler.decryptTheData(
+                    "UVTz75Y1ji+F/oM/Bmduaa+gX03RzEzAFZ9Qdlv3oIUT+l9PjNBb66VmtYf5641IwuvXgMCpPOQwyLqJydLi1i1g6g6iOHlr/1lZL9ByFJEP+rUZATT9hnsCPSsz5OvsBX5g5+YpOk/P6dZf2IFfRbL8/vDaK5QK/O0GqWPlRU15G463K2zsp/ijNPFCs0na7vPKL2fErmkYrCU5Tjx6vHpqmS+qQHIyy1rzlB4ciKOBfTURu6AaqCKfs5GsYO55d1xx5h6kTM1uyLU0qesfWHpDeRCUOmU0opTgR6o+plY7wEmiYpWHyXSs2su5BD6opWh9491Xt+eg2WVGJgiSFQ=="
+                )
 
                 println("Diaa data done ${data.body()}")
                 println("Diaa data testDecryptData $testDecryptData")
