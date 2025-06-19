@@ -13,10 +13,6 @@ import java.util.List;
 @Entity
 public class PaymentEntity {
     @Expose
-    @PrimaryKey(autoGenerate = true)
-    @SerializedName("id")
-    public int id;
-    @Expose
     @SerializedName("status")
     public boolean status;
     @Expose
@@ -25,27 +21,16 @@ public class PaymentEntity {
     @Expose
     @SerializedName("message")
     public String message;
+    @Expose
+    @PrimaryKey(autoGenerate = true)
+    @SerializedName("id")
+    public int id;
+
+
     @Embedded(prefix = "data_")
     @Expose
     @SerializedName("data")
     public DataEntity data;
-    @Embedded(prefix = "version_")
-    @Expose
-    @SerializedName("version")
-    public VersionEntity version;
-
-    public PaymentEntity()
-    {
-    }
-
-    public static class VersionEntity {
-        @Expose
-        @SerializedName("service")
-        public String service;
-        @Expose
-        @SerializedName("api")
-        public String api;
-    }
 
     public static class DataEntity {
 
@@ -199,6 +184,7 @@ public class PaymentEntity {
         @Expose
         @SerializedName("extra_ddata")
         public List<ExtraDataEntity> extraData;
+
         @Expose
         @SerializedName("id")
         public int id;

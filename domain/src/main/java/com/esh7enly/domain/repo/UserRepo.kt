@@ -3,7 +3,6 @@ package com.esh7enly.domain.repo
 import androidx.lifecycle.LiveData
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
-import com.esh7enly.domain.entity.EncryptedDataTest
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
@@ -27,6 +26,7 @@ interface UserRepo {
     ): LiveData<ApiResponse<LoginResponse>>
 
     fun loginWithState(
+        uuid:String,
         mobile: String,
         password: String,
         deviceToken: String,
@@ -71,5 +71,4 @@ interface UserRepo {
         key: String
     ): Response<VerifyOtpResponse>
 
-    suspend fun testingKey(key:String):Response<EncryptedDataTest>
 }

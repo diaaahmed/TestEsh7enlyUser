@@ -5,5 +5,6 @@ data class VerifyOtpResponse(
     val `data`: Data,
     val message: String,
     val status: Boolean,
-    val service_update_num:String
 )
+
+class Data

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.esh7enly.domain.entity.categoriesNew.CategoryData
 import com.esh7enly.esh7enlyuser.click.CategoryClick
 import com.esh7enly.esh7enlyuser.databinding.ItemLayoutBinding
-import com.esh7enly.esh7enlyuser.util.Constants
 
 class CategoryAdapterNew(private var listCategory:List<CategoryData>,val click: CategoryClick
 ): RecyclerView.Adapter<CategoryAdapterNew.CategoryViewHolderNew>()
@@ -21,16 +20,16 @@ class CategoryAdapterNew(private var listCategory:List<CategoryData>,val click: 
         {
 
             categoryModel = category[position]
+            tvTitle.text = category[position].name
 
-
-            if(Constants.LANG == Constants.AR)
-            {
-                tvTitle.text = category[position].name_ar
-            }
-            else
-            {
-                tvTitle.text = category[position].name_en
-            }
+//            if(Constants.LANG == Constants.AR)
+//            {
+//                tvTitle.text = category[position].name_ar
+//            }
+//            else
+//            {
+//                tvTitle.text = category[position].name_en
+//            }
 
             root.setOnClickListener {
                 click.click(category[position])

@@ -109,20 +109,14 @@ open class ParametersActivity : BaseActivity() {
 
         ui.btnSubmit.setOnClickListener { pushSubmitBtn() }
 
-        // Done
         getIntentData()
 
-        serviceName =
-            if (Constants.LANG == Constants.AR) Constants.SERVICE_NAME_AR else Constants.SERVICE_NAME_EN
+        serviceName = serviceData?.name
 
-        // Done
         initToolBar()
 
-        // Done
         showData()
-
     }
-
 
     private fun showData() {
 
@@ -149,8 +143,6 @@ open class ParametersActivity : BaseActivity() {
 
     }
 
-
-    // Done
     private fun getParametersFromRemote() {
 
         pDialog.show()
@@ -188,7 +180,7 @@ open class ParametersActivity : BaseActivity() {
                     ) {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW ||
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
                             NavigateToActivity.navigateToAuthActivity(this@ParametersActivity)
@@ -241,7 +233,6 @@ open class ParametersActivity : BaseActivity() {
                     // get Specific Amount from DB
                     amount = serviceViewModel.priceValue.toString()
                 }
-
             }
 
             //Clear list from old data before fill it
@@ -271,7 +262,6 @@ open class ParametersActivity : BaseActivity() {
                             serviceIcon = serviceViewModel.image.toString()
                         )
                     }
-
                 }
             }
 
@@ -283,28 +273,28 @@ open class ParametersActivity : BaseActivity() {
 
         nfcCard.ReadNewNFCCard(this, cardType, object : NFCReadCallback {
             override fun onStartReadNFCCard() {
-                message("Start")
+                showMessage("Start")
             }
 
             override fun onCardNotSupported() {
-                message("Not supported")
+                showMessage("Not supported")
             }
 
             override fun onDeviceNotSupportedNFC() {
-                message("Nfc not supported")
+                showMessage("Nfc not supported")
             }
 
             override fun onCardReadError(vararg exception: java.lang.Exception) {
-                message("Read error")
+                showMessage("Read error")
             }
 
             override fun onChargeExist() {
-                message("Charge exist")
+                showMessage("Charge exist")
             }
 
             override fun onSuccessReadNFCCard(data: NFCReadCallbackResponse) {
 
-                message("Success read")
+                showMessage("Success read")
 
                 paramsArrayListToSend.add(Params("ClientIdentifier", data.clientIdentifier))
                 paramsArrayListToSend.add(Params("billing_account", data.bilingAccount))
@@ -344,17 +334,10 @@ open class ParametersActivity : BaseActivity() {
             }
 
             override fun onUnifiedCardDetection(b: Boolean) {
-                message("Detection")
+                showMessage("Detection")
             }
         })
     }
-
-    private fun message(message: String) {
-        runOnUiThread {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
     override fun pay(paymentPojoModel: PaymentPojoModel) {
         pDialog.show()
@@ -385,7 +368,7 @@ open class ParametersActivity : BaseActivity() {
                         resources.getString(R.string.app__ok)
                     ) {
                         dialog.cancel()
-                        if (code == Constants.CODE_UNAUTH_NEW
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW
                             || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
                             NavigateToActivity.navigateToAuthActivity(this@ParametersActivity)
@@ -412,10 +395,7 @@ open class ParametersActivity : BaseActivity() {
 
                             val calendar = Calendar.getInstance()
                             val day = calendar.get(Calendar.DATE).toString()
-
-//                            pDialog.show()
                             pDialog.show()
-
 
                             lifecycleScope.launch { scheduleInvoice(result, day) }
                         }
@@ -441,7 +421,6 @@ open class ParametersActivity : BaseActivity() {
                 }
 
                 override fun onFailed(code: Int, msg: String?) {
-//                    pDialog.cancel()
                     pDialog.cancel()
 
                     clearParamsData()
@@ -577,7 +556,7 @@ open class ParametersActivity : BaseActivity() {
         ) {
             dialog.cancel()
 
-            if (code == Constants.CODE_UNAUTH_NEW ||
+            if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
             ) {
                 NavigateToActivity.navigateToAuthActivity(this@ParametersActivity)
@@ -625,7 +604,6 @@ open class ParametersActivity : BaseActivity() {
         }
     }
 
-
     // Done
     @SuppressLint("ClickableViewAccessibility")
     private fun replaceData(parameters: List<ParametersData>) {
@@ -637,12 +615,11 @@ open class ParametersActivity : BaseActivity() {
             // Parameter details
             val internalId: String = this.parametersList[i].internal_id
             val type: Int = this.parametersList[i].type
-            val paramNameAr: String = this.parametersList[i].name_ar
-            val paramNameEn: String = this.parametersList[i].name_en
+            val paramNameAr: String = this.parametersList[i].name
             val isClientNum: Int = this.parametersList[i].is_client_number
             val display: String = this.parametersList[i].display.toString()
 
-            val paramName = if (Constants.LANG == Constants.AR) paramNameAr else paramNameEn
+            val paramName = paramNameAr
 
             val values = arrayListOf<SpinnerModel>()
 
@@ -1130,8 +1107,7 @@ open class ParametersActivity : BaseActivity() {
             if (intent.extras != null) {
                 serviceViewModel.servicesId = serviceData?.id!!
                 serviceViewModel.serviceType = serviceData?.type!!
-                serviceViewModel.serviceName = serviceData?.nameAr
-                serviceViewModel.serviceNameEN = serviceData?.nameEn
+                serviceViewModel.serviceName = serviceData?.name
                 serviceViewModel.providerName = intent.getStringExtra(Constants.PROVIDER_NAME)
                 serviceViewModel.priceType = serviceData?.priceType!!
                 serviceViewModel.priceValue = serviceData?.priceValue!!
@@ -1156,10 +1132,6 @@ open class ParametersActivity : BaseActivity() {
         intent.putExtra(Constants.INTERNAL_ID, internalId)
         this.internalId = internalId
         someActivityResultLauncher.launch(intent)
-//        startActivityForResult(
-//            intent,
-//            RESULT_PICK_CONTACT
-//        )
     }
 
     private fun getParamsData(): Boolean {
@@ -1451,7 +1423,7 @@ open class ParametersActivity : BaseActivity() {
             // Params Details
             val internalId: String = this.parametersList[i].internal_id
             val type: Int = this.parametersList[i].type
-            val paramNameAr: String = this.parametersList[i].name_ar
+            val paramNameAr: String = this.parametersList[i].name
             val display: String = this.parametersList[i].display.toString()
             val values = ArrayList<SpinnerModel>()
             for (ii in 0 until parametersList.get(i).type_values.size) {
@@ -1467,7 +1439,9 @@ open class ParametersActivity : BaseActivity() {
             }
 
             //add header item in spinner list
-            values.add(SpinnerModel("0", "أختر $paramNameAr", "Choose$paramNameAr"))
+            values.add(SpinnerModel(
+                "0", "أختر $paramNameAr",
+                "Choose$paramNameAr"))
 
             if (serviceViewModel.serviceType == Constants.INQUIRY_PAYMENT) {
                 if (display == Constants.DISPLAY_FOR_ALL || display == Constants.DISPLAY_FOR_INQUIRY) {
@@ -1558,11 +1532,9 @@ open class ParametersActivity : BaseActivity() {
     }
 
     //endregion
-    private fun showMessage(message: String?) {
-        if (message != null) {
+    private fun showMessage(message: String) {
+        runOnUiThread {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, getString(R.string.some_error), Toast.LENGTH_SHORT).show()
         }
     }
 

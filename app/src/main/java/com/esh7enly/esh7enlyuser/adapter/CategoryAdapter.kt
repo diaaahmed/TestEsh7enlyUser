@@ -37,15 +37,8 @@ class CategoryAdapter (val click: CategoryClick) :
 
             Utils.displayImageOriginalFromCache(root.context,categoryIcon,service.icon
             ,NetworkUtils.isConnectedWifi(root.context))
+            tvTitle.text = service.name
 
-            if(Constants.LANG == Constants.AR)
-            {
-                tvTitle.text = service.name_ar
-            }
-            else
-            {
-                tvTitle.text = service.name_en
-            }
 
             root.setOnClickListener {
                 click.click(service)

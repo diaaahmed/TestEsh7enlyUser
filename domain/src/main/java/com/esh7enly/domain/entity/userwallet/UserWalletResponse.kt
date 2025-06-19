@@ -5,5 +5,11 @@ data class UserWalletResponse(
     val `data`: List<Data>,
     val message: String,
     val status: Boolean,
-    val service_update_num:String
+)
+
+data class Data(
+    val balance: String,
+    val id: Int,
+    val status: Int,
+    val updated_at: String
 )

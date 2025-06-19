@@ -302,8 +302,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
                         categories = response.data?.data
 
                         val other = CategoryData(
-                            name_ar = "خدمات أخرى",
-                            name_en = "Other Service",
+                            name = "خدمات أخرى",
                             id = 0
                         )
 

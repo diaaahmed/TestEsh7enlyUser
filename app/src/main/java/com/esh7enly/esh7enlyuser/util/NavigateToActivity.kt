@@ -84,12 +84,9 @@ class NavigateToActivity
             parametersActivity.putExtra(PROVIDER_NAME,providerName)
 
             Constants.SERVICE_NAME_AR = searchData.name_ar
-            Constants.SERVICE_NAME_EN = searchData.name_en
 
             parametersActivity.putExtra(Constants.SERVICE_ID,searchData.id)
             parametersActivity.putExtra(Constants.SERVICE_NAME_AR,searchData.name_ar)
-            parametersActivity.putExtra(Constants.SERVICE_NAME_EN,searchData.name_en)
-
             parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_INPUT, searchData.accept_amount_input)
             parametersActivity.putExtra(Constants.PRICE_TYPE,searchData.price_type)
             parametersActivity.putExtra(Constants.ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS,searchData.accept_check_integration_provider_status)
@@ -109,8 +106,6 @@ class NavigateToActivity
             val parametersActivity = Intent(activity,ParametersActivity::class.java)
             parametersActivity.putExtra(PROVIDER_NAME,providerName)
             parametersActivity.putExtra(SERVICE_TO_PARAMETER_MODEL,service)
-            Constants.SERVICE_NAME_AR = service.nameAr
-            Constants.SERVICE_NAME_EN = service.nameEn
             activity.startActivity(parametersActivity)
         }
 
@@ -131,13 +126,8 @@ class NavigateToActivity
         {
             val providerActivity = Intent(activity, ProviderActivity::class.java)
             providerActivity.putExtra(Constants.CATEGORY_ID, category.id)
+            providerActivity.putExtra(Constants.CATEGORY_NAME, category.name)
 
-            if (Constants.LANG == Constants.AR) {
-                providerActivity.putExtra(Constants.CATEGORY_NAME, category.name_ar)
-            } else {
-                providerActivity.putExtra(Constants.CATEGORY_NAME, category.name_en)
-
-            }
             activity.startActivity(providerActivity)
         }
 

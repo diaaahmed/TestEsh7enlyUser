@@ -6,3 +6,7 @@ data class ForgetPasswordOTPResponse(
     val message: String,
     val status: Boolean
 )
+
+data class Data(
+    val key: String
+)

@@ -6,3 +6,8 @@ data class GetTotalAmountXPayResponse(
     val message: String,
     val status: Boolean
 )
+
+data class Data(
+    val amount: Double,
+    val fees: Double
+)

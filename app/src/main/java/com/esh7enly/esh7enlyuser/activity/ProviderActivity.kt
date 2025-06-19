@@ -15,7 +15,6 @@ import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.IToolbarTitle
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.google.android.play.core.review.ReviewManagerFactory
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,17 +51,6 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
         getData()
     }
 
-    private fun checkApiReview()
-    {
-        val reviewManager = ReviewManagerFactory.create(this)
-        reviewManager.requestReviewFlow().addOnCompleteListener {
-            if(it.isSuccessful)
-            {
-                reviewManager.launchReviewFlow(this,it.result)
-            }
-        }
-    }
-
     override fun initToolBar() {
         ui.providerToolbar.title = intent.getStringExtra(Constants.CATEGORY_NAME)?: ""
 
@@ -94,7 +82,7 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
                     ) {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW ||
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
                             NavigateToActivity.navigateToAuthActivity(this@ProviderActivity)
@@ -108,16 +96,7 @@ class ProviderActivity : BaseActivity(),ProviderClick,IToolbarTitle
     {
         val serviceActivity = Intent(this@ProviderActivity,ServiceActivity::class.java)
         serviceActivity.putExtra(Constants.PROVIDER_ID,provider.id)
-
-        if(Constants.LANG == Constants.AR)
-        {
-            serviceActivity.putExtra(Constants.PROVIDER_NAME,provider.name_ar)
-        }
-
-        else
-        {
-            serviceActivity.putExtra(Constants.PROVIDER_NAME,provider.name_en)
-        }
+        serviceActivity.putExtra(Constants.PROVIDER_NAME,provider.name)
         startActivity(serviceActivity)
     }
 

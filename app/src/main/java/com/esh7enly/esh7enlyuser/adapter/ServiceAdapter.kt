@@ -34,15 +34,7 @@ class ServiceAdapter (val click: ServiceClick) :
         {
 
             serviceModel = service
-
-            if(Constants.LANG == Constants.AR)
-            {
-                tvTitle.text = service.nameAr
-            }
-            else
-            {
-                tvTitle.text = service.nameEn
-            }
+            tvTitle.text = service.name
 
             root.setOnClickListener {
                 click.click(service)
@@ -57,7 +49,7 @@ class ServiceAdapter (val click: ServiceClick) :
             oldItem: ServiceData,
             newItem: ServiceData
         ): Boolean {
-            return oldItem.nameEn == newItem.nameEn
+            return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(

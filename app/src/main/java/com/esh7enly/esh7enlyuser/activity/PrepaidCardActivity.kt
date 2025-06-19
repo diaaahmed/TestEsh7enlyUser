@@ -1,5 +1,6 @@
 package com.esh7enly.esh7enlyuser.activity
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -67,6 +68,7 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
 
     private var totalAmount = ""
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -342,7 +344,7 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                             resources.getString(R.string.app__ok)
                         ) {
                             dialog.cancel()
-                            if (code == Constants.CODE_UNAUTH_NEW ||
+                            if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
                                 NavigateToActivity.navigateToAuthActivity(this@PrepaidCardActivity)

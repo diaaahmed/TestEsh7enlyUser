@@ -16,7 +16,7 @@ import com.esh7enly.domain.repo.UserRepo
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.KeyPairHandler
-import com.esh7enly.esh7enlyuser.util.encryptDataTestNew
+import com.esh7enly.esh7enlyuser.util.encryptDataWithPublicKey
 import com.esh7enly.esh7enlyuser.util.isValidPassword
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,54 +27,25 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 
 import kotlinx.coroutines.launch
+import java.security.PublicKey
 import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepo: UserRepo,
     private val sharedHelper: SharedHelper,
-    private val dataStoreHelper: DataStoreHelper
-
+    private val dataStoreHelper: DataStoreHelper,
 ) :
     ViewModel() {
 
     var phoneNumber: String? = null
-    var password: String? = null
 
     var imei: String? = null
 
-    var token = ""
 
     fun saveTokenWithDataStore(token: String) {
         viewModelScope.launch {
             dataStoreHelper.saveTokenKey(token)
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun testingKey() {
-        viewModelScope.launch {
-
-            KeyPairHandler.generateKeyPair()
-            val publicKeyHandler = KeyPairHandler.getPublicKeyString()
-
-            val public_edited = publicKeyHandler.replace("+",".")
-            val addedData = "$2a$10$${sharedHelper.getDataToken()}${public_edited}"
-
-            val data = userRepo.testingKey(addedData)
-
-            if (data.isSuccessful) {
-           //
-                //     val testDecryptData = KeyPairHandler.decryptTheData(data.body()?.encryptedData!!)
-                val testDecryptData = KeyPairHandler.decryptTheData(
-                    "UVTz75Y1ji+F/oM/Bmduaa+gX03RzEzAFZ9Qdlv3oIUT+l9PjNBb66VmtYf5641IwuvXgMCpPOQwyLqJydLi1i1g6g6iOHlr/1lZL9ByFJEP+rUZATT9hnsCPSsz5OvsBX5g5+YpOk/P6dZf2IFfRbL8/vDaK5QK/O0GqWPlRU15G463K2zsp/ijNPFCs0na7vPKL2fErmkYrCU5Tjx6vHpqmS+qQHIyy1rzlB4ciKOBfTURu6AaqCKfs5GsYO55d1xx5h6kTM1uyLU0qesfWHpDeRCUOmU0opTgR6o+plY7wEmiYpWHyXSs2su5BD6opWh9491Xt+eg2WVGJgiSFQ=="
-                )
-
-                println("Diaa data done ${data.body()}")
-                println("Diaa data testDecryptData $testDecryptData")
-            } else {
-                println("Diaa data failed ${data.errorBody()}")
-            }
         }
     }
 
@@ -107,13 +78,28 @@ class UserViewModel @Inject constructor(
     val loginStateSharedFlow = _loginStateSharedFlow.asSharedFlow()
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun loginWithState(
-        deviceToken: String, imei: String
+        deviceToken: String, imei: String,
+        publicKeyLast:PublicKey
     ) {
         viewModelScope.launch {
+            KeyPairHandler.generateKeyPair()
+
+            val publicKeyHandler = KeyPairHandler.getPublicKeyString()
+            val keyEdited = publicKeyHandler.replace("+",".")
+            val key = "$2a$10$${keyEdited}"
+
+            val uPassword = encryptDataWithPublicKey(
+                userPassword.value,publicKeyLast)
+
+          //  val addedData = "$2a$10$${sharedHelper.getDataToken()}${public_edited}"
+            println("Diaa encrypted key $key")
+            println("Diaa encrypted password $uPassword")
+
             userRepo.loginWithState(
-                userPhoneNumber.value, userPassword.value,
-                deviceToken, imei
+                mobile = userPhoneNumber.value, password = uPassword,
+                deviceToken = deviceToken, imei = imei, uuid = key
             )
                 .collect {
                     when (it) {

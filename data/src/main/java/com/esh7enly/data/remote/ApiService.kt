@@ -23,7 +23,6 @@ import com.esh7enly.data.url.Url.SEND_OTP
 import com.esh7enly.data.url.Url.SERVICES_NEW
 import com.esh7enly.data.url.Url.SERVICE_SEARCH
 import com.esh7enly.data.url.Url.START_SESSION
-import com.esh7enly.data.url.Url.TESTING_KEY
 import com.esh7enly.data.url.Url.TOTAL_AMOUNT
 import com.esh7enly.data.url.Url.TOTAL_XPAY
 import com.esh7enly.data.url.Url.TRANSACTIONS
@@ -93,13 +92,13 @@ interface ApiService
     @FormUrlEncoded
     @POST(LOGIN)
     suspend fun loginWithState(
+        @Field("uuid") uuid: String,
         @Field("mobile") mobile: String,
         @Field("password") userPassword: String,
         @Field("device_token") deviceToken: String,
         @Field("type") type: String = "mobile",
         @Field("imei") imei: String
     ): Response<LoginResponse>
-
 
     @FormUrlEncoded
     @POST(SEND_OTP)
@@ -114,7 +113,6 @@ interface ApiService
         @Field("token") otpCode: String,
         @Field("key") userKey: String
     ): VerifyOtpResponse
-
 
     @POST(REGISTER)
     suspend fun registerNewAccount(
@@ -142,9 +140,7 @@ interface ApiService
         @Field("key") key: String?,
     ): Response<VerifyOtpResponse>
 
-
     // End Auth region
-
 
     @FormUrlEncoded
     @POST(SCHEDULE_INQUIRE)
@@ -183,18 +179,15 @@ interface ApiService
         @Field("page") page: Int
     ): TransactionApiResponse
 
-
     @POST(TRANSACTION_DETAILS)
     suspend fun getTransactionDetails(
         @Path("TRANSACTION_ID") transactionId: String
     ): TransactionDetailsEntity
 
-
     @POST(TOTAL_AMOUNT)
     suspend fun getTotalAmount(
         @Body totalAmountPojoModel: TotalAmountPojoModel
     ): TotalAmountEntity
-
 
     @FormUrlEncoded
     @POST(UPDATE_PASSWORD)
@@ -245,7 +238,6 @@ interface ApiService
         @Query("page") page:Int
     ): Response<DepositResponse>
 
-
     @FormUrlEncoded
     @POST(NEW_PASSWORD)
     suspend fun createNewPassword(
@@ -274,19 +266,16 @@ interface ApiService
         @Field("ip") ip: String
     ): Response<StartSessionResponse>
 
-
     @POST
     suspend fun chargeBalanceWithPaytabs(
         @Url urlString: String,
         @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
     ): Response<ChargeBalanceResponse>
 
-
     @POST(VISA_WALLET)
     suspend fun checkWalletStatus(
         @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs
     ):Response<ChargeBalanceResponse>
-
 
     @POST(PAYMENT)
     suspend fun pay(
@@ -297,7 +286,6 @@ interface ApiService
     suspend fun inquire(
         @Body paymentPojoModel: PaymentPojoModel
     ): Response<PaymentEntity>
-
 
     @POST(CHECK_INTEGRATION_PROVIDER_STATUS)
     @FormUrlEncoded
@@ -316,12 +304,4 @@ interface ApiService
         @Field("transaction_id") transactionId: String,
         @Field("imei") imei: String
     ): Response<JsonElement>
-
-
-    @POST(TESTING_KEY)
-    @FormUrlEncoded
-    suspend fun testingKey(
-        @Field("publicKey") publicKey:String
-    ):Response<EncryptedDataTest>
-
 }

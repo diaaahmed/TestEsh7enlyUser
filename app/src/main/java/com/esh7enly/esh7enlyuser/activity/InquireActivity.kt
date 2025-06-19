@@ -316,7 +316,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                     ) {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW ||
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
                             NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
@@ -358,8 +358,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
             //  val serviceId: Int = this.parametersList[i].service_id
             val type: Int = this.parametersList[i].type
             Log.d(TAG, "diaa replace data type: $type")
-            val paramNameAr: String = this.parametersList[i].name_ar
-            val paramNameEn: String = this.parametersList[i].name_en
+            val paramNameAr: String = this.parametersList[i].name
 
             // val minLenght: Int = this.parametersList[i].min_length
             //val maxLenght: Int = this.parametersList[i].max_length
@@ -369,12 +368,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
             val display: String = this.parametersList[i].display.toString()
 
             //val selectedValue = ""
-            val paramName: String = if (lang == Constants.AR) {
-                paramNameAr
-            } else {
-                paramNameEn
-
-            }
+            val paramName: String = paramNameAr
             val values: ArrayList<SpinnerModel> = ArrayList<SpinnerModel>()
 
             for (ii in 0 until parametersList[i].type_values.size) {
@@ -801,7 +795,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                             resources.getString(R.string.app__ok)
                         ) {
                             dialog.cancel()
-                            if (code == Constants.CODE_UNAUTH_NEW ||
+                            if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
                                 NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
@@ -1240,7 +1234,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                         ) {
                             dialog.cancel()
 
-                            if (code == Constants.CODE_UNAUTH_NEW ||
+                            if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
                                 NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
@@ -1460,7 +1454,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                         ) {
                             dialog.cancel()
 
-                            if (code == Constants.CODE_UNAUTH_NEW
+                            if (code == Constants.CODE_UNAUTHENTIC_NEW
                                 || code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
                                 NavigateToActivity.navigateToAuthActivity(this@InquireActivity)
@@ -1701,7 +1695,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                         ) {
                             dialog.cancel()
 
-                            if (code == Constants.CODE_UNAUTH_NEW) {
+                            if (code == Constants.CODE_UNAUTHENTIC_NEW) {
                                 lifecycleScope.launch(Dispatchers.Main)
                                 {
                                     NavigateToActivity.navigateToAuthActivity(this@InquireActivity)

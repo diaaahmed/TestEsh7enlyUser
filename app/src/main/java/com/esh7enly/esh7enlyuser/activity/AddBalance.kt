@@ -312,7 +312,7 @@ class AddBalance : BaseActivity(), IToolbarTitle {
                             resources.getString(R.string.app__ok)
                         ) {
                             dialog.cancel()
-                            if (code == Constants.CODE_UNAUTH_NEW ||
+                            if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                             ) {
                                 NavigateToActivity.navigateToAuthActivity(this@AddBalance)

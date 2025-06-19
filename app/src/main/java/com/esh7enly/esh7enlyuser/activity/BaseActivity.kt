@@ -101,7 +101,7 @@ abstract class BaseActivity : AppCompatActivity() {
                     ) {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW) {
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW) {
                             lifecycleScope.launch(Dispatchers.Main)
                             {
                                 NavigateToActivity.navigateToAuthActivity(this@BaseActivity)
@@ -142,7 +142,7 @@ abstract class BaseActivity : AppCompatActivity() {
                     ) {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW ||
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
                             lifecycleScope.launch(Dispatchers.Main)
@@ -333,7 +333,7 @@ abstract class BaseActivity : AppCompatActivity() {
         ) {
             dialog.cancel()
 
-            if (code == Constants.CODE_UNAUTH_NEW ||
+            if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                 code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
             ) {
                 NavigateToActivity.navigateToAuthActivity(this@BaseActivity)

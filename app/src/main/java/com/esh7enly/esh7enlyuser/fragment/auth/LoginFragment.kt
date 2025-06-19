@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat.recreate
 import androidx.core.os.bundleOf
@@ -22,10 +21,7 @@ import com.esh7enly.esh7enlyuser.util.CrashlyticsUtils
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.LoginException
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
-import com.esh7enly.esh7enlyuser.util.encryptDataLast
-import com.esh7enly.esh7enlyuser.util.encryptDataWithPublicKey
-import com.esh7enly.esh7enlyuser.util.getPublicKeyFromPem
-import com.esh7enly.esh7enlyuser.util.getPublicKeyFromPemLast
+import com.esh7enly.esh7enlyuser.util.getPublicKeyFromPemWithCertificate
 import com.esh7enly.esh7enlyuser.util.showErrorDialogWithAction
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -209,7 +205,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
         try {
             lifecycleScope.launch {
 
-                viewModel.loginWithState(token, imei)
+                val publicKeyLast = getPublicKeyFromPemWithCertificate(
+                    requireContext(),"ca_bundles.txt")
+
+                viewModel.loginWithState(
+                    token,
+                    imei,
+                    publicKeyLast)
 
                 viewModel.loginStateSharedFlow.collect {
                     when (it) {
@@ -266,23 +268,21 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
             removeUserPassword()
         }
 
-        val inputStream = requireActivity().assets.open("ca_bundles.txt")
-            .use { inputStream->
-                inputStream.bufferedReader().readText()
-            }
-
-      //  val publicKeyLast = getPublicKeyFromPemLast(inputStream)
-        val publicKeyLast = getPublicKeyFromPem(requireContext(),"ca_bundles.txt")
-
-      //  val encryptDataLast = encryptDataLast("esh7enly test encrypt",publicKeyLast)
-        val encryptDataLast = encryptDataWithPublicKey("diaa and ibrahim test",publicKeyLast)
-
-        println("Diaa read public key $publicKeyLast")
-        println("Diaa read encryptDataLast $encryptDataLast")
-
-        Log.d("diaa read new data", "successLoginNavigateToHome: \n $encryptDataLast ")
-
-        viewModel.testingKey()
+//        val inputStream = requireActivity().assets.open("ca_bundles.txt")
+//            .use { inputStream->
+//                inputStream.bufferedReader().readText()
+//            }
+//
+//      //  val publicKeyLast = getPublicKeyFromPemLast(inputStream)
+//        val publicKeyLast = getPublicKeyFromPem(requireContext(),"ca_bundles.txt")
+//
+//      //  val encryptDataLast = encryptDataLast("esh7enly test encrypt",publicKeyLast)
+//        val encryptDataLast = encryptDataWithPublicKey("diaa and ibrahim test",publicKeyLast)
+//
+//        println("Diaa read public key $publicKeyLast")
+//        println("Diaa read encryptDataLast $encryptDataLast")
+//
+//        Log.d("diaa read new data", "successLoginNavigateToHome: \n $encryptDataLast ")
 
         NavigateToActivity.navigateToHomeActivity(requireActivity())
     }

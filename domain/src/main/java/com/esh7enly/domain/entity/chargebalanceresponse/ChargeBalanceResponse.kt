@@ -6,3 +6,5 @@ data class ChargeBalanceResponse(
     val message: String,
     val status: Boolean
 )
+
+class Data

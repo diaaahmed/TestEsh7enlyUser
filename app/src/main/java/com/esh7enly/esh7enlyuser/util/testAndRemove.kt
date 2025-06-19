@@ -11,22 +11,7 @@ import java.security.spec.X509EncodedKeySpec
 
 import javax.crypto.Cipher
 
-fun encryptDataTestNew(data: String, publicKeyPEM: String): String {
-    // Convert PEM string to a PublicKey
-    val certificateFactory = CertificateFactory.getInstance("X.509")
-    val certificate = certificateFactory.generateCertificate(
-        publicKeyPEM.byteInputStream()
-    ) as X509Certificate
-    val publicKey: PublicKey = certificate.publicKey
-
-    // Encrypt the data
-    val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    cipher.init(Cipher.ENCRYPT_MODE, publicKey)
-    val encryptedBytes = cipher.doFinal(data.toByteArray())
-    return Base64.encodeToString(encryptedBytes, Base64.DEFAULT)
-}
-
-fun getPublicKeyFromPem(context: Context, pemFileName: String): PublicKey {
+fun getPublicKeyFromPemWithCertificate(context: Context, pemFileName: String): PublicKey {
     // Load the PEM file from assets
     val inputStream: InputStream = context.assets.open(pemFileName)
     val pemContent = inputStream.bufferedReader().use { it.readText() }
@@ -48,17 +33,11 @@ fun getPublicKeyFromPem(context: Context, pemFileName: String): PublicKey {
     return certificate.publicKey
 }
 
-fun encryptDataWithPublicKey(data: String, publicKey: PublicKey): String {
-    val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    cipher.init(Cipher.ENCRYPT_MODE, publicKey)
-
-    val encryptedBytes = cipher.doFinal(data.toByteArray(Charsets.UTF_8))
-    return Base64.encodeToString(encryptedBytes, Base64.DEFAULT)
-}
-
-fun getPublicKeyFromPemLast(pem: String): PublicKey {
+fun getPublicKeyFromPemLastWithPublic(context: Context, pemFileName: String): PublicKey {
+    val inputStream: InputStream = context.assets.open(pemFileName)
+    val pemContent = inputStream.bufferedReader().use { it.readText() }
     // Remove the header and footer
-    val publicKeyPEMFormatted = pem
+    val publicKeyPEMFormatted = pemContent
         .replace("-----BEGIN PUBLIC KEY-----", "")
         .replace("-----END PUBLIC KEY-----", "")
         .replace("\\s+".toRegex(), "") // Remove whitespace
@@ -72,10 +51,11 @@ fun getPublicKeyFromPemLast(pem: String): PublicKey {
     return keyFactory.generatePublic(keySpec)
 }
 
-fun encryptDataLast(data: String, publicKey: PublicKey): String {
+fun encryptDataWithPublicKey(data: String, publicKey: PublicKey): String {
     val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
     cipher.init(Cipher.ENCRYPT_MODE, publicKey)
 
     val encryptedBytes = cipher.doFinal(data.toByteArray(Charsets.UTF_8))
     return Base64.encodeToString(encryptedBytes, Base64.DEFAULT)
 }
+

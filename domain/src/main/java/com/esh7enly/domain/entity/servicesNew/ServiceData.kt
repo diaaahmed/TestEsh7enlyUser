@@ -31,10 +31,8 @@ data class ServiceData(
     val createdAt: String,
     @SerializedName("deleted_at")
     val deletedAt: Any?,
-    @SerializedName("description_ar")
-    val descriptionAr: String,
-    @SerializedName("description_en")
-    val descriptionEn: String,
+    @SerializedName("description")
+    val description: String,
     @SerializedName("display_total_amount")
     val displayTotalAmount: Int,
     @SerializedName("external_id")
@@ -53,10 +51,8 @@ data class ServiceData(
     val integrationProviderId: Int,
     @SerializedName("integration_provider_tiers")
     val integrationProviderTierList: List<IntegrationProviderTier>,
-    @SerializedName("name_ar")
-    val nameAr: String,
-    @SerializedName("name_en")
-    val nameEn: String,
+    @SerializedName("name")
+    val name: String,
     @SerializedName("platform_ids")
     val platformIds: List<String>,
     @SerializedName("powered_by_ar")
@@ -115,7 +111,6 @@ data class ServiceData(
         parcel.readString() ?: "",
         parcel.readParcelable(Any::class.java.classLoader),
         parcel.readString() ?: "",
-        parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readString() ?: "",
         mutableListOf<ExtraCommissionTier>().apply {
@@ -132,7 +127,6 @@ data class ServiceData(
             parcel.readArrayList(IntegrationProviderTier::class.java.classLoader)
                 ?.let { addAll(it as List<IntegrationProviderTier>) }
         },
-        parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.createStringArrayList() ?: emptyList(),
         parcel.readString() ?: "",
@@ -170,8 +164,7 @@ data class ServiceData(
         parcel.writeString(convertServices)
         parcel.writeString(createdAt)
         parcel.writeParcelable(deletedAt as? Parcelable, flags)
-        parcel.writeString(descriptionAr)
-        parcel.writeString(descriptionEn)
+        parcel.writeString(description)
         parcel.writeInt(displayTotalAmount)
         parcel.writeString(externalId)
         parcel.writeList(extraCommissionTierList)
@@ -182,8 +175,7 @@ data class ServiceData(
         parcel.writeInt(id)
         parcel.writeInt(integrationProviderId)
         parcel.writeList(integrationProviderTierList)
-        parcel.writeString(nameAr)
-        parcel.writeString(nameEn)
+        parcel.writeString(name)
         parcel.writeStringList(platformIds)
         parcel.writeString(poweredByAr)
         parcel.writeString(poweredByEn)

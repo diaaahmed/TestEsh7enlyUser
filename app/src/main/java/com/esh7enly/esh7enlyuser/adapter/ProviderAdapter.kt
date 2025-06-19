@@ -12,7 +12,6 @@ import com.esh7enly.domain.entity.providersNew.ProviderData
 
 import com.esh7enly.esh7enlyuser.click.ProviderClick
 import com.esh7enly.esh7enlyuser.databinding.ProviderLayoutBinding
-import com.esh7enly.esh7enlyuser.util.Constants
 
 
 class ProviderAdapter (val click: ProviderClick) :
@@ -35,18 +34,8 @@ class ProviderAdapter (val click: ProviderClick) :
 
         fun bind(provider: ProviderData) = with(itemBinding)
         {
-
             providerModel = provider
-
-            if(Constants.LANG == Constants.AR)
-            {
-                tvTitle.text = provider.name_ar
-            }
-            else
-            {
-                tvTitle.text = provider.name_en
-            }
-
+            tvTitle.text = provider.name
             root.setOnClickListener {
                 click.click(provider)
             }
@@ -59,7 +48,7 @@ class ProviderAdapter (val click: ProviderClick) :
             oldItem: ProviderData,
             newItem: ProviderData
         ): Boolean {
-            return oldItem.name_en == newItem.name_en
+            return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(

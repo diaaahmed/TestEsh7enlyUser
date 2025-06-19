@@ -12,31 +12,30 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity
 public class TotalAmountEntity implements Parcelable {
-
-    @Expose
-    @PrimaryKey(autoGenerate = true)
-    @SerializedName("id")
-    public int id;
-    @Expose
-    @SerializedName("status")
-    public boolean status;
     @Expose
     @SerializedName("code")
     public int code;
     @Expose
     @SerializedName("message")
     public String message;
+    @Expose
+    @SerializedName("status")
+    public boolean status;
+
+    @Expose
+    @PrimaryKey(autoGenerate = true)
+    @SerializedName("id")
+    public int id;
+
     @Embedded(prefix = "data_")
     @Expose
     @SerializedName("data")
     public DataEntity data;
+
     @Embedded(prefix = "version_")
     @Expose
     @SerializedName("version")
     public VersionEntity version;
-
-    public TotalAmountEntity() {
-    }
 
     protected TotalAmountEntity(Parcel in) {
         id = in.readInt();
@@ -88,6 +87,10 @@ public class TotalAmountEntity implements Parcelable {
         @SerializedName("code")
         public int code;
         @Expose
+        @SerializedName("status")
+        public boolean status;
+
+        @Expose
         @SerializedName("merchant")
         public String merchant;
         @Expose
@@ -108,10 +111,6 @@ public class TotalAmountEntity implements Parcelable {
         @Expose
         @SerializedName("amount")
         public double amount;
-        @Expose
-        @SerializedName("status")
-        public boolean status;
+
     }
-
-
 }

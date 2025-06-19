@@ -4,6 +4,11 @@ data class CategoriesResponse(
     val code: Int,
     val `data`: List<CategoryData> = emptyList(),
     val message: String,
-    val service_update_num: String = "",
     val status: Boolean = false
+)
+
+data class CategoryData(
+    val icon: String = "",
+    val id: Int = 0,
+    val name:String = "",
 )

@@ -83,7 +83,7 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
                     ) {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW ||
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
                             NavigateToActivity.navigateToAuthActivity(this@ServiceActivity)
@@ -110,20 +110,13 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
 
                 getTotalAmount(
                     totalAmountPojoModel,
-                    service.nameAr,
+                    service.name,
                     providerName,
                     service.icon
                 )
             }
 
         } else {
-
-            val providerName =
-                if (Constants.LANG == Constants.AR) {
-                    service.nameAr
-                } else {
-                    service.nameEn
-                }
 
             NavigateToActivity.navigateToParametersActivity(
                 activity = this,

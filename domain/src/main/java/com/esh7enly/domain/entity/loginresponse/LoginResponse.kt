@@ -2,7 +2,15 @@ package com.esh7enly.domain.entity.loginresponse
 
 import com.esh7enly.domain.entity.baseresponse.BaseResponse
 
-data class LoginResponse(
-    val `data`: Data,
-    val service_update_num:String
-):BaseResponse()
+data class LoginResponse(val `data`: Data, ):BaseResponse()
+
+data class Data(
+    val token: String,
+    val id:Int,
+    val name:String,
+    val mobile:String,
+    val email:String,
+    val last_login:String,
+    val points:String,
+    val device_token:String
+)

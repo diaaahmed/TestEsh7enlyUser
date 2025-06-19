@@ -36,7 +36,6 @@ public class Constants {
     public static final String SERVICE_NAME = "service_name";
     public static final String SERVICE_ICON = "service_icon";
     public static  String SERVICE_NAME_AR = "service_name";
-    public static  String SERVICE_NAME_EN = "service_name";
     public static final String SERVICE_TYPE_CODE = "service_type_code";
     public static final String SERVICE_AMOUNT = "amount";
     public static final String SERVICE_TOTAL_AMOUNT = "total_amount";
@@ -136,7 +135,7 @@ public class Constants {
 
     //region Error Codes
     public static final String CODE_HTTP_UNAUTHORIZED = "401";
-    public static final int CODE_UNAUTH_NEW = 330001;
+    public static final int CODE_UNAUTHENTIC_NEW = 330001;
 
     //endregion
     public static final String INTERNAL_ID = "internal_id";

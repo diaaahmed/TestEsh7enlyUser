@@ -83,7 +83,7 @@ class ChangePasswordActivity : AppCompatActivity(), IToolbarTitle {
                     {
                         dialog.cancel()
 
-                        if (code == Constants.CODE_UNAUTH_NEW ||
+                        if (code == Constants.CODE_UNAUTHENTIC_NEW ||
                             code.toString() == Constants.CODE_HTTP_UNAUTHORIZED
                         ) {
                             NavigateToActivity.navigateToAuthActivity(this@ChangePasswordActivity)

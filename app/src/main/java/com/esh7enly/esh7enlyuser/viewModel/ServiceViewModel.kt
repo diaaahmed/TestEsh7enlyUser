@@ -211,7 +211,6 @@ class ServiceViewModel @Inject constructor(
     var servicesId = 0
     var serviceType = 0
     var serviceName: String? = null
-    var serviceNameEN: String? = null
     var providerName: String? = null
     var priceType = 0
     var priceValue: String? = null
@@ -334,7 +333,7 @@ class ServiceViewModel @Inject constructor(
                 servicesRepo.getTotalAmount(totalAmountPojoModel)
                     .catch {
                         Log.d(TAG, "diaa getTotalAmount: catch ${it.message}")
-                        listner.onFailed(Constants.CODE_UNAUTH_NEW,it.message)
+                        listner.onFailed(Constants.CODE_UNAUTHENTIC_NEW,it.message)
                     }
                     .buffer()
                     .collect { response ->
@@ -346,7 +345,7 @@ class ServiceViewModel @Inject constructor(
                         }
                     }
             } catch (e: Exception) {
-                listner.onFailed(Constants.CODE_UNAUTH_NEW, e.message)
+                listner.onFailed(Constants.CODE_UNAUTHENTIC_NEW, e.message)
                 sendIssueToCrashlytics(e.message.toString(),"getTotalAmount serviceViewModel")
             }
 

@@ -8,7 +8,5 @@ data class ServiceResponse(
     @SerializedName("data")
     val data: List<ServiceData> = emptyList(),
     val message: String,
-    @SerializedName("service_update_num")
-    val serviceUpdateNum: String = "",
     val status: Boolean = false
 )

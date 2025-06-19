@@ -4,7 +4,11 @@ data class ProviderResponse(
     val code: Int,
     val `data`: List<ProviderData> = emptyList(),
     val message: String,
-    val service_update_num: String = "",
     val status: Boolean = false
+)
 
+data class ProviderData(
+    val id: Int,
+    val logo: String,
+    val name: String
 )

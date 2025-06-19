@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
-import com.esh7enly.domain.entity.EncryptedDataTest
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
 import com.esh7enly.domain.entity.depositsresponse.DepositResponse
@@ -26,6 +25,7 @@ class UserRepoImpl (
 {
 
     override fun loginWithState(
+        uuid:String,
         mobile:String,
         password:String,
         deviceToken:String,
@@ -38,7 +38,8 @@ class UserRepoImpl (
                 mobile = mobile,
                 userPassword = password,
                 imei = imei,
-                deviceToken = deviceToken
+                deviceToken = deviceToken,
+                uuid = uuid
             )
 
             if(getLoginResponse.isSuccessful)
@@ -127,10 +128,6 @@ class UserRepoImpl (
         token: String,
         key: String
     ): Response<VerifyOtpResponse>  = apiService.verifyForgetPassword(mobile,token,key)
-
-    override suspend fun testingKey(key: String): Response<EncryptedDataTest> {
-        return apiService.testingKey(key)
-    }
 
 
 }

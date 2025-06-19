@@ -67,6 +67,7 @@ class SharedHelper(var context: Context,
 
     }
 
+
     fun setUserToken(token: String) {
 
         with(sharedPreferencesEncrypted.edit())
@@ -79,6 +80,7 @@ class SharedHelper(var context: Context,
 
      fun getUserToken(): String = "Bearer " + sharedPreferencesEncrypted.getString(Constants.USER_TOKEN, "")
 
+    fun getNormalToken():String = sharedPreferencesEncrypted.getString(Constants.USER_TOKEN,"") ?: ""
 
     fun getDataToken():String{
         return getUserToken()

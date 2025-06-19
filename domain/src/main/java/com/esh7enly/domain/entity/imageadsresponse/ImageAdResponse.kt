@@ -4,6 +4,19 @@ data class ImageAdResponse(
     val code: Int,
     val `data`: Data,
     val message: String,
-    val service_update_num: String,
     val status: Boolean
+)
+
+data class Data(
+    val current_page: Int,
+    val `data`: List<DataX>,
+    val last_page: Int,
+    val per_page: Int,
+    val total: Int
+)
+
+data class DataX(
+    val banner: String,
+    val created_at: String,
+    val id: Int
 )
