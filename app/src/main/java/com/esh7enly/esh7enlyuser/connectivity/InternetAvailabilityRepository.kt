@@ -1,4 +1,4 @@
-package com.esh7enly.esh7enlyuser.util
+package com.esh7enly.esh7enlyuser.connectivity
 
 import android.os.Build
 import androidx.annotation.RequiresApi

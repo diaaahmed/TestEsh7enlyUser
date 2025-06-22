@@ -15,9 +15,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * @author Islam
- */
 public class TimeDialogs {
 
     private static int mYear, mMonth, mDay, mHour, mMinute;

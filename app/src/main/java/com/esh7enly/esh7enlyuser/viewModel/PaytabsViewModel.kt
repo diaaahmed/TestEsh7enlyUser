@@ -1,5 +1,6 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -7,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.repo.ChargeBalanceRepo
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -14,6 +16,14 @@ import com.esh7enly.esh7enlyuser.util.Constants
 
 import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
+import com.payment.paymentsdk.PaymentSdkConfigBuilder
+import com.payment.paymentsdk.integrationmodels.PaymentSdkApms
+import com.payment.paymentsdk.integrationmodels.PaymentSdkBillingDetails
+import com.payment.paymentsdk.integrationmodels.PaymentSdkConfigurationDetails
+import com.payment.paymentsdk.integrationmodels.PaymentSdkLanguageCode
+import com.payment.paymentsdk.integrationmodels.PaymentSdkShippingDetails
+import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionClass
+import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionType
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +34,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PaytabsViewModel @Inject constructor(
-    private val chargeBalanceRepo: ChargeBalanceRepo
+    private val chargeBalanceRepo: ChargeBalanceRepo,
+    private val sharedHelper:SharedHelper
 ) : ViewModel() {
 
     var buttonClicked: MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
@@ -247,5 +258,64 @@ class PaytabsViewModel @Inject constructor(
             }
 
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+     fun generatePaytabsConfigurationDetails(
+        serverKey:String,
+        clientKey:String,
+        secretKey:String?,
+        transactionTitle:String,
+        value: String,
+        drawable: Drawable?,
+        startSessionId: Int
+    ): PaymentSdkConfigurationDetails {
+
+        val cartDesc = "Add esh7enly balance" // Description in paytab info
+        val currency = "EGP"
+        val merchantCountryCode = "EG"
+        val amount: Double = value.toDouble()
+
+        val locale = PaymentSdkLanguageCode.AR
+
+        val billingData = PaymentSdkBillingDetails(
+            "City",
+            countryCode = merchantCountryCode,
+            email = sharedHelper.getUserEmail().toString(),
+            name = sharedHelper.getStoreName().toString(),
+            phone = sharedHelper.getUserPhone().toString(),
+            state = "zipcode",
+            addressLine = "Egypt",
+            zip = ""
+        )
+
+        // Customer details
+        val shippingData = PaymentSdkShippingDetails(
+            "City",
+            countryCode = merchantCountryCode,
+            email = sharedHelper.getUserEmail().toString(),
+            name = "${sharedHelper.getStoreName().toString()} , $startSessionId",
+            phone = sharedHelper.getUserPhone().toString(),
+            state = "zipcode",
+            addressLine = "Egypt",
+            zip = ""
+        )
+
+        val configData = PaymentSdkConfigBuilder(
+            secretKey!!, serverKey, clientKey, amount, currency
+        ).setCartDescription(cartDesc)
+            .setLanguageCode(locale)
+            .setMerchantCountryCode(merchantCountryCode)
+            .setMerchantIcon(drawable)
+            .hideCardScanner(true)
+            .setAlternativePaymentMethods(listOf(PaymentSdkApms.MEEZA_QR))
+            .setTransactionType(PaymentSdkTransactionType.SALE)
+            .setTransactionClass(PaymentSdkTransactionClass.ECOM)
+            .setCartId(Constants.HASH_ID)
+            .setBillingData(billingData)
+            .setShippingData(shippingData)
+            .setScreenTitle(transactionTitle)
+
+        return configData.build()
     }
 }

@@ -10,26 +10,22 @@ import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.LiveDataCallAdapterFactory
 import com.esh7enly.esh7enlyuser.BuildConfig
 import com.esh7enly.esh7enlyuser.LoggingInterceptorLevel
-import com.esh7enly.esh7enlyuser.util.InternetAvailabilityRepository
-import com.esh7enly.esh7enlyuser.util.NoInternetInterceptor
+import com.esh7enly.esh7enlyuser.connectivity.InternetAvailabilityRepository
+import com.esh7enly.esh7enlyuser.connectivity.NoInternetInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.CertificatePinner
-import okhttp3.CipherSuite
-import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.security.KeyStore
 import java.security.SecureRandom
 import java.security.cert.CertificateFactory
-import java.util.Collections
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -113,35 +109,12 @@ object NetworkModule {
     fun provideOkhttp(
         @Named("Logging-interceptor") loggingInterceptor: Interceptor,
         @Named("Header-Interceptor") headerInterceptor: Interceptor,
-        internetRepo: InternetAvailabilityRepository,
-        @ApplicationContext context: Context
+        internetRepo: InternetAvailabilityRepository
     ): OkHttpClient {
-        val spec = ConnectionSpec.Builder(
-            ConnectionSpec.MODERN_TLS
-        ).supportsTlsExtensions(true)
-            .tlsVersions(TlsVersion.TLS_1_3)
-            .cipherSuites(
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_RC4_128_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_RC4_128_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA
-            )
-            .build()
-
 
         return OkHttpClient.Builder()
             .retryOnConnectionFailure(true)
             .addInterceptor(loggingInterceptor)
-           // .connectionSpecs(Collections.singletonList(spec))
             // .certificatePinner(createCertificatePinning())
             .addInterceptor(NoInternetInterceptor(internetRepo))
             .addInterceptor(headerInterceptor)

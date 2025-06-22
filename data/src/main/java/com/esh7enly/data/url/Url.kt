@@ -11,10 +11,8 @@ object Url {
     const val OTP = "auth/otp"
     const val REGISTER = "auth/register"
     const val SEND_OTP = "auth/send-otp"
-    const val TESTING_KEY = "testing/test"
 
     // End Auth region
-
 
     const val UPDATE_PASSWORD = "misc/change-password"
 
@@ -42,13 +40,14 @@ object Url {
     const val INQUIRY = "service/inquiry"
 
     const val PAYMENT = "service/payment"
+
     const val VISA_WALLET = "newvisa/check-complete"
 
     const val TOTAL_AMOUNT = "service/total-amount"
 
     const val START_SESSION = "newvisa/start-session-wallet"
     const val TOTAL_XPAY = "newvisa/get-amount-wallet"
-   // const val GET_DEPOSITS = "test-visa/list-wallet"
+    // const val GET_DEPOSITS = "test-visa/list-wallet"
     const val DEPOSITS = "newvisa/list-wallet"
 
     const val CANCEL_SERVICE = "service/cancel"

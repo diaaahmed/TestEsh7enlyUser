@@ -109,10 +109,10 @@ class ServiceActivity : BaseActivity(), ServiceClick, IToolbarTitle {
             lifecycleScope.launch(Dispatchers.IO) {
 
                 getTotalAmount(
-                    totalAmountPojoModel,
-                    service.name,
-                    providerName,
-                    service.icon
+                    totalAmountPojoModel =totalAmountPojoModel,
+                    serviceName = service.name,
+                    providerName = providerName,
+                    serviceIcon = service.icon
                 )
             }
 

@@ -28,7 +28,7 @@ class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRe
         ip: String
     ): Response<StartSessionResponse> = apiService.startSessionForPay(
         paymentMethodType = paymentMethodType, transactionType = transactionType,
-        amount = amount,total_amount = total_amount, ip = ip
+        amount = amount,totalAmount = total_amount, ip = ip
     )
 
     override suspend fun getTotalXPay(
@@ -36,7 +36,7 @@ class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRe
         paymentMethodType: String,
         transactionType: String
     ): Response<GetTotalAmountXPayResponse> =
-        apiService.getTotalXpay(amount = amount, paymentMethodType =paymentMethodType,
+        apiService.getTotalForCharge(amount = amount, paymentMethodType =paymentMethodType,
             transactionType = transactionType)
 
 }

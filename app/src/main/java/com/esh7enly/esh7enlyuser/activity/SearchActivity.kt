@@ -164,7 +164,6 @@ class SearchActivity : BaseActivity(), SearchClick, IToolbarTitle {
                     serviceIcon = service.icon
                 )
 
-
             }
 
 

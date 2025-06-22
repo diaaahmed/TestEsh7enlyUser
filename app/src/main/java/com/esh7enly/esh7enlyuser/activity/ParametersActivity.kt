@@ -504,6 +504,7 @@ open class ParametersActivity : BaseActivity() {
     }
 
     private fun sendParametersToAPI() {
+
         val paymentPojoModel = PaymentPojoModel(
             Constants.IMEI,
             "", serviceViewModel.servicesId,

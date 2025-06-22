@@ -12,7 +12,6 @@ class SharedPrefImpl(private var sharedPreferencesEncrypted: SharedPreferences):
             putString(Constants.STORE_NAME, storeName)
             apply()
         }
-
     }
 
     override suspend  fun getStoreName(): String? =

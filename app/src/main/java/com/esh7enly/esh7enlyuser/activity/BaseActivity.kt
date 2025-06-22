@@ -13,17 +13,23 @@ import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.esh7enlyuser.R
 
+
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Decryptor
 import com.esh7enly.esh7enlyuser.util.Encryptor
+import com.esh7enly.esh7enlyuser.util.GatewayMethod
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
+import com.esh7enly.esh7enlyuser.util.PayWays
+import com.esh7enly.esh7enlyuser.util.PaymentStatus
 import com.esh7enly.esh7enlyuser.viewModel.PaytabsViewModel
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 import com.esh7enly.esh7enlyuser.viewModel.TransactionsViewModel
 import com.esh7enly.esh7enlyuser.viewModel.UserViewModel
+import com.payment.paymentsdk.integrationmodels.PaymentSdkError
+import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionDetails
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -384,4 +390,109 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    fun onChargeBalanceCancelled(
+        paymentPojoModel: PaymentPojoModel,
+        finalPaymentWay:String,
+        finalTotalAmount:String,
+        transactionTypeFinal:String
+    ) {
+        if (finalPaymentWay == PayWays.WALLET.toString()) {
+            // Call query by cart_id
+            val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+                status = PaymentStatus.CANCELLED_WALLET.toString(),
+                id = Constants.START_SESSION_ID,
+                amount = finalTotalAmount,
+                total_amount = Constants.TOTAL_AMOUNT_PAYTABS,
+                payment_method_type = GatewayMethod.paytabs.toString(),
+                transaction_type = transactionTypeFinal,
+                hash_generated = Constants.HASH_GENERATED,
+                hash_id = Constants.HASH_ID
+            )
+
+            requestChargeWalletCancelled(paymentPojoModel, chargeBalanceRequest)
+
+        } else {
+            val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+                status = PaymentStatus.CANCELLED.toString(),
+                id = Constants.START_SESSION_ID,
+                amount = finalTotalAmount,
+                errorCode = "400",
+                errorMsg = "Payment cancelled",
+                payment_method_type = GatewayMethod.paytabs.toString(),
+                transaction_type = transactionTypeFinal,
+                hash_generated = Constants.HASH_GENERATED,
+                hash_id = Constants.HASH_ID
+            )
+
+            requestChargeFailed(chargeBalanceRequest)
+        }
+    }
+
+    fun onChargeBalanceError(
+        error: PaymentSdkError, finalTotalAmount: String, transactionType: String
+    ) {
+        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+            status = PaymentStatus.FAILED.toString(),
+            id = Constants.START_SESSION_ID,
+            amount = finalTotalAmount,
+            errorCode = error.code.toString(),
+            errorMsg = error.msg,
+            payment_method_type = GatewayMethod.paytabs.toString(),
+            transaction_type = transactionType,
+            hash_generated = Constants.HASH_GENERATED,
+            hash_id = Constants.HASH_ID
+        )
+        requestChargeFailed(chargeBalanceRequest)
+
+    }
+
+    fun onChargeBalanceSuccessful(
+        paymentPojoModel:PaymentPojoModel,
+        paymentSdkTransactionDetails: PaymentSdkTransactionDetails,
+        transactionTypeFinal:String,
+        totalAmount:String)
+    {
+        var chargeBalanceRequest = ChargeBalanceRequestPaytabs(
+            id = Constants.START_SESSION_ID,
+            amount = totalAmount,
+            card_id = paymentSdkTransactionDetails.cartID,
+            total_amount = paymentSdkTransactionDetails.cartAmount,
+            cartDescription = paymentSdkTransactionDetails.cartDescription,
+            errorCode = paymentSdkTransactionDetails.errorCode,
+            errorMsg = paymentSdkTransactionDetails.errorMsg,
+            isAuthorized = paymentSdkTransactionDetails.isAuthorized,
+            isOnHold = paymentSdkTransactionDetails.isOnHold,
+            isPending = paymentSdkTransactionDetails.isPending,
+            isProcessed = paymentSdkTransactionDetails.isProcessed,
+            isSuccess = paymentSdkTransactionDetails.isSuccess,
+            payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
+            redirectUrl = paymentSdkTransactionDetails.redirectUrl,
+            token = paymentSdkTransactionDetails.token,
+            transactionReference = paymentSdkTransactionDetails.transactionReference,
+            transactionType = paymentSdkTransactionDetails.transactionType,
+            responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
+            responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
+            responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
+            transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
+            payment_method_type = GatewayMethod.paytabs.toString(),
+            transaction_type = transactionTypeFinal,
+            hash_generated = Constants.HASH_GENERATED,
+            hash_id = Constants.HASH_ID
+        )
+
+        chargeBalanceRequest = if (paymentSdkTransactionDetails.isSuccess == true) {
+            chargeBalanceRequest.copy(
+                status = PaymentStatus.SUCCESSFUL.toString()
+            )
+        } else {
+            chargeBalanceRequest.copy(
+                status = PaymentStatus.FAILED.toString()
+            )
+        }
+
+        requestToChargeBalance(
+            paymentPojoModel = paymentPojoModel,
+            chargeBalanceRequest = chargeBalanceRequest
+        )
+    }
 }

@@ -12,11 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
 
-/**
- * @author Islam
- * @date 11/18/2017
- */
-
 public class DeviceUtil extends AppCompatActivity {
 
     private static String TAG = "DeviceUtil";

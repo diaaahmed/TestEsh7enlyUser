@@ -30,7 +30,6 @@ import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.SpinnerModel
 import com.esh7enly.domain.entity.TotalAmountEntity
 import com.esh7enly.domain.entity.TotalAmountPojoModel
-import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.parametersNew.ParametersData
 import com.esh7enly.domain.entity.totalamountxpayresponse.Data
 import com.esh7enly.esh7enlyuser.R
@@ -45,7 +44,6 @@ import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.PayWays
-import com.esh7enly.esh7enlyuser.util.PaymentStatus
 import com.esh7enly.esh7enlyuser.util.PermissionHelper
 import com.esh7enly.esh7enlyuser.util.ServicesCard
 import com.esh7enly.esh7enlyuser.util.TimeDialogs
@@ -56,16 +54,8 @@ import com.fawry.nfc.NFC.interfaces.NFCWriteCallback
 import com.fawry.nfc.NFC.models.FawryWapperStatus
 import com.fawry.nfc.NFC.models.FawryWrapperResponse
 import com.payment.paymentsdk.PaymentSdkActivity
-import com.payment.paymentsdk.PaymentSdkConfigBuilder
-import com.payment.paymentsdk.integrationmodels.PaymentSdkApms
-import com.payment.paymentsdk.integrationmodels.PaymentSdkBillingDetails
-import com.payment.paymentsdk.integrationmodels.PaymentSdkConfigurationDetails
 import com.payment.paymentsdk.integrationmodels.PaymentSdkError
-import com.payment.paymentsdk.integrationmodels.PaymentSdkLanguageCode
-import com.payment.paymentsdk.integrationmodels.PaymentSdkShippingDetails
-import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionClass
 import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionDetails
-import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionType
 import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -133,27 +123,15 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         }
     }
 
-    //  private val serviceViewModel: ServiceViewModel by viewModels()
-
     private val REQUESTCODE = 100
     private var internalId: String? = null
 
     private var editedAmount = ""
 
-//    private val pDialog by lazy {
-//        ProgressDialog.createProgressDialog(this)
-//    }
-
     private var parametersList: List<ParametersData> = emptyList()
 
     var dynamicLayout: DynamicLayout? = null
         @Inject set
-
-//    var sharedHelper: SharedHelper? = null
-//        @Inject set
-//
-//    var connectivity: Connectivity? = null
-//        @Inject set
 
     private val dialog by lazy {
         AppDialogMsg(this, false)
@@ -659,10 +637,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         this.internalId = internalId
         someActivityResultLauncher.launch(intent)
 
-//        startActivityForResult(
-//            intent,
-//            RESULT_PICK_CONTACT
-//        )
     }
 
     private fun contactPicked(data: Intent) {
@@ -781,7 +755,8 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
                             startSessionForPay(
                                 amountForPay,
-                                data.amount.toString(), transactionType
+                                data.amount.toString(),
+                                transactionType
                             )
 
                         }.show()
@@ -819,7 +794,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 finalAmount = amount,
                 paymentMethodType = GatewayMethod.paytabs.toString(),
                 transactionType = transactionType,
-
                 totalAmount,
                 "69",
                 object : OnResponseListener {
@@ -860,12 +834,37 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         totalAmount: String, drawable: Drawable?,
         startSessionId: Int
     ) {
+        var secretKey: String? = null
 
-        val configData: PaymentSdkConfigurationDetails =
+        try {
+            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
+            Base64.encodeToString(encryptedText, Base64.DEFAULT)
 
-            generatePaytabsConfigurationDetails(
-                totalAmount, drawable, startSessionId
+            secretKey = decryptor?.decryptData(
+                aliasString(), encryptor?.encryption, encryptor?.iv
             )
+
+        } catch (e: Exception) {
+
+            Log.d(TAG, "diaa first exception: ${e.message}")
+            sendIssueToCrashlytics(
+                msg = e.message.toString(),
+                functionName = "encryptedText AddBalance",
+                key = "encryptedText AddBalance",
+                provider = e.message.toString()
+            )
+        }
+
+        val configData = paytabsViewModel.generatePaytabsConfigurationDetails(
+            serverKey = serverKey(),
+            clientKey = clientKey(),
+            secretKey = secretKey,
+            transactionTitle = resources.getString(R.string.paytabs_title),
+            value = totalAmount,
+            drawable = drawable,
+            startSessionId = startSessionId
+        )
+
 
         when (transactionType) {
             GatewayTransactionType.visa.toString() -> {
@@ -888,83 +887,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
     private external fun profileKey(): String
     private external fun aliasString(): String
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun generatePaytabsConfigurationDetails(
-        value: String,
-        drawable: Drawable?,
-        startSessionId: Int
-    ): PaymentSdkConfigurationDetails {
-
-        var secretKey: String? = null
-
-        try {
-            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
-            Base64.encodeToString(encryptedText, Base64.DEFAULT)
-
-            secretKey = decryptor?.decryptData(
-                aliasString(), encryptor?.encryption, encryptor?.iv
-            )
-
-        } catch (e: Exception) {
-
-            Log.d(TAG, "diaa first exception: ${e.message}")
-            sendIssueToCrashlytics(
-                msg = e.message.toString(),
-                functionName = "encryptedText AddBalance",
-                key = "encryptedText AddBalance",
-                provider = e.message.toString()
-            )
-        }
-
-        val transactionTitle = resources.getString(R.string.paytabs_title)
-        val cartDesc = "Add esh7enly balance" // Description in paytab info
-        val currency = "EGP"
-        val merchantCountryCode = "EG"
-        val amount: Double = value.toDouble()
-
-        val locale = PaymentSdkLanguageCode.AR
-
-        val billingData = PaymentSdkBillingDetails(
-            "City",
-            countryCode = merchantCountryCode,
-            email = sharedHelper?.getUserEmail().toString(),
-            name = sharedHelper?.getStoreName().toString(),
-            phone = sharedHelper?.getUserPhone().toString(),
-            state = "zipcode",
-            addressLine = "Egypt",
-            zip = ""
-        )
-
-        // Customer details
-        val shippingData = PaymentSdkShippingDetails(
-            "City",
-            countryCode = merchantCountryCode,
-            email = sharedHelper?.getUserEmail().toString(),
-            name = "${sharedHelper?.getStoreName().toString()} , $startSessionId",
-            phone = sharedHelper?.getUserPhone().toString(),
-            state = "zipcode",
-            addressLine = "Egypt",
-            zip = ""
-        )
-
-        val configData = PaymentSdkConfigBuilder(
-            secretKey!!, serverKey(), clientKey(), amount, currency
-        ).setCartDescription(cartDesc)
-            .setLanguageCode(locale)
-            .setMerchantCountryCode(merchantCountryCode)
-            .setMerchantIcon(drawable)
-            .hideCardScanner(true)
-            .setAlternativePaymentMethods(listOf(PaymentSdkApms.MEEZA_QR))
-            .setTransactionType(PaymentSdkTransactionType.SALE)
-            .setTransactionClass(PaymentSdkTransactionClass.ECOM)
-            .setCartId(Constants.HASH_ID)
-            .setBillingData(billingData)
-            .setShippingData(shippingData)
-            .setScreenTitle(transactionTitle)
-
-        return configData.build()
-    }
-
     private fun extractNumber(input: String): String? {
         val regex = Regex("(\\d+\\.?\\d*)")
         val matchResult = regex.find(input)
@@ -977,6 +899,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         finalAmount = extractNumber(ui.tvAmount.text.toString()).toString()
 
         when (finalPaymentWay) {
+
             PayWays.CASH.toString() -> {
                 pDialog.show()
                 getTotalWithCash()
@@ -994,17 +917,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 ) {
                     if (getParamsData()) {
                         dialog.cancel()
-
-//                            val paymentPojoModel = PaymentPojoModel(
-//                                Constants.IMEI,
-//                                "",
-//                                SERVICE_ID,
-//                                DATA_ENTITY?.amount.toString(),
-//                                DATA_ENTITY?.id.toString(),
-//                                "",
-//                                paramsArrayListToSend
-//                            )
-
 
                         val paymentPojoModel = PaymentPojoModel(
                             Constants.IMEI,
@@ -1027,25 +939,10 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 }.show()
             }
 
-            PayWays.WALLET.toString() -> {
-                dialog.showWarningDialogWithAction(
-                    resources.getString(R.string.payment_warning),
-                    resources.getString(R.string.app__ok)
-                )
-                {
-                    dialog.cancel()
+            PayWays.BANk.toString(), PayWays.WALLET.toString()->{
 
-                    pDialog.show()
-
-                    getTotalAmountForPay(
-                        transactionType = GatewayTransactionType.wallet.toString(),
-                        amountForPay = finalTotalAmount
-                    )
-
-                }.show()
-            }
-
-            PayWays.BANk.toString() -> {
+                val way = if(
+                    finalPaymentWay == PayWays.BANk.toString()) GatewayTransactionType.visa.toString() else  GatewayTransactionType.wallet.toString()
 
                 dialog.showWarningDialogWithAction(
                     resources.getString(R.string.payment_warning),
@@ -1057,16 +954,18 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                     pDialog.show()
 
                     getTotalAmountForPay(
-                        transactionType = GatewayTransactionType.visa.toString(),
+                        transactionType = way,
                         amountForPay = finalTotalAmount
                     )
 
                 }.show()
-
             }
 
             else -> {
-                Toast.makeText(this, "Please select way", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Please select way",
+                    Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -1139,7 +1038,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
     }
 
     private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
-
         lifecycleScope.launch {
             serviceViewModel.pay(paymentPojoModel,
                 object : OnResponseListener {
@@ -1219,7 +1117,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
                         } else {
 
-                             lifecycleScope.launch { scheduleInquire(result) }
+                            lifecycleScope.launch { scheduleInquire(result) }
                         }
 
                     }
@@ -1362,29 +1260,21 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
             cardMetaData,
             object : NFCWriteCallback {
                 override fun onStartReadNFCCard() {
-                    message("Start read")
+                    showMessage("Start read")
                 }
 
-                override fun onCardNotSupported() {
-//                    pDialog.cancel()
-//                    cancelTransaction(result)
-//                    message("Not supported write")
-                }
+                override fun onCardNotSupported() {}
 
-                override fun onDeviceNotSupportedNFC() {
-//                    pDialog.cancel()
-//               //     cancelTransaction(result)
-//                    message("Nfc not supported")
-                }
+                override fun onDeviceNotSupportedNFC() {}
 
                 override fun onCardWriteError(vararg exception: Exception) {
-//                    pDialog.cancel()
-//                    cancelTransaction(result)
+                    pDialog.cancel()
+                    cancelTransaction(result)
                     // message("Write error" + exception[0]?.message)
                 }
 
                 override fun onMismatchNFCCard() {
-                     pDialog.cancel()
+                    pDialog.cancel()
                     cancelTransaction(result)
 //                     message("Missmatch")
 
@@ -1394,14 +1284,14 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                     //  pDialog.cancel()
 
                     if (response.status == FawryWapperStatus.Status.SUCCESSFUL) {
-                        message("Success write")
+                        showMessage("Success write")
                         serviceViewModel.deleteFawryOperations(result.id)
 
                         lifecycleScope.launch { scheduleInquire(result) }
                     } else {
                         pDialog.cancel()
                         cancelTransaction(result)
-                        message(response.status.toString())
+                        showMessage(response.status.toString())
                     }
                 }
             })
@@ -1428,12 +1318,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                     )
                 }
             })
-    }
-
-    private fun message(message: String) {
-        runOnUiThread {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        }
     }
 
     private fun checkIntegration(paymentPojoModel: PaymentPojoModel) {
@@ -1625,19 +1509,17 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         return true
     }
 
-    private fun showMessage(message: String?) {
+//    private fun showMessage(message: String) {
+//        runOnUiThread {
+//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+//        }
+//    }
+
+    private fun showMessage(message: String) {
 
         lifecycleScope.launch(Dispatchers.Main)
         {
-            if (message != null) {
-                Toast.makeText(this@InquireActivity, message, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(
-                    this@InquireActivity,
-                    getString(R.string.some_error),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            Toast.makeText(this@InquireActivity, message, Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -1711,105 +1593,10 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
 
     override fun onError(error: PaymentSdkError) {
 
-        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-            status = PaymentStatus.FAILED.toString(),
-            id = Constants.START_SESSION_ID,
-            amount = finalTotalAmount,
-            errorCode = error.code.toString(),
-            errorMsg = error.msg,
-            payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal,
-            hash_generated = Constants.HASH_GENERATED,
-            hash_id = Constants.HASH_ID
-        )
-
-        requestChargeFailed(chargeBalanceRequest)
+        onChargeBalanceError(error = error, finalTotalAmount = finalTotalAmount, transactionType = transactionTypeFinal)
     }
 
     override fun onPaymentCancel() {
-
-        if (finalPaymentWay == PayWays.WALLET.toString()) {
-            // Call query by cart_id
-            val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                status = PaymentStatus.CANCELLED_WALLET.toString(),
-                id = Constants.START_SESSION_ID,
-                amount = finalTotalAmount,
-                total_amount = Constants.TOTAL_AMOUNT_PAYTABS,
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionTypeFinal,
-                hash_generated = Constants.HASH_GENERATED,
-                hash_id = Constants.HASH_ID
-            )
-
-            val paymentPojoModel = PaymentPojoModel(
-                Constants.IMEI,
-                "",
-                SERVICE_ID,
-                finalAmount,
-                DATA_ENTITY!!.id.toString(),
-                "",
-                PAYMENTPOJOMODEL!!.params
-            )
-
-            requestChargeWalletCancelled(paymentPojoModel, chargeBalanceRequest)
-
-        } else {
-            val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                status = PaymentStatus.CANCELLED.toString(),
-                id = Constants.START_SESSION_ID,
-                amount = finalTotalAmount,
-                errorCode = "400",
-                errorMsg = "Payment cancelled",
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionTypeFinal,
-                hash_generated = Constants.HASH_GENERATED,
-                hash_id = Constants.HASH_ID
-            )
-
-            requestChargeFailed(chargeBalanceRequest)
-        }
-    }
-
-    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
-
-        var chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-            id = Constants.START_SESSION_ID,
-            // amount = DATA_ENTITY?.totalAmount.toString(),
-            amount = finalTotalAmount,
-            card_id = paymentSdkTransactionDetails.cartID,
-            total_amount = paymentSdkTransactionDetails.cartAmount,
-            cartDescription = paymentSdkTransactionDetails.cartDescription,
-            errorCode = paymentSdkTransactionDetails.errorCode,
-            errorMsg = paymentSdkTransactionDetails.errorMsg,
-            isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-            isOnHold = paymentSdkTransactionDetails.isOnHold,
-            isPending = paymentSdkTransactionDetails.isPending,
-            isProcessed = paymentSdkTransactionDetails.isProcessed,
-            isSuccess = paymentSdkTransactionDetails.isSuccess,
-            payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-            redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-            token = paymentSdkTransactionDetails.token,
-            transactionReference = paymentSdkTransactionDetails.transactionReference,
-            transactionType = paymentSdkTransactionDetails.transactionType,
-            responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-            responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-            responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-            transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-            payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal,
-            hash_generated = Constants.HASH_GENERATED,
-            hash_id = Constants.HASH_ID
-        )
-
-        chargeBalanceRequest = if (paymentSdkTransactionDetails.isSuccess == true) {
-            chargeBalanceRequest.copy(
-                status = PaymentStatus.SUCCESSFUL.toString()
-            )
-        } else {
-            chargeBalanceRequest.copy(
-                status = PaymentStatus.FAILED.toString()
-            )
-        }
 
         val paymentPojoModel = PaymentPojoModel(
             Constants.IMEI,
@@ -1821,9 +1608,31 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
             PAYMENTPOJOMODEL!!.params
         )
 
-        requestToChargeBalance(
+        onChargeBalanceCancelled(
             paymentPojoModel = paymentPojoModel,
-            chargeBalanceRequest = chargeBalanceRequest
+            finalPaymentWay = finalPaymentWay,
+            finalTotalAmount = finalTotalAmount,
+            transactionTypeFinal = transactionTypeFinal
+        )
+    }
+
+    override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
+
+        val paymentPojoModel = PaymentPojoModel(
+            Constants.IMEI,
+            "",
+            SERVICE_ID,
+            finalAmount,
+            DATA_ENTITY!!.id.toString(),
+            "",
+            PAYMENTPOJOMODEL!!.params
+        )
+
+        onChargeBalanceSuccessful(
+            paymentPojoModel = paymentPojoModel,
+            paymentSdkTransactionDetails = paymentSdkTransactionDetails,
+            transactionTypeFinal = transactionTypeFinal,
+            totalAmount = finalTotalAmount
         )
     }
 

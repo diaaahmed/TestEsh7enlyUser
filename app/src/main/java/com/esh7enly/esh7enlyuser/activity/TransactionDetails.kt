@@ -45,7 +45,6 @@ private const val TAG = "TransactionDetails"
 @AndroidEntryPoint
 class TransactionDetails : BaseActivity()
 {
-
     private val ui by lazy {
         ActivityTransactionDetailsBinding.inflate(
             layoutInflater
@@ -86,7 +85,6 @@ class TransactionDetails : BaseActivity()
 
         loadData()
 
-
         ui.chatWhats.setOnClickListener {
             shareImage()
         }
@@ -102,15 +100,8 @@ class TransactionDetails : BaseActivity()
 
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    private fun generateReceiptPDF(transaction: TransactionDetailsEntity?)
-    {
+    private fun generateReceiptPDF(transaction: TransactionDetailsEntity?) {
         generatePdf(transaction)
-//
-//        if (hasPermissions()) {
-//            generatePdf(transaction)
-//        } else {
-//            checkPermissions()
-//        }
     }
 
     private fun checkPermissions() {

@@ -26,10 +26,6 @@ class ServiceViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-     private var _categories:MutableStateFlow<NetworkResult<CategoriesResponse>> = MutableStateFlow(NetworkResult.Loading())
-
-    val categories:StateFlow<NetworkResult<CategoriesResponse>> = _categories.asStateFlow()
-
     fun getProvidersNew(categoryId: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
@@ -71,55 +67,35 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    fun getCategoriesNewState(token: String) {
+    private fun getCategoriesNewFlow() {
+
         viewModelScope.launch {
+            servicesRepo.getCategoriesFlow()
+                .onEach { result ->
+                    when (result) {
+                        is NetworkResult.Error -> {
+                            this@ServiceViewModel._categoriesResponse.update {
+                                NetworkResult.Error(result.message, result.code)
+                            }
+                        }
 
-            try {
-                val categories = servicesRepo.getCategories(token)
+                        is NetworkResult.Loading -> {
+                            this@ServiceViewModel._categoriesResponse.update {
+                                NetworkResult.Loading()
+                            }
 
-                if (categories?.data?.isNotEmpty() == true) {
-                    _categories.update { NetworkResult.Success(categories) }
+                        }
 
-
-                } else {
-                    _categories.update { NetworkResult.Error(categories?.message,categories?.code) }
+                        is NetworkResult.Success -> {
+                            this@ServiceViewModel._categoriesResponse.update {
+                                NetworkResult.Success(result.data!!)
+                            }
+                        }
+                    }
                 }
-            } catch (e: Exception) {
-                _categories.update { NetworkResult.Error(e.message,404) }
-
-                sendIssueToCrashlytics(
-                    e.message.toString(),
-                    "get Categories new Method serviceViewModel")
-
-            }
+                .launchIn(viewModelScope)
         }
-    }
 
-    fun getCategoriesNew(token: String, listner: OnResponseListener) {
-        viewModelScope.launch {
-
-            try {
-                val categories = servicesRepo.getCategories(token)
-
-                if (categories?.data?.isNotEmpty() == true) {
-                    _categories.update { NetworkResult.Success(categories) }
-
-                    listner.onSuccess(categories.code, categories.message, categories.data)
-
-                } else {
-                    _categories.update { NetworkResult.Error(categories?.message,categories?.code) }
-                    listner.onFailed(categories?.code!!, categories.message)
-                }
-            } catch (e: Exception) {
-                _categories.update { NetworkResult.Error(e.message,404) }
-
-                listner.onFailed(Constants.EXCEPTION_CODE, "No data found")
-                sendIssueToCrashlytics(
-                    e.message.toString(),
-                    "get Categories new Method serviceViewModel")
-
-            }
-        }
     }
 
     fun getServicesNew(providerID: String, listner: OnResponseListener) {
@@ -157,38 +133,6 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-
-    private fun getCategoriesNewFlow() {
-
-        viewModelScope.launch {
-            servicesRepo.getCategoriesFlow()
-                .onEach { result ->
-                    when (result) {
-                        is NetworkResult.Error -> {
-                            this@ServiceViewModel._categoriesResponse.update {
-                                NetworkResult.Error(result.message, result.code)
-                            }
-                        }
-
-                        is NetworkResult.Loading -> {
-                            this@ServiceViewModel._categoriesResponse.update {
-                                NetworkResult.Loading()
-                            }
-
-                        }
-
-                        is NetworkResult.Success -> {
-                            this@ServiceViewModel._categoriesResponse.update {
-                                NetworkResult.Success(result.data!!)
-                            }
-                        }
-                    }
-                }
-                .launchIn(viewModelScope)
-        }
-
-    }
-
     fun getParametersNew(serviceID: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
@@ -217,7 +161,6 @@ class ServiceViewModel @Inject constructor(
     var acceptAmountChange = 0
     var image: String? = null
     var acceptAmountinput = 0
-
 
     var serviceTypeCode = ""
     val acceptCheckIntegrationProviderStatus = 0
@@ -423,7 +366,6 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-
     fun inquire(paymentPojoModel: PaymentPojoModel,
                 listner: OnResponseListener) {
         viewModelScope.launch {
@@ -524,7 +466,6 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-
     var userPointsState: MutableStateFlow<NetworkResult<String>?> = MutableStateFlow(null)
 
     fun getUserPointsFlow() {
@@ -599,7 +540,6 @@ class ServiceViewModel @Inject constructor(
             }
         }
     }
-
 
     fun replaceUserPoints(listner: OnResponseListener) {
         viewModelScope.launch {

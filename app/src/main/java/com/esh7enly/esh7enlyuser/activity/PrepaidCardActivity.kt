@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.PaymentPojoModel
 import com.esh7enly.domain.entity.TotalAmountPojoModel
-import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
 import com.esh7enly.domain.entity.totalamountxpayresponse.Data
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -32,20 +31,12 @@ import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.PayWays
-import com.esh7enly.esh7enlyuser.util.PaymentStatus
 import com.esh7enly.esh7enlyuser.util.Utils
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import com.payment.paymentsdk.PaymentSdkActivity
-import com.payment.paymentsdk.PaymentSdkConfigBuilder
-import com.payment.paymentsdk.integrationmodels.PaymentSdkApms
-import com.payment.paymentsdk.integrationmodels.PaymentSdkBillingDetails
-import com.payment.paymentsdk.integrationmodels.PaymentSdkConfigurationDetails
 import com.payment.paymentsdk.integrationmodels.PaymentSdkError
-import com.payment.paymentsdk.integrationmodels.PaymentSdkLanguageCode
-import com.payment.paymentsdk.integrationmodels.PaymentSdkShippingDetails
-import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionClass
+
 import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionDetails
-import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionType
 import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
 import kotlinx.coroutines.launch
 
@@ -62,9 +53,7 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     private var paidAmount: String? = null
     private var totalAmountPojoModel: TotalAmountPojoModel? = null
 
-    private val ui by lazy {
-        ActivityPrepaidCardBinding.inflate(layoutInflater)
-    }
+    private val ui by lazy { ActivityPrepaidCardBinding.inflate(layoutInflater) }
 
     private var totalAmount = ""
 
@@ -122,7 +111,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
             )
         }
 
-
         initToolBar()
 
         paytabsViewModel._buttonClicked.observe(this) { buttonClicked ->
@@ -150,30 +138,16 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     private fun chargeBalance() {
 
         when (finalPaymentWay) {
-            PayWays.WALLET.toString() -> {
-                dialog.showWarningDialogWithAction(
-                    resources.getString(R.string.payment_warning),
-                    resources.getString(R.string.app__ok)
-                )
-                {
-                    dialog.cancel()
-
-                    pDialog.show()
-
-                    getTotalAmountForCharge(
-                        transactionType = GatewayTransactionType.wallet.toString(),
-                        amountForPay = totalAmount
-                    )
-
-                }.show()
-            }
 
             PayWays.CASH.toString() -> {
                 pDialog.show()
                 getTotalWithCash()
             }
 
-            PayWays.BANk.toString() -> {
+            PayWays.BANk.toString(), PayWays.WALLET.toString()->{
+
+                val way = if(
+                    finalPaymentWay == PayWays.BANk.toString()) GatewayTransactionType.visa.toString() else  GatewayTransactionType.wallet.toString()
 
                 dialog.showWarningDialogWithAction(
                     resources.getString(R.string.payment_warning),
@@ -185,13 +159,49 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                     pDialog.show()
 
                     getTotalAmountForCharge(
-                        transactionType = GatewayTransactionType.visa.toString(),
+                        transactionType = way,
                         amountForPay = totalAmount
                     )
 
                 }.show()
-
             }
+
+//            PayWays.WALLET.toString() -> {
+//                dialog.showWarningDialogWithAction(
+//                    resources.getString(R.string.payment_warning),
+//                    resources.getString(R.string.app__ok)
+//                )
+//                {
+//                    dialog.cancel()
+//
+//                    pDialog.show()
+//
+//                    getTotalAmountForCharge(
+//                        transactionType = GatewayTransactionType.wallet.toString(),
+//                        amountForPay = totalAmount
+//                    )
+//
+//                }.show()
+//            }
+//            PayWays.BANk.toString() -> {
+//
+//                dialog.showWarningDialogWithAction(
+//                    resources.getString(R.string.payment_warning),
+//                    resources.getString(R.string.app__ok)
+//                )
+//                {
+//                    dialog.cancel()
+//
+//                    pDialog.show()
+//
+//                    getTotalAmountForCharge(
+//                        transactionType = GatewayTransactionType.visa.toString(),
+//                        amountForPay = totalAmount
+//                    )
+//
+//                }.show()
+//
+//            }
 
             PayWays.Esh7enly.toString() -> {
 
@@ -208,7 +218,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     }
 
     private fun payWithCash(paymentPojoModel: PaymentPojoModel) {
-
         lifecycleScope.launch {
             serviceViewModel.pay(paymentPojoModel,
                 object : OnResponseListener {
@@ -237,6 +246,7 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     private fun getTotalWithCash() {
 
         lifecycleScope.launch {
+
             val params =
                 TotalAmountPojoModel.Params(
                     Constants.BILLING_ACCOUNT,
@@ -413,11 +423,35 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
         startSessionId: Int
     ) {
 
-        val configData: PaymentSdkConfigurationDetails =
+        var secretKey: String? = null
 
-            generatePaytabsConfigurationDetails(
-                totalAmount, drawable, startSessionId
+        try {
+            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
+            Base64.encodeToString(encryptedText, Base64.DEFAULT)
+
+            secretKey = decryptor?.decryptData(
+                aliasString(), encryptor?.encryption, encryptor?.iv
             )
+
+        } catch (e: Exception) {
+
+            sendIssueToCrashlytics(
+                msg = e.message.toString(),
+                functionName = "encryptedText AddBalance",
+                key = "encryptedText AddBalance",
+                provider = e.message.toString()
+            )
+        }
+
+        val configData = paytabsViewModel.generatePaytabsConfigurationDetails(
+            serverKey = serverKey(),
+            clientKey = clientKey(),
+            secretKey = secretKey,
+            transactionTitle = resources.getString(R.string.paytabs_title),
+            value = totalAmount,
+            drawable = drawable,
+            startSessionId = startSessionId
+        )
 
         when (transactionType) {
             GatewayTransactionType.visa.toString() -> {
@@ -439,82 +473,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     private external fun serverKey(): String
     private external fun profileKey(): String
     private external fun aliasString(): String
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun generatePaytabsConfigurationDetails(
-        value: String,
-        drawable: Drawable?,
-        startSessionId: Int
-    ): PaymentSdkConfigurationDetails {
-
-        var secretKey: String? = null
-
-        try {
-            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
-            Base64.encodeToString(encryptedText, Base64.DEFAULT)
-
-            secretKey = decryptor?.decryptData(
-                aliasString(), encryptor?.encryption, encryptor?.iv
-            )
-
-        } catch (e: Exception) {
-
-            sendIssueToCrashlytics(
-                msg = e.message.toString(),
-                functionName = "encryptedText AddBalance",
-                key = "encryptedText AddBalance",
-                provider = e.message.toString()
-            )
-        }
-
-        val transactionTitle = resources.getString(R.string.paytabs_title)
-        val cartDesc = "Add esh7enly balance" // Description in paytabs info
-        val currency = "EGP"
-        val merchantCountryCode = "EG"
-        val amount: Double = value.toDouble()
-
-        val locale = PaymentSdkLanguageCode.AR
-
-        val billingData = PaymentSdkBillingDetails(
-            "City",
-            countryCode = merchantCountryCode,
-            email = sharedHelper?.getUserEmail().toString(),
-            name = sharedHelper?.getStoreName().toString(),
-            phone = sharedHelper?.getUserPhone().toString(),
-            state = "zipcode",
-            addressLine = "Egypt",
-            zip = ""
-        )
-
-        // Customer details
-        val shippingData = PaymentSdkShippingDetails(
-            "City",
-            countryCode = merchantCountryCode,
-            email = sharedHelper?.getUserEmail().toString(),
-            name = "${sharedHelper?.getStoreName().toString()} , $startSessionId",
-            phone = sharedHelper?.getUserPhone().toString(),
-            state = "zipcode",
-            addressLine = "Egypt",
-            zip = ""
-        )
-
-        val configData = PaymentSdkConfigBuilder(
-            secretKey!!, serverKey(), clientKey(), amount, currency
-        ).setCartDescription(cartDesc)
-            .setLanguageCode(locale)
-            .setMerchantCountryCode(merchantCountryCode)
-            .setMerchantIcon(drawable)
-            .hideCardScanner(true)
-            .setAlternativePaymentMethods(listOf(PaymentSdkApms.MEEZA_QR))
-            .setTransactionType(PaymentSdkTransactionType.SALE)
-            .setTransactionClass(PaymentSdkTransactionClass.ECOM)
-            .setCartId(Constants.HASH_ID)
-            .setBillingData(billingData)
-            .setShippingData(shippingData)
-            .setScreenTitle(transactionTitle)
-
-        return configData.build()
-    }
 
     private fun cashWalletClicked() {
         paytabsViewModel.setShowNumberNew(PayWays.CASH.toString())
@@ -551,103 +509,27 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     }
 
     override fun onError(error: PaymentSdkError) {
-
-        val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-            status = PaymentStatus.FAILED.toString(),
-            id = Constants.START_SESSION_ID,
-            amount = totalAmount,
-            errorCode = error.code.toString(),
-            errorMsg = error.msg,
-            payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal,
-            hash_generated = Constants.HASH_GENERATED,
-            hash_id = Constants.HASH_ID
-        )
-
-        requestChargeFailed(chargeBalanceRequest)
+        onChargeBalanceError(error = error, finalTotalAmount = totalAmount, transactionType = transactionTypeFinal)
     }
 
     override fun onPaymentCancel() {
 
-        if (finalPaymentWay == PayWays.WALLET.toString()) {
-            // Call query by cart_id
-            val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                status = PaymentStatus.CANCELLED_WALLET.toString(),
-                id = Constants.START_SESSION_ID,
-                amount = totalAmount,
-                total_amount = Constants.TOTAL_AMOUNT_PAYTABS,
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionTypeFinal,
-                hash_generated = Constants.HASH_GENERATED,
-                hash_id = Constants.HASH_ID
-            )
+        val paymentPojoModel = PaymentPojoModel(
+            Constants.IMEI, "",
+            totalAmountPojoModel?.serviceId!!, totalAmountPojoModel?.amount,
+            totalAmountPojoModel?.attributes
+        )
 
-            val paymentPojoModel = PaymentPojoModel(
-                Constants.IMEI, "",
-                totalAmountPojoModel?.serviceId!!, totalAmountPojoModel?.amount,
-                totalAmountPojoModel?.attributes
-
-            )
-
-            requestChargeWalletCancelled(paymentPojoModel, chargeBalanceRequest)
-
-        } else {
-
-            val chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-                status = PaymentStatus.CANCELLED.toString(),
-                id = Constants.START_SESSION_ID,
-                amount = totalAmount,
-                errorCode = "400",
-                errorMsg = "Payment cancelled",
-                payment_method_type = GatewayMethod.paytabs.toString(),
-                transaction_type = transactionTypeFinal,
-                hash_generated = Constants.HASH_GENERATED,
-                hash_id = Constants.HASH_ID
-            )
-
-            requestChargeFailed(chargeBalanceRequest)
-        }
+        onChargeBalanceCancelled(
+            paymentPojoModel = paymentPojoModel,
+            finalPaymentWay = finalPaymentWay,
+            finalTotalAmount = totalAmount,
+            transactionTypeFinal = transactionTypeFinal
+        )
     }
 
     override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
 
-        var chargeBalanceRequest = ChargeBalanceRequestPaytabs(
-            id = Constants.START_SESSION_ID,
-            amount = totalAmount,
-            card_id = paymentSdkTransactionDetails.cartID,
-            total_amount = paymentSdkTransactionDetails.cartAmount,
-            cartDescription = paymentSdkTransactionDetails.cartDescription,
-            errorCode = paymentSdkTransactionDetails.errorCode,
-            errorMsg = paymentSdkTransactionDetails.errorMsg,
-            isAuthorized = paymentSdkTransactionDetails.isAuthorized,
-            isOnHold = paymentSdkTransactionDetails.isOnHold,
-            isPending = paymentSdkTransactionDetails.isPending,
-            isProcessed = paymentSdkTransactionDetails.isProcessed,
-            isSuccess = paymentSdkTransactionDetails.isSuccess,
-            payResponseReturn = paymentSdkTransactionDetails.payResponseReturn,
-            redirectUrl = paymentSdkTransactionDetails.redirectUrl,
-            token = paymentSdkTransactionDetails.token,
-            transactionReference = paymentSdkTransactionDetails.transactionReference,
-            transactionType = paymentSdkTransactionDetails.transactionType,
-            responseCode = paymentSdkTransactionDetails.paymentResult?.responseCode,
-            responseMessage = paymentSdkTransactionDetails.paymentResult?.responseMessage,
-            responseStatus = paymentSdkTransactionDetails.paymentResult?.responseStatus,
-            transactionTime = paymentSdkTransactionDetails.paymentResult?.transactionTime,
-            payment_method_type = GatewayMethod.paytabs.toString(),
-            transaction_type = transactionTypeFinal,
-            hash_generated = Constants.HASH_GENERATED,
-            hash_id = Constants.HASH_ID
-        )
-
-        chargeBalanceRequest = if (paymentSdkTransactionDetails.isSuccess == true) {
-            chargeBalanceRequest.copy(
-                status = PaymentStatus.SUCCESSFUL.toString()
-            )
-        } else {
-            chargeBalanceRequest.copy(
-                status = PaymentStatus.FAILED.toString()
-            )
-        }
         val paymentPojoModel = PaymentPojoModel(
             Constants.IMEI, "",
             totalAmountPojoModel?.serviceId!!,
@@ -655,10 +537,12 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
             totalAmountPojoModel?.attributes
         )
 
-        requestToChargeBalance(
-            chargeBalanceRequest = chargeBalanceRequest,
-            paymentPojoModel = paymentPojoModel
-        )
+        onChargeBalanceSuccessful(
+            paymentPojoModel = paymentPojoModel,
+            paymentSdkTransactionDetails = paymentSdkTransactionDetails,
+            transactionTypeFinal = transactionTypeFinal,
+            totalAmount = totalAmount)
+
     }
 
 }

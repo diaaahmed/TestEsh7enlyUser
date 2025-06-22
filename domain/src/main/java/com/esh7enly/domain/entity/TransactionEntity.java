@@ -79,8 +79,6 @@ public class TransactionEntity implements Parcelable {
 
     }
 
-    public TransactionEntity() {
-    }
 
     protected TransactionEntity(Parcel in) {
         id = in.readInt();

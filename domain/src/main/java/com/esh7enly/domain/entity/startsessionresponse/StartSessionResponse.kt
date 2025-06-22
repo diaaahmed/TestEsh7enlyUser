@@ -9,5 +9,8 @@ data class StartSessionResponse(
 
 data class Data(
     val id: Int,
-    val hash_id:String
+    val hash_id:String,
+    val ck:String,
+    val sk:String,
+    val pi:String
 )
