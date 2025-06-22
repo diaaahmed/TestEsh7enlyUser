@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.InputType
-import android.util.Base64
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -834,31 +833,31 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         totalAmount: String, drawable: Drawable?,
         startSessionId: Int
     ) {
-        var secretKey: String? = null
-
-        try {
-            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
-            Base64.encodeToString(encryptedText, Base64.DEFAULT)
-
-            secretKey = decryptor?.decryptData(
-                aliasString(), encryptor?.encryption, encryptor?.iv
-            )
-
-        } catch (e: Exception) {
-
-            Log.d(TAG, "diaa first exception: ${e.message}")
-            sendIssueToCrashlytics(
-                msg = e.message.toString(),
-                functionName = "encryptedText AddBalance",
-                key = "encryptedText AddBalance",
-                provider = e.message.toString()
-            )
-        }
+//        var secretKey: String? = null
+//
+//        try {
+//            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
+//            Base64.encodeToString(encryptedText, Base64.DEFAULT)
+//
+//            secretKey = decryptor?.decryptData(
+//                aliasString(), encryptor?.encryption, encryptor?.iv
+//            )
+//
+//        } catch (e: Exception) {
+//
+//            Log.d(TAG, "diaa first exception: ${e.message}")
+//            sendIssueToCrashlytics(
+//                msg = e.message.toString(),
+//                functionName = "encryptedText AddBalance",
+//                key = "encryptedText AddBalance",
+//                provider = e.message.toString()
+//            )
+//        }
 
         val configData = paytabsViewModel.generatePaytabsConfigurationDetails(
-            serverKey = serverKey(),
-            clientKey = clientKey(),
-            secretKey = secretKey,
+            serverKey = Constants.SK,
+            clientKey = Constants.CK,
+            secretKey = Constants.PI,
             transactionTitle = resources.getString(R.string.paytabs_title),
             value = totalAmount,
             drawable = drawable,

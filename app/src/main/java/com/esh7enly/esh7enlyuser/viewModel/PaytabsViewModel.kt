@@ -1,5 +1,6 @@
 package com.esh7enly.esh7enlyuser.viewModel
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
@@ -13,6 +14,7 @@ import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPayta
 import com.esh7enly.domain.repo.ChargeBalanceRepo
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
+import com.esh7enly.esh7enlyuser.util.KeyPairHandler
 
 import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
@@ -57,6 +59,7 @@ class PaytabsViewModel @Inject constructor(
     }
 
 
+    @SuppressLint("NewApi")
     @RequiresApi(Build.VERSION_CODES.M)
     suspend fun startSessionForPay(
         finalAmount: String,
@@ -68,12 +71,18 @@ class PaytabsViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
+                KeyPairHandler.generateKeyPair()
+
+                val publicKeyHandler = KeyPairHandler.getPublicKeyString()
+
+
                 val startSessionResponse = chargeBalanceRepo.startSessionForPay(
                     paymentMethodType = paymentMethodType,
                     transactionType = transactionType,
                     amount = finalAmount,
                     total_amount = amount,
-                    ip = ip
+                    ip = ip,
+                    uuid = publicKeyHandler
                 )
 
                 if (startSessionResponse.isSuccessful) {
@@ -86,6 +95,24 @@ class PaytabsViewModel @Inject constructor(
                     } else {
 
                         Constants.START_SESSION_ID = startSessionResponse.body()!!.data.id
+
+                        println("diaa data encrypted ck ${startSessionResponse.body()?.data?.ck.toString()}")
+                        println("diaa data encrypted sk ${startSessionResponse.body()?.data?.sk.toString()}")
+                        println("diaa data encrypted pi ${startSessionResponse.body()?.data?.pi.toString()}")
+
+                       try{
+                           Constants.CK =  KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.ck.toString())
+                           Constants.SK = KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.sk.toString())
+                           Constants.PI = KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.pi.toString())
+                       }
+                       catch (e: Exception)
+                       {
+                           println("diaa data error ${e.message}")
+                       }
+
+                        println("diaa data decrypted ck ${Constants.CK}")
+                        println("diaa data decrypted sk ${Constants.SK}")
+                        println("diaa data decrypted pi ${Constants.PI}")
 
                         val normalId = startSessionResponse.body()!!.data.id
 
@@ -120,13 +147,11 @@ class PaytabsViewModel @Inject constructor(
             } catch (e: Exception) {
                 sendIssueToCrashlytics(
                     e.message.toString(),
-                    "startSessionForPay from xPay viewModel"
+                    "startSessionForPay from paytabs viewModel"
                 )
             }
         }
-
     }
-
 
     private fun newmd5(input: String): String {
         val md = MessageDigest.getInstance("MD5")
@@ -144,31 +169,31 @@ class PaytabsViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                val xPayTotal =
+                val paytabsAmountTotal =
                     chargeBalanceRepo.getTotalXPay(
                         amount,
                         paymentMethodType,
                         transactionType
                     )
 
-                if (xPayTotal.isSuccessful) {
-                    if (xPayTotal.body()!!.status) {
+                if (paytabsAmountTotal.isSuccessful) {
+                    if (paytabsAmountTotal.body()!!.status) {
                         listner.onSuccess(
-                            xPayTotal.body()!!.code,
-                            xPayTotal.body()!!.message,
-                            xPayTotal.body()!!.data
+                            paytabsAmountTotal.body()!!.code,
+                            paytabsAmountTotal.body()!!.message,
+                            paytabsAmountTotal.body()!!.data
                         )
                     } else {
-                        listner.onFailed(xPayTotal.body()!!.code, xPayTotal.body()!!.message)
+                        listner.onFailed(paytabsAmountTotal.body()!!.code, paytabsAmountTotal.body()!!.message)
                     }
                 } else {
-                    listner.onFailed(xPayTotal.code(), xPayTotal.message())
+                    listner.onFailed(paytabsAmountTotal.code(), paytabsAmountTotal.message())
                 }
             } catch (e: Exception) {
                 listner.onFailed(Constants.EXCEPTION_CODE, e.message)
                 sendIssueToCrashlytics(
                     e.message.toString(),
-                    "getTotalxPayFlow from xPay viewModel"
+                    "getTotalxPayFlow from paytabs viewModel"
                 )
 
             }
@@ -253,7 +278,7 @@ class PaytabsViewModel @Inject constructor(
             } catch (e: Exception) {
                 sendIssueToCrashlytics(
                     e.message.toString(),
-                    "chargeBalanceWithPaytabs from xPay viewModel"
+                    "chargeBalanceWithPaytabs from paytabs viewModel"
                 )
             }
 

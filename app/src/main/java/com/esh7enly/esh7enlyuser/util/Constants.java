@@ -82,6 +82,9 @@ public class Constants {
     public static  String TOTAL_AMOUNT_PAYTABS = "0";
     public static  String HASH_GENERATED = "";
     public static  String HASH_ID = "";
+    public static  String CK = "";
+    public static  String SK = "";
+    public static  String PI = "";
 
     // endregion
 

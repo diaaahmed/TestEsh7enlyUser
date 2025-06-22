@@ -21,6 +21,7 @@ class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRe
         apiService.checkWalletStatus(chargeBalanceRequest)
 
     override suspend fun startSessionForPay(
+        uuid:String,
         paymentMethodType: String,
         transactionType: String,
         amount: String,
@@ -28,7 +29,7 @@ class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRe
         ip: String
     ): Response<StartSessionResponse> = apiService.startSessionForPay(
         paymentMethodType = paymentMethodType, transactionType = transactionType,
-        amount = amount,totalAmount = total_amount, ip = ip
+        amount = amount,totalAmount = total_amount, ip = ip, uuid = uuid
     )
 
     override suspend fun getTotalXPay(

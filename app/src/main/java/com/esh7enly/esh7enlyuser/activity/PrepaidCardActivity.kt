@@ -413,7 +413,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                     }
                 })
         }
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -423,30 +422,30 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
         startSessionId: Int
     ) {
 
-        var secretKey: String? = null
-
-        try {
-            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
-            Base64.encodeToString(encryptedText, Base64.DEFAULT)
-
-            secretKey = decryptor?.decryptData(
-                aliasString(), encryptor?.encryption, encryptor?.iv
-            )
-
-        } catch (e: Exception) {
-
-            sendIssueToCrashlytics(
-                msg = e.message.toString(),
-                functionName = "encryptedText AddBalance",
-                key = "encryptedText AddBalance",
-                provider = e.message.toString()
-            )
-        }
+//        var secretKey: String? = null
+//
+//        try {
+//            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
+//            Base64.encodeToString(encryptedText, Base64.DEFAULT)
+//
+//            secretKey = decryptor?.decryptData(
+//                aliasString(), encryptor?.encryption, encryptor?.iv
+//            )
+//
+//        } catch (e: Exception) {
+//
+//            sendIssueToCrashlytics(
+//                msg = e.message.toString(),
+//                functionName = "encryptedText AddBalance",
+//                key = "encryptedText AddBalance",
+//                provider = e.message.toString()
+//            )
+//        }
 
         val configData = paytabsViewModel.generatePaytabsConfigurationDetails(
-            serverKey = serverKey(),
-            clientKey = clientKey(),
-            secretKey = secretKey,
+            serverKey = Constants.SK,
+            clientKey = Constants.CK,
+            secretKey = Constants.PI,
             transactionTitle = resources.getString(R.string.paytabs_title),
             value = totalAmount,
             drawable = drawable,
@@ -465,7 +464,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
 
                 PaymentSdkActivity.startAlternativePaymentMethods(this, configData, this)
             }
-
         }
     }
 

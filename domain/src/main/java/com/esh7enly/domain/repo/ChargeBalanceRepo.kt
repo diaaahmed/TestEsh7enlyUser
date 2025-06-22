@@ -18,6 +18,7 @@ interface ChargeBalanceRepo
     ): Response<ChargeBalanceResponse>
 
     suspend fun startSessionForPay(
+        uuid:String,
         paymentMethodType: String,
         transactionType: String,
         amount: String,

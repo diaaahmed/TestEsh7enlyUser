@@ -259,6 +259,7 @@ interface ApiService
     @FormUrlEncoded
     @POST(START_SESSION)
     suspend fun startSessionForPay(
+        @Field("uuid") uuid: String,
         @Field("payment_method_type") paymentMethodType:String,
         @Field("transaction_type") transactionType:String,
         @Field("amount") amount: String,
