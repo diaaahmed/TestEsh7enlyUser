@@ -17,8 +17,6 @@ import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
 import com.esh7enly.esh7enlyuser.util.Constants
-import com.esh7enly.esh7enlyuser.util.Decryptor
-import com.esh7enly.esh7enlyuser.util.Encryptor
 import com.esh7enly.esh7enlyuser.util.GatewayMethod
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.PayWays
@@ -49,11 +47,6 @@ abstract class BaseActivity : AppCompatActivity() {
     var sharedHelper: SharedHelper? = null
         @Inject set
 
-    var encryptor: Encryptor? = null
-        @Inject set
-
-    var decryptor: Decryptor? = null
-        @Inject set
 
     val pDialog by lazy {
         com.esh7enly.esh7enlyuser.util.ProgressDialog.createProgressDialog(this)

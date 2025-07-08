@@ -1,8 +1,6 @@
 package com.esh7enly.data.repo
 
-import androidx.lifecycle.LiveData
 import com.esh7enly.data.remote.ApiService
-import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
@@ -70,15 +68,6 @@ class UserRepoImpl (
             ))
         }
     }
-
-    
-    override fun login(
-        mobile: String,
-        password: String,
-        deviceToken:String,
-        imei:String): LiveData<ApiResponse<LoginResponse>> =
-        apiService.login(mobile,password,deviceToken, imei = imei)
-
 
     override suspend fun sendOtp(mobile: String): Response<NewOtpResponse> = apiService.sendOtp(mobile)
 

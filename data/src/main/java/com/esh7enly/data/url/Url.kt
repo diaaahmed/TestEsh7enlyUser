@@ -49,7 +49,6 @@ object Url {
 
     const val START_SESSION = "newvisa/start-session-wallet"
     const val TOTAL_XPAY = "newvisa/get-amount-wallet"
-    // const val GET_DEPOSITS = "test-visa/list-wallet"
     const val DEPOSITS = "newvisa/list-wallet"
 
     const val CANCEL_SERVICE = "service/cancel"

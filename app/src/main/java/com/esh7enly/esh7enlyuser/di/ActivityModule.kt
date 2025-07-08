@@ -9,9 +9,7 @@ import com.esh7enly.data.datastore.DataStoreHelper
 import com.esh7enly.data.sharedhelper.Constants
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.esh7enlyuser.util.CryptoData
-import com.esh7enly.esh7enlyuser.util.Decryptor
 import com.esh7enly.esh7enlyuser.util.DynamicLayout
-import com.esh7enly.esh7enlyuser.util.Encryptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,13 +26,6 @@ object ActivityModule
     @Provides
     fun provideDynamicLayout(@ApplicationContext context: Context): DynamicLayout = DynamicLayout(context)
 
-    @Singleton
-    @Provides
-    fun providerDecryptor() = Decryptor()
-
-    @Singleton
-    @Provides
-    fun provideEncryptor():Encryptor = Encryptor()
 
 //
 //    @Singleton

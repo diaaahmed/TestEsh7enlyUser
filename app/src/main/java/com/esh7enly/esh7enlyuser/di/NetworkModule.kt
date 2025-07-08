@@ -7,7 +7,6 @@ import com.chuckerteam.chucker.api.RetentionManager
 import com.esh7enly.data.remote.ApiService
 import com.esh7enly.data.remote.NotificationService
 import com.esh7enly.data.sharedhelper.SharedHelper
-import com.esh7enly.domain.LiveDataCallAdapterFactory
 import com.esh7enly.esh7enlyuser.BuildConfig
 import com.esh7enly.esh7enlyuser.LoggingInterceptorLevel
 import com.esh7enly.esh7enlyuser.connectivity.InternetAvailabilityRepository
@@ -178,7 +177,6 @@ object NetworkModule {
             .baseUrl(baseUrl())
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .build()
     }
 

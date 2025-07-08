@@ -90,14 +90,10 @@ dependencies {
     implementation libs.firebase.dynamic.links
     implementation libs.firebase.config
 
-
     implementation libs.androidx.activity
     implementation libs.firebase.config.ktx
-   // implementation libs.firebase.analytics
 
     testImplementation libs.junit
-//    testImplementation libs.mockk
-//    testImplementation libs.google.truth
 
     androidTestImplementation libs.espresso
 

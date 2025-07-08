@@ -1,7 +1,5 @@
 package com.esh7enly.domain.repo
 
-import androidx.lifecycle.LiveData
-import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.RegisterModel
 import com.esh7enly.domain.entity.chargebalanceresponse.ChargeBalanceResponse
@@ -18,12 +16,6 @@ import retrofit2.Response
 
 interface UserRepo {
 
-    fun login(
-        mobile: String,
-        password: String,
-        deviceToken: String,
-        imei: String
-    ): LiveData<ApiResponse<LoginResponse>>
 
     fun loginWithState(
         mobile: String,

@@ -1,6 +1,5 @@
 package com.esh7enly.data.remote
 
-import androidx.lifecycle.LiveData
 import com.esh7enly.data.url.Url.CANCEL_SERVICE
 import com.esh7enly.data.url.Url.CATEGORIES
 import com.esh7enly.data.url.Url.CHECK_INTEGRATION_PROVIDER_STATUS
@@ -34,7 +33,6 @@ import com.esh7enly.data.url.Url.USER_POINTS
 import com.esh7enly.data.url.Url.VERIFY_FORGET_PASSWORD
 import com.esh7enly.data.url.Url.VISA_WALLET
 import com.esh7enly.data.url.Url.WALLETS
-import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.entity.*
 import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
 import com.esh7enly.domain.entity.chargebalancerequest.ChargeBalanceRequestPaytabs
@@ -80,16 +78,6 @@ import retrofit2.http.Url
 interface ApiService
 {
    // Start Auth region
-
-    @FormUrlEncoded
-    @POST(LOGIN)
-    fun login(
-        @Field("mobile") mobile: String,
-        @Field("password") userPassword: String,
-        @Field("device_token") deviceToken: String,
-        @Field("type") type: String = "mobile",
-        @Field("imei") imei: String
-    ): LiveData<ApiResponse<LoginResponse>>
 
     @FormUrlEncoded
     @POST(LOGIN)

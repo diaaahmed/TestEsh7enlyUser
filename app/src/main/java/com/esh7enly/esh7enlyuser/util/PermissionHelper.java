@@ -35,53 +35,6 @@ public class PermissionHelper {
         return false;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public static boolean checkMultiPermission(final Context context, final String[] permissions, final int REQUEST_CODE)
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            for (String permission : permissions) {
-
-                if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-
-                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, permission)) {
-
-                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-                        alertBuilder.setCancelable(true);
-                        alertBuilder.setTitle("Permission necessary");
-                        alertBuilder.setMessage("External storage permission is necessary");
-                        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                            public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions((Activity) context, permissions,
-                                        REQUEST_CODE);
-                            }
-
-                        });
-
-                        AlertDialog alert = alertBuilder.create();
-                        alert.show();
-
-
-                    } else {
-
-                        ActivityCompat.requestPermissions((Activity) context, permissions, REQUEST_CODE);
-                    }
-
-                    return false;
-
-                } else {
-
-                    return true;
-
-                }
-
-            }
-
-        }
-        return false;
-    }
-
     private static void showPermissionsAlert(final Context context, final String permission, final int REQUEST_CODE) {
 
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
