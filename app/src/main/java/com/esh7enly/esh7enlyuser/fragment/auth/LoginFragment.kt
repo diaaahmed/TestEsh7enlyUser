@@ -2,6 +2,9 @@ package com.esh7enly.esh7enlyuser.fragment.auth
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.RequiresApi
@@ -12,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
+import com.esh7enly.esh7enlyuser.BuildConfig
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.activity.BaseFragment
 import com.esh7enly.esh7enlyuser.databinding.FragmentLoginBinding
@@ -84,13 +88,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
             findNavController().navigate(R.id.action_loginFragment_to_phoneFragment)
         }
 
-
         binding.btnLogin.setOnClickListener {
             login()
 
         }
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -165,6 +167,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
                 resources.getString(R.string.app__ok)
             )
             dialog.show()
+
         } ?: password.takeIf { it.isEmpty() }?.let {
             dialog.showWarningDialog(
                 resources.getString(R.string.error_message__blank_password),
@@ -226,7 +229,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
 
                         is NetworkResult.Success -> {
                             pDialog.cancel()
-                            successLoginNavigateToHome(it.data!!)
+                            if(BuildConfig.VERSION_NAME < it.data?.app_version.toString())
+                            {
+                                showUpdateAppRequest()
+                                return@collect
+                            }
+                            else{
+                                successLoginNavigateToHome(it.data!!)
+                            }
                         }
                     }
                 }
@@ -305,6 +315,21 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, UserViewModel>() {
             okTitle = resources.getString(R.string.app__ok),
             code = 0
         )
+    }
+
+    private fun showUpdateAppRequest() {
+        dialog.showErrorDialogWithAction(
+            resources.getString(R.string.new_version_available),
+            resources.getString(R.string.update_now))
+        {
+            dialog.cancel()
+
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${requireActivity().packageName}")))
+            } catch (e: ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=${requireActivity().packageName}")))
+            }
+        }.show()
     }
 
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB)

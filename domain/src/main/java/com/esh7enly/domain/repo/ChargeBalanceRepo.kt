@@ -9,7 +9,6 @@ import retrofit2.Response
 interface ChargeBalanceRepo
 {
     suspend fun chargeBalanceWithPaytabs(
-        url:String,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs
     ): Response<ChargeBalanceResponse>
 
@@ -22,7 +21,7 @@ interface ChargeBalanceRepo
         paymentMethodType: String,
         transactionType: String,
         amount: String,
-        total_amount:String,
+        totalAmount:String,
         ip: String
     ): Response<StartSessionResponse>
 

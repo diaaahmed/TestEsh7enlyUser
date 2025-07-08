@@ -6,13 +6,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.esh7enly.data.datastore.DataStoreHelper
-import com.esh7enly.data.datastore.UserDataStore
 import com.esh7enly.data.sharedhelper.SharedHelper
-import com.esh7enly.domain.ApiResponse
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.loginresponse.LoginResponse
 import com.esh7enly.domain.repo.UserRepo
+import com.esh7enly.esh7enlyuser.BuildConfig
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.KeyPairHandler
@@ -34,26 +32,10 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(
     private val userRepo: UserRepo,
     private val sharedHelper: SharedHelper,
-    private val dataStoreHelper: DataStoreHelper,
 ) :
     ViewModel() {
 
-    var phoneNumber: String? = null
-
     var imei: String? = null
-
-
-    fun saveTokenWithDataStore(token: String) {
-        viewModelScope.launch {
-            dataStoreHelper.saveTokenKey(token)
-        }
-    }
-
-    fun saveUserDataWithDataStore(userDataStore: UserDataStore) {
-        viewModelScope.launch {
-            dataStoreHelper.saveUserData(userDataStore)
-        }
-    }
 
     fun saveUserPassword() {
         sharedHelper.setUserPassword(userPassword.value)
@@ -66,17 +48,8 @@ class UserViewModel @Inject constructor(
     val userPhoneNumber = MutableStateFlow("")
     val userPassword = MutableStateFlow("")
 
-    fun userLogin(deviceToken: String, imei: String):
-            LiveData<ApiResponse<LoginResponse>> {
-
-        return userRepo.login(
-            userPhoneNumber.value, userPassword.value, deviceToken, imei
-        )
-    }
-
     private var _loginStateSharedFlow = MutableSharedFlow<NetworkResult<LoginResponse>>()
     val loginStateSharedFlow = _loginStateSharedFlow.asSharedFlow()
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun loginWithState(
@@ -86,20 +59,20 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             KeyPairHandler.generateKeyPair()
 
-            val publicKeyHandler = KeyPairHandler.getPublicKeyString()
-            val keyEdited = publicKeyHandler.replace("+",".")
-            val key = "$2a$10$${keyEdited}"
+           // val publicKeyHandler = KeyPairHandler.getPublicKeyString()
+            //val keyEdited = publicKeyHandler.replace("+",".")
+        //    val key = "$2a$10$${keyEdited}"
 
             val uPassword = encryptDataWithPublicKey(
                 userPassword.value,publicKeyLast)
 
           //  val addedData = "$2a$10$${sharedHelper.getDataToken()}${public_edited}"
-            println("Diaa encrypted key $key")
+          //  println("Diaa encrypted key $key")
             println("Diaa encrypted password $uPassword")
 
             userRepo.loginWithState(
                 mobile = userPhoneNumber.value, password = uPassword,
-                deviceToken = deviceToken, imei = imei, uuid = key
+                deviceToken = deviceToken, imei = imei
             )
                 .collect {
                     when (it) {
@@ -248,7 +221,16 @@ class UserViewModel @Inject constructor(
                 val response = userRepo.getUserWallet()
 
                 if (response.isSuccessful) {
-                    _loginState.value = response.body()!!.status
+
+                    if(BuildConfig.VERSION_NAME < response.body()?.app_version.toString())
+                    {
+                        _loginState.value = false
+
+                    }
+                    else{
+                        _loginState.value = response.body()!!.status
+
+                    }
 
                 } else {
                     _loginState.value = false

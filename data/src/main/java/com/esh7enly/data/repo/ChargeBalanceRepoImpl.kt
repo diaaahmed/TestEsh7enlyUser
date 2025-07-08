@@ -11,10 +11,9 @@ import retrofit2.Response
 class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRepo {
 
     override suspend fun chargeBalanceWithPaytabs(
-        url:String,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs
     ): Response<ChargeBalanceResponse> = apiService.chargeBalanceWithPaytabs(
-        urlString = url, chargeBalanceRequest = chargeBalanceRequest
+        chargeBalanceRequest = chargeBalanceRequest
     )
 
     override suspend fun checkWalletStatus(chargeBalanceRequest: ChargeBalanceRequestPaytabs): Response<ChargeBalanceResponse>  =
@@ -25,11 +24,11 @@ class ChargeBalanceRepoImpl(private val apiService: ApiService): ChargeBalanceRe
         paymentMethodType: String,
         transactionType: String,
         amount: String,
-        total_amount:String,
+        totalAmount:String,
         ip: String
     ): Response<StartSessionResponse> = apiService.startSessionForPay(
         paymentMethodType = paymentMethodType, transactionType = transactionType,
-        amount = amount,totalAmount = total_amount, ip = ip, uuid = uuid
+        amount = amount,totalAmount = totalAmount, ip = ip, uuid = uuid
     )
 
     override suspend fun getTotalXPay(

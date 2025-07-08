@@ -42,8 +42,7 @@ class ForgetPasswordFragment : BaseFragment<FragmentForgetPasswordBinding, UserV
         }
     }
 
-    private fun createNewPassword()
-    {
+    private fun createNewPassword() {
         val newPassword = binding.newPassword.text.toString().trim()
         val confirmNewPassword = binding.confirmNewPassword.text.toString().trim()
 
@@ -60,23 +59,12 @@ class ForgetPasswordFragment : BaseFragment<FragmentForgetPasswordBinding, UserV
             binding.newPassword.error = "Not valid"
             binding.confirmNewPassword.error = "Not valid"
         } else {
-            if (connectivity?.isConnected == true) {
-                pDialog.show()
-
-                sendRequestForgetPassword(newPassword, confirmNewPassword)
-            } else {
-                dialog.showWarningDialog(
-                    resources.getString(R.string.error_message__blank_phone_number),
-                    resources.getString(R.string.app__ok)
-                )
-                dialog.show()
-            }
-
+            pDialog.show()
+            sendRequestForgetPassword(newPassword, confirmNewPassword)
         }
     }
 
-    private fun sendRequestForgetPassword(newPassword: String, confirmNewPassword: String)
-    {
+    private fun sendRequestForgetPassword(newPassword: String, confirmNewPassword: String) {
         val phone = arguments?.getString(Constants.PHONE)
         val otp = arguments?.getString(Constants.OTP)
 
@@ -110,8 +98,7 @@ class ForgetPasswordFragment : BaseFragment<FragmentForgetPasswordBinding, UserV
         dialog.show()
     }
 
-    private fun failedNewPassword(msg: String?, code: Int?)
-    {
+    private fun failedNewPassword(msg: String?, code: Int?) {
         pDialog.cancel()
 
         showErrorDialogWithAction(
@@ -125,7 +112,7 @@ class ForgetPasswordFragment : BaseFragment<FragmentForgetPasswordBinding, UserV
 
     override fun initToolBar() {
         binding.newPasswordToolbar.title = resources.getString(R.string.change_password)
-        binding.newPasswordToolbar.setNavigationOnClickListener{
+        binding.newPasswordToolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }

@@ -13,6 +13,7 @@ import com.esh7enly.data.url.Url.NEW_PASSWORD
 import com.esh7enly.data.url.Url.OTP
 import com.esh7enly.data.url.Url.PARAMETERS
 import com.esh7enly.data.url.Url.PAYMENT
+import com.esh7enly.data.url.Url.PAYMENT_AMOUNT_WALLET
 import com.esh7enly.data.url.Url.PROVIDERS
 import com.esh7enly.data.url.Url.REGISTER
 import com.esh7enly.data.url.Url.REPLACE_POINTS
@@ -53,6 +54,7 @@ import com.esh7enly.domain.entity.scedulelistresponse.ScheduleListResponse
 import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireResponse
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
 import com.esh7enly.domain.entity.searchresponse.SearchResponse
+import com.esh7enly.domain.entity.searchresponse.newresponse.NewSearchResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.esh7enly.domain.entity.startsessionresponse.StartSessionResponse
 import com.esh7enly.domain.entity.totalamountxpayresponse.GetTotalAmountXPayResponse
@@ -92,7 +94,6 @@ interface ApiService
     @FormUrlEncoded
     @POST(LOGIN)
     suspend fun loginWithState(
-        @Field("uuid") uuid: String,
         @Field("mobile") mobile: String,
         @Field("password") userPassword: String,
         @Field("device_token") deviceToken: String,
@@ -210,6 +211,14 @@ interface ApiService
     ):Response<SearchResponse>
 
     @FormUrlEncoded
+    @POST(SERVICE_SEARCH)
+    suspend fun serviceSearchNew(
+        @Field("name") serviceName:String,
+        @Field("page") page: Int
+    ):Response<NewSearchResponse>
+
+
+    @FormUrlEncoded
     @POST(SERVICES_NEW)
     suspend fun getServices(
         @Field("id") id:String
@@ -267,9 +276,8 @@ interface ApiService
         @Field("ip") ip: String
     ): Response<StartSessionResponse>
 
-    @POST
+    @POST(PAYMENT_AMOUNT_WALLET)
     suspend fun chargeBalanceWithPaytabs(
-        @Url urlString: String,
         @Body chargeBalanceRequest: ChargeBalanceRequestPaytabs,
     ): Response<ChargeBalanceResponse>
 

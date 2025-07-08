@@ -2,8 +2,6 @@ package com.esh7enly.esh7enlyuser.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.esh7enly.data.repo.UserRepoImpl
-import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.repo.UserRepo
 import com.esh7enly.esh7enlyuser.util.isValidEmailId

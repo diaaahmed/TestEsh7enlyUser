@@ -25,7 +25,6 @@ class UserRepoImpl (
 {
 
     override fun loginWithState(
-        uuid:String,
         mobile:String,
         password:String,
         deviceToken:String,
@@ -38,8 +37,7 @@ class UserRepoImpl (
                 mobile = mobile,
                 userPassword = password,
                 imei = imei,
-                deviceToken = deviceToken,
-                uuid = uuid
+                deviceToken = deviceToken
             )
 
             if(getLoginResponse.isSuccessful)

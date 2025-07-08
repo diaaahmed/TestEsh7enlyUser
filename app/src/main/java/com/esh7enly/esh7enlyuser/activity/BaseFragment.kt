@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModel
 import com.esh7enly.data.sharedhelper.SharedHelper
 import com.esh7enly.esh7enlyuser.BR
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
-import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.ProgressDialog
 import javax.inject.Inject
 
@@ -23,9 +22,6 @@ abstract class BaseFragment<DB : ViewDataBinding, VM : ViewModel> : Fragment()
     }
 
     var sharedHelper: SharedHelper? = null
-        @Inject set
-
-    var connectivity: Connectivity? = null
         @Inject set
 
     val pDialog by lazy{

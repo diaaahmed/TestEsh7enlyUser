@@ -44,6 +44,29 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
+    fun serviceSearchNew(serviceName: String, page: Int, listner: OnResponseListener) {
+        viewModelScope.launch {
+            try {
+                val serviceSearch = servicesRepo.serviceSearchNew(serviceName, page)
+
+                if (serviceSearch?.data?.data?.isNotEmpty() == true) {
+                    listner.onSuccess(
+                        serviceSearch.code,
+                        serviceSearch.message,
+                        serviceSearch.data?.data
+                    )
+
+                } else {
+                    listner.onFailed(serviceSearch?.code!!, serviceSearch.message)
+                }
+            } catch (e: Exception) {
+                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                sendIssueToCrashlytics(e.message.toString(),"Service search Method serviceViewModel")
+
+            }
+        }
+    }
+
     fun serviceSearch(serviceName: String, page: Int, listner: OnResponseListener) {
         viewModelScope.launch {
             try {

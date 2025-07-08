@@ -41,6 +41,8 @@ object Url {
 
     const val PAYMENT = "service/payment"
 
+    const val PAYMENT_AMOUNT_WALLET = "newvisa/pay-amount-wallet"
+
     const val VISA_WALLET = "newvisa/check-complete"
 
     const val TOTAL_AMOUNT = "service/total-amount"

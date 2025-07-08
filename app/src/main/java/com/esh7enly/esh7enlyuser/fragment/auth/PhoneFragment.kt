@@ -40,7 +40,6 @@ class PhoneFragment : BaseFragment<FragmentPhoneBinding, PhoneViewModel>() {
 
     private fun sendOtpClicked() {
         pDialog.show()
-        Log.d("TAG", "diaa sendOtpClicked: ")
 
         arguments?.getString(Constants.FORGET_PASSWORD)?.let {
             forgetPasswordSendOtp()

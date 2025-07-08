@@ -15,6 +15,7 @@ import com.esh7enly.domain.entity.scedulelistresponse.ScheduleListResponse
 import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireResponse
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
 import com.esh7enly.domain.entity.searchresponse.SearchResponse
+import com.esh7enly.domain.entity.searchresponse.newresponse.NewSearchResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.google.gson.JsonElement
 import kotlinx.coroutines.flow.Flow
@@ -61,6 +62,7 @@ interface ServicesRepo {
     suspend fun getServices(providerId: String): ServiceResponse?
     suspend fun getParameters(serviceID: String): ParametersResponse?
     suspend fun serviceSearch(serviceName: String, page: Int): SearchResponse?
+    suspend fun serviceSearchNew(serviceName: String, page: Int): NewSearchResponse?
     suspend fun getUserPointsFlow(): Flow<NetworkResult<PointsResponse>>
 
 }

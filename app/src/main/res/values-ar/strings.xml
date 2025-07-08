@@ -239,5 +239,7 @@
     <string name="password_is_not_valid_please_use_aa1">الرقم السرى غير مقبول، يرجى استحدام حروف ورموز وارقام</string>
     <string name="logo">Logo</string>
     <string name="choose_pay_way">اختر طريقة الدفع:</string>
+    <string name="new_version_available">هناك إصدار جديد للتطبيق، برجاء قم بالتحديث</string>
+    <string name="update_now">تحديث الآن !!</string>
 
 </resources>

@@ -51,94 +51,87 @@ class OtpFragment : BaseFragment<FragmentOtpBinding, OtpViewModel>() {
     }
 
     private fun verifyOtpRequest() {
-        if (connectivity?.isConnected == true) {
 
-            val otp1 = binding.otp1.text.toString().trim()
-            val otp2 = binding.otp2.text.toString().trim()
-            val otp3 = binding.otp3.text.toString().trim()
-            val otp4 = binding.otp4.text.toString().trim()
-            val otp5 = binding.otp5.text.toString().trim()
-            val otp6 = binding.otp6.text.toString().trim()
+        val otp1 = binding.otp1.text.toString().trim()
+        val otp2 = binding.otp2.text.toString().trim()
+        val otp3 = binding.otp3.text.toString().trim()
+        val otp4 = binding.otp4.text.toString().trim()
+        val otp5 = binding.otp5.text.toString().trim()
+        val otp6 = binding.otp6.text.toString().trim()
 
-            if (otp1.isEmpty() || otp2.isEmpty() || otp3.isEmpty()
-                || otp4.isEmpty() || otp5.isEmpty() || otp6.isEmpty()
-            ) {
-                dialog.showWarningDialog(
-                    resources.getString(R.string.error_message__blank_otp),
-                    resources.getString(R.string.app__ok)
-                )
-            } else {
-
-                dialog.show()
-
-                val otpCode = otp1 + otp2 + otp3 + otp4 + otp5 + otp6
-
-                val otpIntent = arguments?.getInt(Constants.OTP)
-
-                if (otpIntent != 33) {
-                    viewModel.verifyForgetPassword(
-                        viewModel.phoneNumber.toString(),
-                        otpCode, object : OnResponseListener {
-                            override fun onSuccess(code: Int, msg: String?, obj: Any?)
-                            {
-                                val bundle = bundleOf(
-                                    Constants.PHONE to viewModel.phoneNumber.toString(),
-                                    Constants.OTP to otpCode
-                                )
-
-                                findNavController().navigate(
-                                    R.id.action_otpFragment_to_forgetPasswordFragment, bundle
-                                )
-                            }
-
-                            override fun onFailed(code: Int, msg: String?) {
-                                showErrorDialogWithAction(
-                                    activity = requireActivity(),
-                                    dialog = dialog,
-                                    msg = msg.toString(),
-                                    okTitle = resources.getString(R.string.app__ok),
-                                    code = 0
-                                )
-                            }
-                        }
-                    )
-
-                } else {
-
-                    viewModel.verifyAccount(
-                        viewModel.phoneNumber!!,
-                        otpCode,
-                        Constants.USER_KEY,
-                        object : OnResponseListener {
-                            override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-
-                                val bundle = bundleOf(Constants.USER_PHONE to viewModel.phoneNumber)
-
-                                findNavController().navigate(
-                                    R.id.action_otpFragment_to_registerFragment,
-                                    bundle
-                                )
-                            }
-
-                            override fun onFailed(code: Int, msg: String?) {
-                                showErrorDialogWithAction(
-                                    activity = requireActivity(),
-                                    dialog = dialog,
-                                    msg = msg.toString(),
-                                    okTitle = resources.getString(R.string.app__ok),
-                                    code = 0
-                                )
-                            }
-                        })
-                }
-
-            }
-        } else {
+        if (otp1.isEmpty() || otp2.isEmpty() || otp3.isEmpty()
+            || otp4.isEmpty() || otp5.isEmpty() || otp6.isEmpty()
+        ) {
             dialog.showWarningDialog(
-                resources.getString(R.string.no_internet_error),
+                resources.getString(R.string.error_message__blank_otp),
                 resources.getString(R.string.app__ok)
             )
             dialog.show()
+
+        } else {
+
+            //  dialog.show()
+            pDialog.show()
+
+            val otpCode = otp1 + otp2 + otp3 + otp4 + otp5 + otp6
+
+            val otpIntent = arguments?.getInt(Constants.OTP)
+
+            if (otpIntent != 33) {
+                viewModel.verifyForgetPassword(
+                    viewModel.phoneNumber.toString(),
+                    otpCode, object : OnResponseListener {
+                        override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+                            val bundle = bundleOf(
+                                Constants.PHONE to viewModel.phoneNumber.toString(),
+                                Constants.OTP to otpCode
+                            )
+
+                            findNavController().navigate(
+                                R.id.action_otpFragment_to_forgetPasswordFragment, bundle
+                            )
+                        }
+
+                        override fun onFailed(code: Int, msg: String?) {
+                            showErrorDialogWithAction(
+                                activity = requireActivity(),
+                                dialog = dialog,
+                                msg = msg.toString(),
+                                okTitle = resources.getString(R.string.app__ok),
+                                code = 0
+                            )
+                        }
+                    }
+                )
+
+            } else {
+                viewModel.verifyAccount(
+                    viewModel.phoneNumber!!,
+                    otpCode,
+                    Constants.USER_KEY,
+                    object : OnResponseListener {
+                        override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+
+                            val bundle = bundleOf(Constants.USER_PHONE to viewModel.phoneNumber)
+
+                            findNavController().navigate(
+                                R.id.action_otpFragment_to_registerFragment,
+                                bundle
+                            )
+                        }
+
+                        override fun onFailed(code: Int, msg: String?) {
+                            showErrorDialogWithAction(
+                                activity = requireActivity(),
+                                dialog = dialog,
+                                msg = msg.toString(),
+                                okTitle = resources.getString(R.string.app__ok),
+                                code = 0
+                            )
+                        }
+                    })
+            }
+
         }
     }
 

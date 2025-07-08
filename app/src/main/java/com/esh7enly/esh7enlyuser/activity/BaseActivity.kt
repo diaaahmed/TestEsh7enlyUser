@@ -16,7 +16,6 @@ import com.esh7enly.esh7enlyuser.R
 
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.AppDialogMsg
-import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Decryptor
 import com.esh7enly.esh7enlyuser.util.Encryptor
@@ -48,9 +47,6 @@ abstract class BaseActivity : AppCompatActivity() {
     val userViewModel: UserViewModel by viewModels()
 
     var sharedHelper: SharedHelper? = null
-        @Inject set
-
-    var connectivity: Connectivity? = null
         @Inject set
 
     var encryptor: Encryptor? = null

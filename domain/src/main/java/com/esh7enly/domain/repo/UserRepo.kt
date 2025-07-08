@@ -26,7 +26,6 @@ interface UserRepo {
     ): LiveData<ApiResponse<LoginResponse>>
 
     fun loginWithState(
-        uuid:String,
         mobile: String,
         password: String,
         deviceToken: String,

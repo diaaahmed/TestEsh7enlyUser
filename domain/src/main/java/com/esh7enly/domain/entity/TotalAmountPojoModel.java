@@ -17,7 +17,9 @@ public class TotalAmountPojoModel implements Parcelable {
     {
     }
 
-    public TotalAmountPojoModel(String imei , int serviceId, String amount, List<Params> attributes) {
+    public TotalAmountPojoModel(
+            String imei , int serviceId,
+            String amount, List<Params> attributes) {
         this.imei = imei;
         this.serviceId = serviceId;
         this.amount = amount;

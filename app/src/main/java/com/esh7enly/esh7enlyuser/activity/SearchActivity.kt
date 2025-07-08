@@ -4,10 +4,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.RequiresApi
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.searchresponse.SearchData
+import com.esh7enly.domain.entity.searchresponse.newresponse.DataX
 import com.esh7enly.esh7enlyuser.R
 import com.esh7enly.esh7enlyuser.adapter.SearchAdapter
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
@@ -53,54 +53,54 @@ class SearchActivity : BaseActivity(), SearchClick, IToolbarTitle {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private fun initRecyclerView() {
-        ui.searchRv.setHasFixedSize(true)
-
-        ui.nestedScrollView.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener
-            { v, _, scrollY, _, _ ->
-                if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
-                    pDialog.show()
-
-                    Language.setLanguageNew(this, Constants.LANG)
-
-                    page++
-                    serviceViewModel.serviceSearch(
-                        serviceSearch!!, page, object : OnResponseListener {
-                            override fun onSuccess(code: Int, msg: String?, obj: Any?) {
-
-                                pDialog.cancel()
-
-                                val serviceData = obj as List<SearchData>
-
-                                if (serviceData.isEmpty()) {
-                                    ui.animationView.visibility = View.VISIBLE
-                                    ui.searchRv.visibility = View.GONE
-                                } else {
-                                    ui.animationView.visibility = View.GONE
-                                    ui.searchRv.visibility = View.VISIBLE
-                                    adapter.submitList(serviceData)
-                                    ui.searchRv.adapter = adapter
-                                }
-                            }
-
-                            override fun onFailed(code: Int, msg: String?) {
-                            }
-                        })
-                }
-            })
-    }
+//    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+//    private fun initRecyclerView() {
+//        ui.searchRv.setHasFixedSize(true)
+//
+//        ui.nestedScrollView.setOnScrollChangeListener(
+//            NestedScrollView.OnScrollChangeListener
+//            { v, _, scrollY, _, _ ->
+//                if (scrollY == v.getChildAt(0).measuredHeight - v.measuredHeight) {
+//                    pDialog.show()
+//
+//                    Language.setLanguageNew(this, Constants.LANG)
+//
+//                    page++
+//                    serviceViewModel.serviceSearch(
+//                        serviceSearch!!, page, object : OnResponseListener {
+//                            override fun onSuccess(code: Int, msg: String?, obj: Any?) {
+//
+//                                pDialog.cancel()
+//
+//                                val serviceData = obj as List<SearchData>
+//
+//                                if (serviceData.isEmpty()) {
+//                                    ui.animationView.visibility = View.VISIBLE
+//                                    ui.searchRv.visibility = View.GONE
+//                                } else {
+//                                    ui.animationView.visibility = View.GONE
+//                                    ui.searchRv.visibility = View.VISIBLE
+//                                    adapter.submitList(serviceData)
+//                                    ui.searchRv.adapter = adapter
+//                                }
+//                            }
+//
+//                            override fun onFailed(code: Int, msg: String?) {
+//                            }
+//                        })
+//                }
+//            })
+//    }
 
     private fun serviceSearchRemotely(serviceName: String) {
         lifecycleScope.launch {
 
-            serviceViewModel.serviceSearch(
+            serviceViewModel.serviceSearchNew(
                 serviceName, 1, object : OnResponseListener {
                     override fun onSuccess(code: Int, msg: String?, obj: Any?) {
                         pDialog.cancel()
 
-                        val serviceData = obj as List<SearchData>
+                        val serviceData = obj as List<DataX>
 
                         if (serviceData.isEmpty()) {
                             ui.animationView.visibility = View.VISIBLE
@@ -138,8 +138,7 @@ class SearchActivity : BaseActivity(), SearchClick, IToolbarTitle {
         ui.resultsToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
 
-    override fun click(service: SearchData) {
-
+    override fun click(service: DataX) {
         serviceViewModel.serviceType = service.type
 
         Constants.SERVICE_TYPE_TEST = service.type
@@ -152,28 +151,21 @@ class SearchActivity : BaseActivity(), SearchClick, IToolbarTitle {
                 TotalAmountPojoModel(
                     Constants.IMEI,
                     service.id,
-                    service.price_value
+                    service.priceValue
                 )
 
             lifecycleScope.launch(Dispatchers.IO) {
 
                 getTotalAmount(
                     totalAmountPojoModel = totalAmountPojoModel,
-                    serviceName = service.name_ar,
-                    providerName = service.name_ar,
+                    serviceName = service.name,
+                    providerName = service.name,
                     serviceIcon = service.icon
                 )
-
             }
 
-
         } else {
-            val providerName =
-                if (Constants.LANG == Constants.AR) {
-                    service.name_ar
-                } else {
-                    service.name_en
-                }
+            val providerName = service.name
 
             NavigateToActivity.navigateToParametersActivityFromSearch(
                 activity = this,

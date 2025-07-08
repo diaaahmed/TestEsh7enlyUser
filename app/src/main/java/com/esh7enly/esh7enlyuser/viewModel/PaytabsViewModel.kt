@@ -75,12 +75,11 @@ class PaytabsViewModel @Inject constructor(
 
                 val publicKeyHandler = KeyPairHandler.getPublicKeyString()
 
-
                 val startSessionResponse = chargeBalanceRepo.startSessionForPay(
                     paymentMethodType = paymentMethodType,
                     transactionType = transactionType,
                     amount = finalAmount,
-                    total_amount = amount,
+                    totalAmount = amount,
                     ip = ip,
                     uuid = publicKeyHandler
                 )
@@ -96,23 +95,27 @@ class PaytabsViewModel @Inject constructor(
 
                         Constants.START_SESSION_ID = startSessionResponse.body()!!.data.id
 
-                        println("diaa data encrypted ck ${startSessionResponse.body()?.data?.ck.toString()}")
-                        println("diaa data encrypted sk ${startSessionResponse.body()?.data?.sk.toString()}")
-                        println("diaa data encrypted pi ${startSessionResponse.body()?.data?.pi.toString()}")
-
                        try{
                            Constants.CK =  KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.ck.toString())
+                               .replace("[","")
+                               .replace("]","")
+                               .replace("\"", "")
+
                            Constants.SK = KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.sk.toString())
+                               .replace("[","")
+                               .replace("]","")
+                               .replace("\"", "")
                            Constants.PI = KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.pi.toString())
+                               .replace("[","")
+                               .replace("]","")
+                               .replace("\"", "")
+
                        }
                        catch (e: Exception)
                        {
                            println("diaa data error ${e.message}")
                        }
 
-                        println("diaa data decrypted ck ${Constants.CK}")
-                        println("diaa data decrypted sk ${Constants.SK}")
-                        println("diaa data decrypted pi ${Constants.PI}")
 
                         val normalId = startSessionResponse.body()!!.data.id
 
@@ -126,10 +129,6 @@ class PaytabsViewModel @Inject constructor(
                         Constants.HASH_GENERATED = generated
 
                         Constants.HASH_ID = startSessionResponse.body()!!.data.hash_id
-
-                        Log.d("TAG", "diaa has_id after converted : $generated")
-                        Log.d("TAG", "diaa hash_id : ${Constants.HASH_ID}")
-
 
                         listner.onSuccess(
                             startSessionResponse.body()!!.code,
@@ -201,7 +200,6 @@ class PaytabsViewModel @Inject constructor(
     }
 
 
-    private external fun pay(): String
     private external fun baseLock(): String
     private external fun baseLockWord(): String
 
@@ -259,7 +257,7 @@ class PaytabsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val charge = chargeBalanceRepo.chargeBalanceWithPaytabs(
-                    url = pay(), chargeBalanceRequest = chargeBalanceRequest
+                    chargeBalanceRequest = chargeBalanceRequest
                 )
 
                 if (charge.isSuccessful) {

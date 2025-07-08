@@ -6,16 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.esh7enly.domain.entity.searchresponse.SearchData
-import com.esh7enly.domain.entity.userservices.*
+import com.esh7enly.domain.entity.searchresponse.newresponse.DataX
 import com.esh7enly.esh7enlyuser.click.SearchClick
 import com.esh7enly.esh7enlyuser.databinding.ServiceLayoutBinding
-import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.Utils
 
 class SearchAdapter (val click: SearchClick) :
-    ListAdapter<SearchData, SearchAdapter.ViewHolder>(ServiceDiffCallback()) {
+    ListAdapter<DataX, SearchAdapter.ViewHolder>(ServiceDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemBinding = ServiceLayoutBinding.inflate(
@@ -29,23 +27,16 @@ class SearchAdapter (val click: SearchClick) :
         holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(private val itemBinding: ServiceLayoutBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+    inner class ViewHolder(private val itemBinding: ServiceLayoutBinding)
+        : RecyclerView.ViewHolder(itemBinding.root) {
         @SuppressLint("CheckResult")
 
-        fun bind(service: SearchData) = with(itemBinding)
+        fun bind(service: DataX) = with(itemBinding)
         {
             Utils.displayImageOriginalFromCache(root.context,categoryIcon,service.icon,
                 NetworkUtils.isConnectedWifi(root.context))
 
-
-            if(Constants.LANG == Constants.AR)
-            {
-                tvTitle.text = service.name_ar
-            }
-            else
-            {
-                tvTitle.text = service.name_en
-            }
+            tvTitle.text = service.name
 
             root.setOnClickListener {
                 click.click(service)
@@ -54,18 +45,18 @@ class SearchAdapter (val click: SearchClick) :
         }
     }
 
-    class ServiceDiffCallback : DiffUtil.ItemCallback<SearchData>()
+    class ServiceDiffCallback : DiffUtil.ItemCallback<DataX>()
     {
         override fun areItemsTheSame(
-            oldItem: SearchData,
-            newItem: SearchData
+            oldItem: DataX,
+            newItem: DataX
         ): Boolean {
-            return oldItem.name_en == newItem.name_en
+            return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(
-            oldItem: SearchData,
-            newItem: SearchData
+            oldItem: DataX,
+            newItem: DataX
         ): Boolean {
             return oldItem == newItem
         }

@@ -8,7 +8,6 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import com.esh7enly.data.datastore.DataStoreHelper
 import com.esh7enly.data.sharedhelper.Constants
 import com.esh7enly.data.sharedhelper.SharedHelper
-import com.esh7enly.esh7enlyuser.util.Connectivity
 import com.esh7enly.esh7enlyuser.util.CryptoData
 import com.esh7enly.esh7enlyuser.util.Decryptor
 import com.esh7enly.esh7enlyuser.util.DynamicLayout
@@ -37,11 +36,10 @@ object ActivityModule
     @Provides
     fun provideEncryptor():Encryptor = Encryptor()
 
-
-
-    @Singleton
-    @Provides
-    fun provideConnectivity(@ApplicationContext context: Context): Connectivity = Connectivity(context)
+//
+//    @Singleton
+//    @Provides
+//    fun provideConnectivity(@ApplicationContext context: Context): Connectivity = Connectivity(context)
 
 
     @Singleton

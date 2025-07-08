@@ -34,6 +34,7 @@ fun isValidPassword(password: String): Boolean {
 
 fun isValidEmailId(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
+
 fun showErrorDialogWithAction(
     activity: Activity, dialog:AppDialogMsg,
     msg:String, okTitle:String,code:Int)

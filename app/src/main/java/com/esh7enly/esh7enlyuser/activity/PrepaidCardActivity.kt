@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -32,7 +31,6 @@ import com.esh7enly.esh7enlyuser.util.NavigateToActivity
 import com.esh7enly.esh7enlyuser.util.NetworkUtils
 import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.Utils
-import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import com.payment.paymentsdk.PaymentSdkActivity
 import com.payment.paymentsdk.integrationmodels.PaymentSdkError
 
@@ -165,43 +163,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
 
                 }.show()
             }
-
-//            PayWays.WALLET.toString() -> {
-//                dialog.showWarningDialogWithAction(
-//                    resources.getString(R.string.payment_warning),
-//                    resources.getString(R.string.app__ok)
-//                )
-//                {
-//                    dialog.cancel()
-//
-//                    pDialog.show()
-//
-//                    getTotalAmountForCharge(
-//                        transactionType = GatewayTransactionType.wallet.toString(),
-//                        amountForPay = totalAmount
-//                    )
-//
-//                }.show()
-//            }
-//            PayWays.BANk.toString() -> {
-//
-//                dialog.showWarningDialogWithAction(
-//                    resources.getString(R.string.payment_warning),
-//                    resources.getString(R.string.app__ok)
-//                )
-//                {
-//                    dialog.cancel()
-//
-//                    pDialog.show()
-//
-//                    getTotalAmountForCharge(
-//                        transactionType = GatewayTransactionType.visa.toString(),
-//                        amountForPay = totalAmount
-//                    )
-//
-//                }.show()
-//
-//            }
 
             PayWays.Esh7enly.toString() -> {
 
@@ -422,26 +383,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
         startSessionId: Int
     ) {
 
-//        var secretKey: String? = null
-//
-//        try {
-//            val encryptedText = encryptor?.encryptText(aliasString(), profileKey())
-//            Base64.encodeToString(encryptedText, Base64.DEFAULT)
-//
-//            secretKey = decryptor?.decryptData(
-//                aliasString(), encryptor?.encryption, encryptor?.iv
-//            )
-//
-//        } catch (e: Exception) {
-//
-//            sendIssueToCrashlytics(
-//                msg = e.message.toString(),
-//                functionName = "encryptedText AddBalance",
-//                key = "encryptedText AddBalance",
-//                provider = e.message.toString()
-//            )
-//        }
-
         val configData = paytabsViewModel.generatePaytabsConfigurationDetails(
             serverKey = Constants.SK,
             clientKey = Constants.CK,
@@ -466,11 +407,6 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
             }
         }
     }
-
-    private external fun clientKey(): String
-    private external fun serverKey(): String
-    private external fun profileKey(): String
-    private external fun aliasString(): String
 
     private fun cashWalletClicked() {
         paytabsViewModel.setShowNumberNew(PayWays.CASH.toString())

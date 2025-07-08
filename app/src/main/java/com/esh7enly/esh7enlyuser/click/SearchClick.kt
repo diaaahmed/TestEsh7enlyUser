@@ -1,8 +1,8 @@
 package com.esh7enly.esh7enlyuser.click
 
-import com.esh7enly.domain.entity.searchresponse.SearchData
+import com.esh7enly.domain.entity.searchresponse.newresponse.DataX
 
 interface SearchClick
 {
-    fun click(service: SearchData)
+    fun click(service: DataX)
 }

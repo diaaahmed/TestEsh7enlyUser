@@ -70,7 +70,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
 
         getData()
 
-        //   binding.searchBtn.setOnClickListener { serviceSearch() }
+        binding.searchBtn.setOnClickListener { serviceSearch() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

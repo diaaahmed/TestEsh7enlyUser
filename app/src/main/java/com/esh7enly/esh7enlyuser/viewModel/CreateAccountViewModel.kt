@@ -16,13 +16,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class CreateAccountViewModel @Inject constructor(
     private val userRepo: UserRepoImpl
 ) : ViewModel()
 {
     var phoneNumber: String? = null
-
 
      val userFirstName = MutableStateFlow("")
      val userLastName = MutableStateFlow("")
@@ -44,10 +44,12 @@ class CreateAccountViewModel @Inject constructor(
             {
                 try {
                     val registerResponse = userRepo.registerNewAccount(
-                        RegisterModel(userFirstName.value + " " + userLastName.value ,
-                            userPhoneNumber,
-                            userPassword.value,
-                            userEmail.value)
+                        RegisterModel(
+                            name = userFirstName.value + " " + userLastName.value ,
+                            mobile = userPhoneNumber,
+                            password = userPassword.value,
+                            password_confirm = confirmationPassword.value,
+                            email = userEmail.value)
                     )
 
                     if (!registerResponse.status!!) {
@@ -102,5 +104,4 @@ class CreateAccountViewModel @Inject constructor(
             }
         }
     }
-
 }

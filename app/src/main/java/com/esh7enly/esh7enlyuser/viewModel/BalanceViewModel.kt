@@ -22,8 +22,7 @@ class BalanceViewModel @Inject constructor(
 
     var responseDeposits: LiveData<NetworkResult<DepositResponse>> = _responseDeposits
 
-    fun getNewDeposits(page: Int)
-    {
+    fun getNewDeposits(page: Int) {
         _responseDeposits.value = NetworkResult.Loading()
 
         viewModelScope.launch {
@@ -70,7 +69,7 @@ class BalanceViewModel @Inject constructor(
 
                if(response.isSuccessful && response.body()?.status == true)
                {
-                   _balance.value = response.body()!!.data[0].balance
+                   _balance.value = response.body()!!.data.balance
                }
                else
                {

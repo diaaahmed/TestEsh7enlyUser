@@ -335,5 +335,7 @@ Some products cannot be returned, and they are:
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logo">Logo</string>
     <string name="choose_pay_way">Choose payment way</string>
+    <string name="new_version_available">New version available forr app, Please update</string>
+    <string name="update_now">Update Now !!</string>
 
 </resources>

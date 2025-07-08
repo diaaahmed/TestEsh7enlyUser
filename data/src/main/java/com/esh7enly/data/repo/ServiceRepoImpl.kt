@@ -16,6 +16,7 @@ import com.esh7enly.domain.entity.scedulelistresponse.ScheduleListResponse
 import com.esh7enly.domain.entity.scheduleinquireresoponse.ScheduleInquireResponse
 import com.esh7enly.domain.entity.scheduleinvoice.ScheduleInvoiceResponse
 import com.esh7enly.domain.entity.searchresponse.SearchResponse
+import com.esh7enly.domain.entity.searchresponse.newresponse.NewSearchResponse
 import com.esh7enly.domain.entity.servicesNew.ServiceResponse
 import com.esh7enly.domain.repo.ServicesRepo
 import com.google.gson.JsonElement
@@ -166,6 +167,21 @@ class ServiceRepoImpl(
             serviceSearch.body()
         } else {
             SearchResponse(code = serviceSearch.code(), message = serviceSearch.message())
+        }
+    }
+
+    override suspend fun serviceSearchNew(serviceName: String, page: Int): NewSearchResponse? {
+        val serviceSearch = apiService.serviceSearchNew(serviceName, page)
+
+        return if (serviceSearch.isSuccessful) {
+            serviceSearch.body()
+        } else {
+            NewSearchResponse(
+                code = serviceSearch.code(),
+                message = serviceSearch.message(),
+                data = null,
+                status = null
+            )
         }
     }
 

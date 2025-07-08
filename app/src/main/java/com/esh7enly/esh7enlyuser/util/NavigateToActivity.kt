@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import com.esh7enly.domain.entity.TotalAmountPojoModel
 import com.esh7enly.domain.entity.categoriesNew.CategoryData
-import com.esh7enly.domain.entity.searchresponse.SearchData
+import com.esh7enly.domain.entity.searchresponse.newresponse.DataX
 import com.esh7enly.domain.entity.servicesNew.ServiceData
 import com.esh7enly.esh7enlyuser.activity.*
 import com.esh7enly.esh7enlyuser.util.Constants.PROVIDER_NAME
@@ -75,7 +75,7 @@ class NavigateToActivity
 
         fun navigateToParametersActivityFromSearch(activity:Activity,
                                          providerName:String,
-                                                   searchData:SearchData
+                                                   searchData: DataX
         )
         {
             val parametersActivity = Intent(activity,ParametersActivity::class.java)
@@ -83,17 +83,17 @@ class NavigateToActivity
             parametersActivity.putExtra(Constants.SERVICE_TYPE,searchData.type)
             parametersActivity.putExtra(PROVIDER_NAME,providerName)
 
-            Constants.SERVICE_NAME_AR = searchData.name_ar
+            Constants.SERVICE_NAME_AR = searchData.name
 
             parametersActivity.putExtra(Constants.SERVICE_ID,searchData.id)
-            parametersActivity.putExtra(Constants.SERVICE_NAME_AR,searchData.name_ar)
-            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_INPUT, searchData.accept_amount_input)
-            parametersActivity.putExtra(Constants.PRICE_TYPE,searchData.price_type)
-            parametersActivity.putExtra(Constants.ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS,searchData.accept_check_integration_provider_status)
-            parametersActivity.putExtra(Constants.PRICE_VALUE,searchData.price_value)
-            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_CHANGE,searchData.accept_change_paid_amount)
+            parametersActivity.putExtra(Constants.SERVICE_NAME_AR,searchData.name)
+            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_INPUT, searchData.acceptAmountInput)
+            parametersActivity.putExtra(Constants.PRICE_TYPE,searchData.priceType)
+            parametersActivity.putExtra(Constants.ACCEPT_CHECK_INTEGRATION_PROVIDER_STATUS,searchData.acceptCheckIntegrationProviderStatus)
+            parametersActivity.putExtra(Constants.PRICE_VALUE,searchData.priceValue)
+            parametersActivity.putExtra(Constants.ACCEPT_AMOUNT_CHANGE,searchData.acceptChangePaidAmount)
             parametersActivity.putExtra(Constants.IMAGE,searchData.icon)
-            parametersActivity.putExtra(Constants.SERVICE_TYPE_CODE,searchData.type_code)
+            parametersActivity.putExtra(Constants.SERVICE_TYPE_CODE,searchData.typeCode)
 
             activity.startActivity(parametersActivity)
         }

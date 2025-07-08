@@ -83,7 +83,4 @@ public class DeviceUtil extends AppCompatActivity {
         return IMEI;
     }
 
-
-
-
 }
