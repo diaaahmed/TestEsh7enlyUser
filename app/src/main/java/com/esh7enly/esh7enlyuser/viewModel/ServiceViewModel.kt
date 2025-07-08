@@ -168,7 +168,7 @@ class ServiceViewModel @Inject constructor(
                     listner.onFailed(parameters?.code!!, parameters.message)
                 }
             } catch (e: Exception) {
-                listner.onFailed(Constants.EXCEPTION_CODE, e.message)
+                listner.onFailed(Constants.EXCEPTION_CODE,"No data found")
                 sendIssueToCrashlytics(e.message.toString(),"Get parameters new serviceViewModel")
 
             }

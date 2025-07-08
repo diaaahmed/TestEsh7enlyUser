@@ -59,15 +59,9 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             KeyPairHandler.generateKeyPair()
 
-           // val publicKeyHandler = KeyPairHandler.getPublicKeyString()
-            //val keyEdited = publicKeyHandler.replace("+",".")
-        //    val key = "$2a$10$${keyEdited}"
-
             val uPassword = encryptDataWithPublicKey(
                 userPassword.value,publicKeyLast)
 
-          //  val addedData = "$2a$10$${sharedHelper.getDataToken()}${public_edited}"
-          //  println("Diaa encrypted key $key")
             println("Diaa encrypted password $uPassword")
 
             userRepo.loginWithState(

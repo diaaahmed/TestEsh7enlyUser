@@ -12,9 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ParametersViewModel @Inject constructor(
-    private val databaseRepo: DatabaseRepo,
-    private val servicesRepo: ServicesRepo
+class ParametersViewModel @Inject constructor(private val servicesRepo: ServicesRepo
 ): ViewModel()
 {
 
