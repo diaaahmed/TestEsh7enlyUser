@@ -16,7 +16,6 @@ import retrofit2.Response
 
 interface UserRepo {
 
-
     fun loginWithState(
         mobile: String,
         password: String,
