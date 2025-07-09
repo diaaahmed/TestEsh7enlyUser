@@ -1137,7 +1137,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                         this@InquireActivity,
                         result, serviceViewModel.serviceType
                     )
-                    // finish()
 
                 }
 
@@ -1164,7 +1163,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                             result, serviceViewModel.serviceType
                         )
 
-                        //  finish()
                     }
                     dialog.show()
                 }
@@ -1181,8 +1179,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                             this@InquireActivity,
                             result, serviceViewModel.serviceType
                         )
-
-                        // finish()
 
                     }.show()
                 }
@@ -1455,11 +1451,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
         return true
     }
 
-//    private fun showMessage(message: String) {
-//        runOnUiThread {
-//            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
     private fun showMessage(message: String) {
 
