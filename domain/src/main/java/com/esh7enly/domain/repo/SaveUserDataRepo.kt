@@ -6,6 +6,13 @@ interface SaveUserDataRepo{
     suspend fun setStoreName(storeName: String?)
     suspend fun getStoreName(): String?
 
+    suspend fun savePayToken(token: String?)
+    suspend fun getPayToken(): String?
+
+    suspend fun saveTransactionRef(transactionRef:String?)
+    suspend fun getTransactionRef():String?
+
+
     // Save user password
     suspend fun setUserPassword(password: String?)
 

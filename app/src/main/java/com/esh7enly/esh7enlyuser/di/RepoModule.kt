@@ -4,7 +4,9 @@ import com.esh7enly.data.repo.ServiceRepoImpl
 import com.esh7enly.data.repo.TransactionsRepoImpl
 import com.esh7enly.data.repo.UserRepoImpl
 import com.esh7enly.data.repo.ChargeBalanceRepoImpl
+import com.esh7enly.data.sharedhelper.SharedPrefImpl
 import com.esh7enly.domain.repo.ChargeBalanceRepo
+import com.esh7enly.domain.repo.SaveUserDataRepo
 import com.esh7enly.domain.repo.ServicesRepo
 import com.esh7enly.domain.repo.TransactionsRepo
 import com.esh7enly.domain.repo.UserRepo
@@ -33,5 +35,9 @@ abstract class RepoModule {
     @Binds
     @Singleton
     abstract fun provideChargeBalanceRepo(chargeBalanceRepoImp: ChargeBalanceRepoImpl): ChargeBalanceRepo
+
+    @Binds
+    @Singleton
+    abstract fun provideSaveUserDataRepo(sharedPrefImpl: SharedPrefImpl): SaveUserDataRepo
 
 }

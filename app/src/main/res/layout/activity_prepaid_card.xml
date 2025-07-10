@@ -602,6 +602,17 @@
 
                         </LinearLayout>
 
+                        <TextView
+                            android:visibility="gone"
+                            android:layout_marginStart="@dimen/_20sdp"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:layout_marginEnd="@dimen/_20sdp"
+                            android:id="@+id/cardID"
+                            android:textAlignment="center"
+                            android:text="dasdasdsa"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/fillPhoneNumber"
                             showFillPhoneNumber="@{viewModel.showPhoneNumber.booleanValue()}"

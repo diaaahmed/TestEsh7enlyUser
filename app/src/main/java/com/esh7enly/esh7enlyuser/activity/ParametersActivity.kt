@@ -409,11 +409,6 @@ open class ParametersActivity : BaseActivity() {
                                 result, serviceViewModel.serviceType
                             )
 
-                            Toast.makeText(
-                                this@ParametersActivity,
-                                "Success",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
 
                     val alertDialog = builder.create()
@@ -429,14 +424,6 @@ open class ParametersActivity : BaseActivity() {
                         this@ParametersActivity,
                         result, serviceViewModel.serviceType
                     )
-
-                    Toast.makeText(
-                        this@ParametersActivity,
-                        "Success",
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    //  finish()
                 }
 
             })
@@ -463,13 +450,6 @@ open class ParametersActivity : BaseActivity() {
                             result, serviceViewModel.serviceType
                         )
 
-                        Toast.makeText(
-                            this@ParametersActivity,
-                            "Success",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        //  finish()
                     }
                     dialog.show()
                 }
@@ -488,14 +468,6 @@ open class ParametersActivity : BaseActivity() {
                             this@ParametersActivity,
                             result, serviceViewModel.serviceType
                         )
-
-                        Toast.makeText(
-                            this@ParametersActivity,
-                            "Success",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        //  finish()
 
                     }.show()
                 }

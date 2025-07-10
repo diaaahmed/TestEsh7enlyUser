@@ -31,6 +31,7 @@ import com.esh7enly.esh7enlyuser.databinding.FragmentHomeBinding
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.Language
 import com.esh7enly.esh7enlyuser.util.NavigateToActivity
+import com.esh7enly.esh7enlyuser.viewModel.CategoriesViewModel
 import com.esh7enly.esh7enlyuser.viewModel.ServiceViewModel
 
 
@@ -44,7 +45,7 @@ private const val TAG = "HomeFragment"
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding,
-        ServiceViewModel>(), CategoryClick {
+        CategoriesViewModel>(), CategoryClick {
 
     private var categories: List<CategoryData>? = null
 
@@ -52,7 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
 
     private lateinit var categoriesAdapter: CategoryAdapterNew
 
-    override val viewModel: ServiceViewModel by viewModels()
+    override val viewModel: CategoriesViewModel by viewModels()
 
     override fun getLayoutResID() = R.layout.fragment_home
 
@@ -269,7 +270,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,
     }
 
     private fun getDataFromServer() {
-        Log.d(TAG, "diaa getDataFromServer: ")
 
         binding.shimmerViewContainer.startShimmerAnimation()
 

@@ -86,6 +86,7 @@ mockk = {module = "io.mockk:mockk", version.ref = "mockkVersion"}
 google-truth = {module = "com.google.truth:truth", version.ref = "googleTruthVersion"}
 chucker = {group = "com.github.chuckerteam.chucker",name = "library", version.ref = "chucker"}
 payment-sdk = { module = "com.paytabs:payment-sdk", version.ref = "paymentSdk" }
+
 qrgenearator = { group = "androidmads.library.qrgenearator", name = "QRGenearator",version.ref = "qrgenearator" }
 qrgenerator = { module = "com.github.androidmads:QRGenerator", version.ref = "qrgenerator" }
 retrofit = {group = "com.squareup.retrofit2",name = "retrofit", version.ref = "retrofit"}

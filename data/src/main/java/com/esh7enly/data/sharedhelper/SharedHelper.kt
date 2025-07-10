@@ -5,10 +5,46 @@ import android.content.SharedPreferences
 import android.util.Base64
 import com.esh7enly.data.R
 
-class SharedHelper(var context: Context,
-                   private var sharedPreferencesEncrypted: SharedPreferences ) {
+class SharedHelper(
+    var context: Context,
+    private var sharedPreferencesEncrypted: SharedPreferences
+) {
 
     private val data = "data"
+
+    fun saveCardID(cardID: String?) {
+        with(sharedPreferencesEncrypted.edit())
+        {
+            putString(Constants.CARD_ID, cardID)
+            apply()
+        }
+    }
+
+    fun getCardID(): String? =
+        sharedPreferencesEncrypted.getString(Constants.CARD_ID, null)
+
+    fun savePayToken(token: String?) {
+        with(sharedPreferencesEncrypted.edit())
+        {
+            putString(Constants.PAY_TOKEN, token)
+            apply()
+        }
+    }
+
+    fun getPayToken(): String? =
+        sharedPreferencesEncrypted.getString(Constants.PAY_TOKEN, null)
+
+    fun saveTransactionRef(transactionRef: String?) {
+        with(sharedPreferencesEncrypted.edit())
+        {
+            putString(Constants.TRANSACTION_REF, transactionRef)
+            apply()
+        }
+    }
+
+    fun getTransactionRef(): String? =
+        sharedPreferencesEncrypted.getString(Constants.TRANSACTION_REF, null)
+
 
     private var sharedPref = context.getSharedPreferences(data, Context.MODE_PRIVATE)
 
@@ -78,13 +114,15 @@ class SharedHelper(var context: Context,
 
     }
 
-     fun getUserToken(): String = "Bearer " + sharedPreferencesEncrypted.getString(Constants.USER_TOKEN, "")
+    fun getUserToken(): String =
+        "Bearer " + sharedPreferencesEncrypted.getString(Constants.USER_TOKEN, "")
 
-    fun getNormalToken():String = sharedPreferencesEncrypted.getString(Constants.USER_TOKEN,"") ?: ""
+    fun getNormalToken(): String =
+        sharedPreferencesEncrypted.getString(Constants.USER_TOKEN, "") ?: ""
 
-    fun getDataToken():String{
+    fun getDataToken(): String {
         return getUserToken()
-            .replace("Bearer ","")
+            .replace("Bearer ", "")
             .take(16)
     }
 

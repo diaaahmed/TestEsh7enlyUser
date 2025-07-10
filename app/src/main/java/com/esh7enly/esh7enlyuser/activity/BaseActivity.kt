@@ -154,7 +154,6 @@ abstract class BaseActivity : AppCompatActivity() {
         result: PaymentEntity.DataEntity,
         paymentPojoModel: PaymentPojoModel
     ) {
-        Log.d("TAG", "diaa scheduleInquire:start ")
 
         val clientNumber = result.clientNumber ?: "clientNumber"
 
@@ -336,7 +335,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }.show()
     }
 
-    fun requestToChargeBalance(
+    private fun requestToChargeBalance(
         paymentPojoModel: PaymentPojoModel,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs
     ) {
@@ -357,7 +356,7 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun requestChargeWalletCancelled(
+    private fun requestChargeWalletCancelled(
         paymentPojoModel: PaymentPojoModel,
         chargeBalanceRequest: ChargeBalanceRequestPaytabs,
     ) {
@@ -473,11 +472,16 @@ abstract class BaseActivity : AppCompatActivity() {
             chargeBalanceRequest.copy(
                 status = PaymentStatus.SUCCESSFUL.toString()
             )
+
         } else {
             chargeBalanceRequest.copy(
                 status = PaymentStatus.FAILED.toString()
             )
         }
+
+        sharedHelper?.savePayToken(paymentSdkTransactionDetails.token)
+        sharedHelper?.saveCardID(paymentSdkTransactionDetails.paymentInfo?.paymentDescription)
+        sharedHelper?.saveTransactionRef(paymentSdkTransactionDetails.transactionReference)
 
         requestToChargeBalance(
             paymentPojoModel = paymentPojoModel,

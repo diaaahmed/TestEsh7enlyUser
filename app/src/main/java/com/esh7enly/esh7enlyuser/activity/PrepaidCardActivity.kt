@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -33,7 +34,6 @@ import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.Utils
 import com.payment.paymentsdk.PaymentSdkActivity
 import com.payment.paymentsdk.integrationmodels.PaymentSdkError
-
 import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionDetails
 import com.payment.paymentsdk.sharedclasses.interfaces.CallbackPaymentInterface
 import kotlinx.coroutines.launch
@@ -131,6 +131,14 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
             myWalletClicked()
         }
 
+//        sharedHelper?.getPayToken()?.let {
+//            ui.cardID.visibility = View.VISIBLE
+//            ui.cardID.text =
+//                "${sharedHelper?.getPayToken()} and ${sharedHelper?.getTransactionRef() } \n " +
+//                        "${sharedHelper?.getCardID()}"
+//
+//        }
+
     }
 
     private fun chargeBalance() {
@@ -142,10 +150,10 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                 getTotalWithCash()
             }
 
-            PayWays.BANk.toString(), PayWays.WALLET.toString()->{
+            PayWays.BANk.toString(), PayWays.WALLET.toString() -> {
 
-                val way = if(
-                    finalPaymentWay == PayWays.BANk.toString()) GatewayTransactionType.visa.toString() else  GatewayTransactionType.wallet.toString()
+                val way = if (
+                    finalPaymentWay == PayWays.BANk.toString()) GatewayTransactionType.visa.toString() else GatewayTransactionType.wallet.toString()
 
                 dialog.showWarningDialogWithAction(
                     resources.getString(R.string.payment_warning),
@@ -398,6 +406,21 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
                 transactionTypeFinal = GatewayTransactionType.visa.toString()
 
                 PaymentSdkActivity.startCardPayment(this, configData, this)
+
+//
+//                if(sharedHelper?.getPayToken() != null)
+//                {
+//                    PaymentSdkActivity.startTokenizedCardPayment(
+//                        this,configData,
+//                        sharedHelper?.getPayToken().toString(),
+//                        sharedHelper?.getTransactionRef().toString(),
+//                        this
+//                        )
+//                }
+//                else{
+//                    PaymentSdkActivity.startCardPayment(this, configData, this)
+//
+//                }
             }
 
             GatewayTransactionType.wallet.toString() -> {
@@ -443,7 +466,13 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
     }
 
     override fun onError(error: PaymentSdkError) {
-        onChargeBalanceError(error = error, finalTotalAmount = totalAmount, transactionType = transactionTypeFinal)
+
+        Log.d("TAG", "diaa ali onError: ${error.msg} code ${error.code}")
+        onChargeBalanceError(
+            error = error,
+            finalTotalAmount = totalAmount,
+            transactionType = transactionTypeFinal
+        )
     }
 
     override fun onPaymentCancel() {
@@ -475,7 +504,8 @@ class PrepaidCardActivity : BaseActivity(), CallbackPaymentInterface {
             paymentPojoModel = paymentPojoModel,
             paymentSdkTransactionDetails = paymentSdkTransactionDetails,
             transactionTypeFinal = transactionTypeFinal,
-            totalAmount = totalAmount)
+            totalAmount = totalAmount
+        )
 
     }
 

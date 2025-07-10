@@ -55,6 +55,22 @@ class DataStoreImpl(
         }
     }
 
+    override suspend fun savePayToken(token: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getPayToken(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveTransactionRef(transactionRef: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTransactionRef(): String? {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun setUserPassword(password: String?) {
         TODO("Not yet implemented")
     }

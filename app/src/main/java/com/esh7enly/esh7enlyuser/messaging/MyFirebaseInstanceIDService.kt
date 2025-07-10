@@ -46,35 +46,4 @@ class MyFirebaseInstanceIDService: FirebaseMessagingService()
         }
     }
 
-//    override fun onMessageReceived(message: RemoteMessage) {
-//        super.onMessageReceived(message)
-//
-//        val intent = Intent(this,SplachActivity::class.java)
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//
-//        val manager = getSystemService(Context.NOTIFICATION_SERVICE)
-//        createNotificationChannel(manager as NotificationManager)
-//
-//        val pendingIntent = PendingIntent.getActivities(this,0,
-//        arrayOf(intent),PendingIntent.FLAG_IMMUTABLE)
-//
-//        val notification = NotificationCompat.Builder(this,channelID)
-//            .setContentTitle(message.data["title"])
-//            .setContentText(message.data["message"])
-//            .setSmallIcon(R.drawable.logo)
-//            .setAutoCancel(true)
-//            .setContentIntent(pendingIntent).build()
-//
-//        manager.notify(Random.nextInt(),notification)
-//    }
-//
-//    private fun createNotificationChannel(manager:NotificationManager)
-//    {
-//        val channel = NotificationChannel(channelID,"Channel Name",
-//            NotificationManager.IMPORTANCE_HIGH)
-//
-//        channel.enableLights(true)
-//
-//        manager.createNotificationChannel(channel)
-//    }
 }

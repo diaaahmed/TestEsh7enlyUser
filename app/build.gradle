@@ -26,13 +26,8 @@ android {
 
         buildConfigField("String", "IMAGE_URL", IMAGE_URL)
         buildConfigField("String", "BASE_URL", BASE_URL)
-        buildConfigField("String", "SECRET_KEY", SECRET_KEY)
-        buildConfigField("String", "SECRET_WORD", SECRET_WORD)
         buildConfigField("String", "BASE_URL_NOTIFICATION", BASE_URL_NOTIFICATION)
         buildConfigField("String", "PRIVACY_POLICY", PRIVACY_POLICY)
-        buildConfigField("String", "SERVER_KEY_PRODUCTION", SERVER_KEY_PRODUCTION)
-        buildConfigField("String", "CLIENT_KEY_PRODUCTION", CLIENT_KEY_PRODUCTION)
-        buildConfigField("String", "PROFILE_ID_PRODUCTION", PROFILE_ID_PRODUCTION)
         buildConfigField("String", "ESH7ENLY_EMAIL", ESH7ENLY_EMAIL)
 
         signingConfig signingConfigs.debug

@@ -5,8 +5,6 @@ import androidx.lifecycle.*
 import com.esh7enly.data.local.DatabaseRepo
 import com.esh7enly.domain.NetworkResult
 import com.esh7enly.domain.entity.*
-import com.esh7enly.domain.entity.categoriesNew.CategoriesResponse
-import com.esh7enly.domain.entity.imageadsresponse.ImageAdResponse
 import com.esh7enly.domain.repo.ServicesRepo
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
@@ -90,37 +88,6 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    private fun getCategoriesNewFlow() {
-
-        viewModelScope.launch {
-            servicesRepo.getCategoriesFlow()
-                .onEach { result ->
-                    when (result) {
-                        is NetworkResult.Error -> {
-                            this@ServiceViewModel._categoriesResponse.update {
-                                NetworkResult.Error(result.message, result.code)
-                            }
-                        }
-
-                        is NetworkResult.Loading -> {
-                            this@ServiceViewModel._categoriesResponse.update {
-                                NetworkResult.Loading()
-                            }
-
-                        }
-
-                        is NetworkResult.Success -> {
-                            this@ServiceViewModel._categoriesResponse.update {
-                                NetworkResult.Success(result.data!!)
-                            }
-                        }
-                    }
-                }
-                .launchIn(viewModelScope)
-        }
-
-    }
-
     fun getServicesNew(providerID: String, listner: OnResponseListener) {
         viewModelScope.launch {
             try {
@@ -138,21 +105,6 @@ class ServiceViewModel @Inject constructor(
                     e.message.toString(),
                     "Get services new serviceViewModel")
             }
-        }
-    }
-
-    private var _categoriesResponse: MutableStateFlow<NetworkResult<CategoriesResponse>?> =
-        MutableStateFlow(NetworkResult.Loading())
-
-    val categoriesResponse = this._categoriesResponse.asStateFlow()
-
-    var data: Boolean = false
-
-     fun fetchData() {
-        if (!data) {
-            getCategoriesNewFlow()
-            getImageAds()
-            data = true
         }
     }
 
@@ -200,12 +152,6 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    fun clearFawryOperations() {
-        viewModelScope.launch(Dispatchers.IO) {
-            databaseRepo.clearFawryOperations()
-        }
-    }
-
     fun deleteFawryOperations(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             databaseRepo.deleteFawryOperation(id)
@@ -249,46 +195,6 @@ class ServiceViewModel @Inject constructor(
         }
     }
 
-    fun getFawryOperations(): LiveData<List<FawryEntity>> {
-        return databaseRepo.getFawryOperations()
-    }
-
-    private var _dynamicAdsState: MutableStateFlow<NetworkResult<ImageAdResponse>?> =
-        MutableStateFlow(null)
-
-    val dynamicAdsState = _dynamicAdsState.asStateFlow()
-
-    private fun getImageAds() {
-
-        viewModelScope.launch {
-            servicesRepo.getNewImageAdResponse()
-                .collect{response->
-                    when(response)
-                    {
-                        is NetworkResult.Error -> {
-                            _dynamicAdsState.update {
-                                NetworkResult.Error(response.message,response.code)
-                            }
-
-                            sendIssueToCrashlytics(response.message.toString(),
-                                "getImageAds serviceViewModel")
-
-                        }
-                        is NetworkResult.Loading -> {
-                            _dynamicAdsState.update {
-                                NetworkResult.Loading()
-                            }
-                        }
-                        is NetworkResult.Success -> {
-                            _dynamicAdsState.update {
-                                NetworkResult.Success(response.data!!)
-                            }
-
-                        }
-                    }
-                }
-        }
-    }
 
     fun getTotalAmount(
         totalAmountPojoModel: TotalAmountPojoModel,

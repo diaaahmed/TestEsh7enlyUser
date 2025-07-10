@@ -1055,6 +1055,7 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                                 .setTitle(resources.getString(R.string.alert))
                                 .setCancelable(false)
                                 .setNegativeButton("Cancel"){dialog,_ ->
+                                    dialog.cancel()
                                     cancelTransaction(result)
                                 }
                                 .setPositiveButton(resources.getString(R.string.write_on_card))
@@ -1576,7 +1577,6 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
             requestChargeFailed(chargeBalanceRequest)
         }
 
-
     }
 
     override fun onPaymentFinish(paymentSdkTransactionDetails: PaymentSdkTransactionDetails) {
@@ -1676,5 +1676,4 @@ class InquireActivity : BaseActivity(), CallbackPaymentInterface {
                 })
         }
     }
-
 }

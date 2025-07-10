@@ -11,6 +11,9 @@ object Constants
     val phone_key = stringPreferencesKey("phone_key")
 
     const val STORE_NAME = "store_name"
+    const val PAY_TOKEN = "pay_token"
+    const val TRANSACTION_REF = "transaction_ref"
+    const val CARD_ID = "card_id"
 
     const val IS_LOGIN = "isLogin"
     const val USER_NAME = "user_name"

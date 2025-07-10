@@ -3,7 +3,6 @@ package com.esh7enly.esh7enlyuser.viewModel
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +14,6 @@ import com.esh7enly.domain.repo.ChargeBalanceRepo
 import com.esh7enly.esh7enlyuser.click.OnResponseListener
 import com.esh7enly.esh7enlyuser.util.Constants
 import com.esh7enly.esh7enlyuser.util.KeyPairHandler
-
 import com.esh7enly.esh7enlyuser.util.PayWays
 import com.esh7enly.esh7enlyuser.util.sendIssueToCrashlytics
 import com.payment.paymentsdk.PaymentSdkConfigBuilder
@@ -24,9 +22,10 @@ import com.payment.paymentsdk.integrationmodels.PaymentSdkBillingDetails
 import com.payment.paymentsdk.integrationmodels.PaymentSdkConfigurationDetails
 import com.payment.paymentsdk.integrationmodels.PaymentSdkLanguageCode
 import com.payment.paymentsdk.integrationmodels.PaymentSdkShippingDetails
+import com.payment.paymentsdk.integrationmodels.PaymentSdkTokenFormat
+import com.payment.paymentsdk.integrationmodels.PaymentSdkTokenise
 import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionClass
 import com.payment.paymentsdk.integrationmodels.PaymentSdkTransactionType
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -37,7 +36,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PaytabsViewModel @Inject constructor(
     private val chargeBalanceRepo: ChargeBalanceRepo,
-    private val sharedHelper:SharedHelper
+    private val sharedHelper: SharedHelper
 ) : ViewModel() {
 
     var buttonClicked: MutableLiveData<String> = MutableLiveData(PayWays.BANk.toString())
@@ -95,26 +94,27 @@ class PaytabsViewModel @Inject constructor(
 
                         Constants.START_SESSION_ID = startSessionResponse.body()!!.data.id
 
-                       try{
-                           Constants.CK =  KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.ck.toString())
-                               .replace("[","")
-                               .replace("]","")
-                               .replace("\"", "")
+                        try {
+                            Constants.CK =
+                                KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.ck.toString())
+                                    .replace("[", "")
+                                    .replace("]", "")
+                                    .replace("\"", "")
 
-                           Constants.SK = KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.sk.toString())
-                               .replace("[","")
-                               .replace("]","")
-                               .replace("\"", "")
-                           Constants.PI = KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.pi.toString())
-                               .replace("[","")
-                               .replace("]","")
-                               .replace("\"", "")
+                            Constants.SK =
+                                KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.sk.toString())
+                                    .replace("[", "")
+                                    .replace("]", "")
+                                    .replace("\"", "")
+                            Constants.PI =
+                                KeyPairHandler.decryptTheData(startSessionResponse.body()?.data?.pi.toString())
+                                    .replace("[", "")
+                                    .replace("]", "")
+                                    .replace("\"", "")
 
-                       }
-                       catch (e: Exception)
-                       {
-                           println("diaa data error ${e.message}")
-                       }
+                        } catch (e: Exception) {
+                            println("diaa data error ${e.message}")
+                        }
 
 
                         val normalId = startSessionResponse.body()!!.data.id
@@ -183,7 +183,10 @@ class PaytabsViewModel @Inject constructor(
                             paytabsAmountTotal.body()!!.data
                         )
                     } else {
-                        listner.onFailed(paytabsAmountTotal.body()!!.code, paytabsAmountTotal.body()!!.message)
+                        listner.onFailed(
+                            paytabsAmountTotal.body()!!.code,
+                            paytabsAmountTotal.body()!!.message
+                        )
                     }
                 } else {
                     listner.onFailed(paytabsAmountTotal.code(), paytabsAmountTotal.message())
@@ -284,17 +287,17 @@ class PaytabsViewModel @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-     fun generatePaytabsConfigurationDetails(
-        serverKey:String,
-        clientKey:String,
-        secretKey:String?,
-        transactionTitle:String,
+    fun generatePaytabsConfigurationDetails(
+        serverKey: String,
+        clientKey: String,
+        secretKey: String?,
+        transactionTitle: String,
         value: String,
         drawable: Drawable?,
         startSessionId: Int
     ): PaymentSdkConfigurationDetails {
 
-        val cartDesc = "Add esh7enly balance" // Description in paytab info
+        val cartDesc = "Add esh7enly balance"
         val currency = "EGP"
         val merchantCountryCode = "EG"
         val amount: Double = value.toDouble()
@@ -331,6 +334,7 @@ class PaytabsViewModel @Inject constructor(
             .setMerchantCountryCode(merchantCountryCode)
             .setMerchantIcon(drawable)
             .hideCardScanner(true)
+            .setTokenise(PaymentSdkTokenise.USER_MANDATORY)
             .setAlternativePaymentMethods(listOf(PaymentSdkApms.MEEZA_QR))
             .setTransactionType(PaymentSdkTransactionType.SALE)
             .setTransactionClass(PaymentSdkTransactionClass.ECOM)

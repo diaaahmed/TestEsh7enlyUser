@@ -17,6 +17,29 @@ class SharedPrefImpl(private var sharedPreferencesEncrypted: SharedPreferences):
     override suspend  fun getStoreName(): String? =
         sharedPreferencesEncrypted.getString(Constants.STORE_NAME, R.string.default_name.toString())
 
+    override suspend fun savePayToken(token: String?) {
+        with(sharedPreferencesEncrypted.edit())
+        {
+            putString(Constants.PAY_TOKEN, token)
+            apply()
+        }
+    }
+
+    override suspend fun getPayToken(): String? =
+        sharedPreferencesEncrypted.getString(Constants.PAY_TOKEN, null)
+
+    override suspend fun saveTransactionRef(transactionRef: String?) {
+        with(sharedPreferencesEncrypted.edit())
+        {
+            putString(Constants.TRANSACTION_REF, transactionRef)
+            apply()
+        }
+    }
+
+    override suspend fun getTransactionRef(): String? =
+        sharedPreferencesEncrypted.getString(Constants.TRANSACTION_REF, null)
+
+
     override suspend fun setUserPassword(password: String?) {
         with(sharedPreferencesEncrypted.edit())
         {

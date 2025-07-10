@@ -1,7 +1,6 @@
 package com.esh7enly.esh7enlyuser.fragment.home
 
 import android.annotation.SuppressLint
-import android.util.Log
 
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -41,9 +40,7 @@ class PresentsFragment : BaseFragment<FragmentPresentsBinding, ServiceViewModel>
             viewModel.userPointsState.collect { result ->
                 when (result) {
                     is NetworkResult.Error -> {
-
                         binding.userPoints.text = result.parseError()
-                        Log.d("diaa", "listenPoints: error ${result.parseError()}")
                     }
 
                     is NetworkResult.Loading -> {

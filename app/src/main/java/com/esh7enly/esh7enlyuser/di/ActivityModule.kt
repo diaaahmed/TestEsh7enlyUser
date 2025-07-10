@@ -8,6 +8,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import com.esh7enly.data.datastore.DataStoreHelper
 import com.esh7enly.data.sharedhelper.Constants
 import com.esh7enly.data.sharedhelper.SharedHelper
+import com.esh7enly.data.sharedhelper.SharedPrefImpl
 import com.esh7enly.esh7enlyuser.util.CryptoData
 import com.esh7enly.esh7enlyuser.util.DynamicLayout
 import dagger.Module
@@ -25,12 +26,6 @@ object ActivityModule
     @Singleton
     @Provides
     fun provideDynamicLayout(@ApplicationContext context: Context): DynamicLayout = DynamicLayout(context)
-
-
-//
-//    @Singleton
-//    @Provides
-//    fun provideConnectivity(@ApplicationContext context: Context): Connectivity = Connectivity(context)
 
 
     @Singleton
@@ -59,6 +54,12 @@ object ActivityModule
         @ApplicationContext context: Context,
         cryptoData: CryptoData
     ): DataStoreHelper = DataStoreHelper(context,cryptoData)
+
+    @Singleton
+    @Provides
+    fun provideSharedPrfImpl(
+        sharedPreferencesEncrypted: SharedPreferences
+    ): SharedPrefImpl = SharedPrefImpl(sharedPreferencesEncrypted)
 
 
     @RequiresApi(Build.VERSION_CODES.M)
